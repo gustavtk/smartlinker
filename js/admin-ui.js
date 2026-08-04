@@ -1,6 +1,34 @@
-/* global jQuery, SLK, ajaxurl */
+/* global jQuery, SLK, ajaxurl, wp */
 (function ($) {
     'use strict';
+
+    /*
+     * Translation helpers.
+     *
+     * wp-i18n is a declared dependency; the fallbacks keep the admin working
+     * rather than throwing if it is ever absent, because an untranslated
+     * screen beats a dead one. Anything with a value in it goes through
+     * sprintf: a sentence built by concatenating fragments cannot be
+     * translated, since other languages do not order the number, the noun and
+     * the verb the way English does.
+     */
+    var i18n = (window.wp && wp.i18n) ? wp.i18n : {};
+    var __ = i18n.__ || function (s) { return s; };
+    var _n = i18n._n || function (single, plural, n) { return n === 1 ? single : plural; };
+    var sprintf = i18n.sprintf || function (fmt) {
+        var args = Array.prototype.slice.call(arguments, 1), i = 0;
+        return String(fmt).replace(/%(\d+\$)?[sd]/g, function (m, pos) {
+            return pos ? args[parseInt(pos, 10) - 1] : args[i++];
+        }).replace(/%%/g, '%');
+    };
+    /*
+     * The text domain is written out in full at every call site, never held
+     * in a constant. wp i18n make-pot resolves the domain STATICALLY: given a
+     * variable it cannot tell which domain the call belongs to, so it skips
+     * the string silently. The result is code that reads correctly, runs
+     * correctly, and produces a POT with none of these strings in it — which
+     * is how a translated plugin ends up still showing English.
+     */
 
     function esc(s) {
         return $('<div>').text(s == null ? '' : String(s)).html();
@@ -31,18 +59,21 @@
     }
 
     // Header progress: how many of this batch you've already added.
+    // (translation helpers are defined at the top of this file)
     function refreshProgress($wrap) {
         var total = $wrap.find('.slk-sugg-card').length;
         var done = $wrap.find('.slk-sugg-card.slk-inserted').length;
         if (!total) { return; }
         var pct = Math.round((done / total) * 100);
         $wrap.find('.slk-progress-fill').css('width', pct + '%');
-        $wrap.find('.slk-progress-text').text(done + ' of ' + total + ' added');
+        $wrap.find('.slk-progress-text').text(sprintf(
+            /* translators: 1: suggestions added, 2: suggestions in this batch */
+            __('%1$d of %2$d added', 'smartlinker'), done, total));
         $wrap.find('.slk-sugg-bar').toggleClass('slk-all-done', done === total);
         if (done === total) {
             $wrap.find('.slk-done-note').remove();
             $wrap.append('<div class="slk-done-note">🎉 ' +
-                esc('Every suggestion in this batch is linked. Remember to update the post.') + '</div>');
+                esc(__('Every suggestion in this batch is linked. Remember to update the post.', 'smartlinker')) + '</div>');
         }
     }
 
@@ -95,9 +126,11 @@
                 '<span class="slk-sg-title" title="' + esc(headline) + '">' +
                     SLK_ARROW +
                     '<span class="slk-sg-name">' + esc(headline) + '</span></span>' +
-                '<span class="slk-conf ' + tone + '">' + esc('Confidence: ' + pct + '%') + '</span>' +
+                '<span class="slk-conf ' + tone + '">' +
+                    /* translators: %d: match confidence as a percentage */
+                    esc(sprintf(__('Confidence: %d%%', 'smartlinker'), pct)) + '</span>' +
             '</div>' +
-            '<div class="slk-sg-anchor"><strong>' + esc('Anchor:') + '</strong> ' +
+            '<div class="slk-sg-anchor"><strong>' + esc(__('Anchor:', 'smartlinker')) + '</strong> ' +
                 '“<a class="slk-anchor-text" href="' + esc(s.url) + '" target="_blank" rel="noopener">' +
                 esc(s.phrase) + '</a>”' +
                 // where the link actually lands, so the pair reads
@@ -110,8 +143,8 @@
             '</div>' +
             (s.reason ? '<div class="slk-sg-reason">' + esc(s.reason) + '</div>' : '') +
             '<div class="slk-sg-actions">' +
-                '<button type="button" class="slk-btn-apply ' + btnClass + '">' + esc('Apply Link') + '</button>' +
-                '<button type="button" class="slk-btn-reject">' + esc('Reject') + '</button>' +
+                '<button type="button" class="slk-btn-apply ' + btnClass + '">' + esc(__('Apply Link', 'smartlinker')) + '</button>' +
+                '<button type="button" class="slk-btn-reject">' + esc(__('Reject', 'smartlinker')) + '</button>' +
                 '<span class="slk-sugg-msg" role="status"></span>' +
             '</div>' +
         '</div>';
@@ -123,11 +156,12 @@
         var visible = items.slice(0, shown);
 
         var html = '<div class="slk-sg-bar">' +
-            esc('Suggested links (' + visible.length + ' of ' + items.length + ')') +
+            /* translators: 1: suggestions shown, 2: suggestions found */
+            esc(sprintf(__('Suggested links (%1$d of %2$d)', 'smartlinker'), visible.length, items.length)) +
             '</div>';
         html += visible.map(suggestionCard).join('');
         if (items.length > shown) {
-            html += '<button type="button" class="slk-load-more">' + esc('Load More') + '</button>';
+            html += '<button type="button" class="slk-load-more">' + esc(__('Load More', 'smartlinker')) + '</button>';
         }
         $wrap.html(html);
     }
@@ -208,8 +242,8 @@
             return '<span class="slk-kw-chip' + (k.source === 'seo' ? ' is-seo' : '') + '" data-id="' + esc(k.id) + '">' +
                 esc(k.keyword) +
                 (k.source === 'seo'
-                    ? '<em class="slk-kw-src">' + esc('SEO') + '</em>'
-                    : '<button type="button" class="slk-kw-del" aria-label="' + esc('Remove keyword') + '">&times;</button>') +
+                    ? '<em class="slk-kw-src">' + esc(__('SEO', 'smartlinker')) + '</em>'
+                    : '<button type="button" class="slk-kw-del" aria-label="' + esc(__('Remove keyword', 'smartlinker')) + '">&times;</button>') +
                 '</span>';
         }).join('');
         $panel.find('.slk-kw-chips').html(html);
@@ -255,7 +289,7 @@
         var $btn = $(this);
         var $msg = $panel.find('.slk-kw-msg');
         $btn.prop('disabled', true);
-        $msg.text('Asking the AI…');
+        $msg.text(__('Asking the AI…', 'smartlinker'));
 
         $.post(SLK.ajaxUrl, {
             action: 'slk_extract_keywords',
@@ -265,7 +299,11 @@
             $btn.prop('disabled', false);
             if (res && res.success) {
                 paintKeywords($panel, res.data.keywords);
-                $msg.text(res.data.added ? ('Added ' + res.data.added + '.') : 'Nothing new to add.');
+                /* translators: %d: number of keywords added */
+                var addedMsg = __('Added %d.', 'smartlinker');
+                $msg.text(res.data.added
+                    ? sprintf(addedMsg, res.data.added)
+                    : __('Nothing new to add.', 'smartlinker'));
             } else {
                 $msg.text((res && res.data && res.data.message) || SLK.i18n.error);
             }
@@ -365,9 +403,7 @@
                 '<div class="slk-inbound-head slk-inbound-engine">' +
                     engineSwitch(engine || 'standard', aiReady) +
                     '<p class="slk-inbound-caveat">' +
-                        esc('These posts should link here. Adding one edits and saves that post ' +
-                            'straight away — it is not part of this post\u2019s next save. ' +
-                            'Undo it under SmartLinker \u2192 Activity.') +
+                        esc(__('These posts should link here. Adding one edits and saves that post straight away — it is not part of this post\u2019s next save. Undo it under SmartLinker \u2192 Activity.', 'smartlinker')) +
                     '</p>' +
                 '</div>'
             );
@@ -393,7 +429,7 @@
         var $status = $('.slk-inbound-status');
         var $wrap = $('.slk-inbound-results');
         if (!targetId) {
-            $status.text('Select a post first.');
+            $status.text(__('Select a post first.', 'smartlinker'));
             return;
         }
         $status.text(SLK.i18n.loading);
@@ -420,7 +456,7 @@
         var $btn = $(this);
         var vals = cardValues($sugg);
         if (!vals.phrase || !vals.url) {
-            $sugg.find('.slk-sugg-msg').text('Anchor text and URL are both required.');
+            $sugg.find('.slk-sugg-msg').text(__('Anchor text and URL are both required.', 'smartlinker'));
             return;
         }
         $btn.prop('disabled', true).addClass('slk-btn-loading');
@@ -434,13 +470,13 @@
         }).done(function (res) {
             if (res && res.success) {
                 $sugg.addClass('slk-inserted');
-                $btn.text('✓ ' + esc('Inserted'));
+                $btn.text('✓ ' + __('Inserted', 'smartlinker'));
             } else {
-                $btn.prop('disabled', false).text('Insert link');
+                $btn.prop('disabled', false).text(__('Insert link', 'smartlinker'));
                 $('.slk-inbound-status').text((res && res.data && res.data.message) || SLK.i18n.error);
             }
         }).fail(function () {
-            $btn.prop('disabled', false).text('Insert link');
+            $btn.prop('disabled', false).text(__('Insert link', 'smartlinker'));
             $('.slk-inbound-status').text(SLK.i18n.error);
         });
     });
@@ -469,7 +505,8 @@
         var checked = $rows.filter(':checked').length;
 
         $bar.prop('hidden', n === 0 && !slkBulk.running);
-        $bar.find('.slk-bulk-count').text(n === 1 ? '1 selected' : n + ' selected');
+        /* translators: %d: number of rows ticked */
+        $bar.find('.slk-bulk-count').text(sprintf(_n('%d selected', '%d selected', n, 'smartlinker'), n));
         $bar.find('.slk-bulk-apply').prop('disabled', n === 0 || slkBulk.running);
 
         // Header box reflects the rows, including the indeterminate middle state.
@@ -496,7 +533,7 @@
 
     $(document).on('click', '.slk-bulk-stop', function () {
         slkBulk.stop = true;
-        $(this).prop('disabled', true).text('Stopping…');
+        $(this).prop('disabled', true).text(__('Stopping…', 'smartlinker'));
     });
 
     $(document).on('click', '.slk-bulk-apply', function () {
@@ -511,14 +548,19 @@
         slkBulk.running = true;
         slkBulk.stop = false;
         $bar.find('.slk-bulk-apply').prop('disabled', true);
-        $bar.find('.slk-bulk-stop').prop('hidden', false).prop('disabled', false).text('Stop');
+        $bar.find('.slk-bulk-stop').prop('hidden', false).prop('disabled', false).text(__('Stop', 'smartlinker'));
 
         function finish() {
             slkBulk.running = false;
             $bar.find('.slk-bulk-stop').prop('hidden', true);
-            var parts = [ok + (ok === 1 ? ' link added' : ' links added')];
-            if (failed) { parts.push(failed + ' skipped'); }
-            if (slkBulk.stop && done < total) { parts.push('stopped at ' + done + ' of ' + total); }
+            /* translators: %d: number of links successfully added */
+            var parts = [sprintf(_n('%d link added', '%d links added', ok, 'smartlinker'), ok)];
+            /* translators: %d: number of rows that could not be applied */
+            if (failed) { parts.push(sprintf(_n('%d skipped', '%d skipped', failed, 'smartlinker'), failed)); }
+            if (slkBulk.stop && done < total) {
+                /* translators: 1: rows done, 2: rows selected */
+                parts.push(sprintf(__('stopped at %1$d of %2$d', 'smartlinker'), done, total));
+            }
             $status.text(parts.join(', ') + '.').removeClass('slk-bulk-busy');
             bulkRefresh();
         }
@@ -531,7 +573,8 @@
             var $msg = $row.find('.slk-sugg-msg');
             var $btn = $row.find('.slk-btn-apply');
 
-            $status.addClass('slk-bulk-busy').text('Applying ' + (i + 1) + ' of ' + total + '…');
+            /* translators: 1: current row, 2: rows selected */
+            $status.addClass('slk-bulk-busy').text(sprintf(__('Applying %1$d of %2$d…', 'smartlinker'), i + 1, total));
             $btn.prop('disabled', true);
             $msg.text('');
 
@@ -546,7 +589,7 @@
                 if (res && res.success) {
                     ok++;
                     $row.addClass('slk-inserted');
-                    $btn.text('✓ Inserted');
+                    $btn.text('✓ ' + __('Inserted', 'smartlinker'));
                     $row.find('.slk-check-row').prop('checked', false).prop('disabled', true);
                 } else {
                     failed++;
@@ -581,7 +624,7 @@
 
         if ($next.length) {          // already fetched — just toggle it
             $next.toggle();
-            $btn.text($next.is(':visible') ? 'Hide' : 'Where?');
+            $btn.text($next.is(':visible') ? __('Hide', 'smartlinker') : __('Where?', 'smartlinker'));
             return;
         }
 
@@ -593,7 +636,7 @@
         }).done(function (res) {
             $btn.prop('disabled', false);
             if (!res || !res.success) {
-                $btn.text('Error');
+                $btn.text(__('Error', 'smartlinker'));
                 return;
             }
             var html = '<tr class="slk-anchor-detail"><td colspan="4"><div class="slk-anchor-uses">';
@@ -607,9 +650,9 @@
             });
             html += '</div></td></tr>';
             $row.after(html);
-            $btn.text('Hide');
+            $btn.text(__('Hide', 'smartlinker'));
         }).fail(function () {
-            $btn.prop('disabled', false).text('Error');
+            $btn.prop('disabled', false).text(__('Error', 'smartlinker'));
         });
     });
 
@@ -621,17 +664,23 @@
         var rows = [];
         var num = function (v, d) { return v === null || v === undefined ? null : Number(v).toFixed(d); };
 
-        if (m.anchor) { rows.push(['Anchor found', '“' + m.anchor + '”' + (m.tier ? ' (' + m.tier + ')' : '')]); }
-        if (m.focus_keyword) { rows.push(['Target focus keyword', m.focus_keyword]); }
+        if (m.anchor) { rows.push([__('Anchor found', 'smartlinker'), '“' + m.anchor + '”' + (m.tier ? ' (' + m.tier + ')' : '')]); }
+        if (m.focus_keyword) { rows.push([__('Target focus keyword', 'smartlinker'), m.focus_keyword]); }
         if (m.similarity !== null && m.similarity !== undefined) {
-            rows.push(['Similarity', num(m.similarity, 3) + ' (floor ' + num(m.floor, 3) + ')' +
-                (m.semantic ? ' — by meaning' : ' — by shared vocabulary')]);
+            rows.push([__('Similarity', 'smartlinker'), sprintf(
+                /* translators: 1: similarity score, 2: the minimum it had to beat */
+                __('%1$s (floor %2$s)', 'smartlinker'), num(m.similarity, 3), num(m.floor, 3)) +
+                (m.semantic ? __(' — by meaning', 'smartlinker') : __(' — by shared vocabulary', 'smartlinker'))]);
         }
-        if (m.keyword_overlap !== undefined) { rows.push(['Keyword overlap', num(m.keyword_overlap, 2)]); }
-        if (m.cluster_note) { rows.push(['Topic cluster', m.cluster_note]); }
-        if (m.anchor_share !== undefined) { rows.push(['Anchor appears in', Math.round(m.anchor_share * 100) + '% of posts']); }
+        if (m.keyword_overlap !== undefined) { rows.push([__('Keyword overlap', 'smartlinker'), num(m.keyword_overlap, 2)]); }
+        if (m.cluster_note) { rows.push([__('Topic cluster', 'smartlinker'), m.cluster_note]); }
+        if (m.anchor_share !== undefined) { rows.push([__('Anchor appears in', 'smartlinker'),
+            /* translators: %d: percentage of posts containing the anchor */
+            sprintf(__('%d%% of posts', 'smartlinker'), Math.round(m.anchor_share * 100))]); }
         if (m.confidence !== null && m.confidence !== undefined) {
-            rows.push(['Confidence', num(m.confidence, 2) + ' (minimum ' + num(m.min_confidence, 2) + ')']);
+            rows.push([__('Confidence', 'smartlinker'), sprintf(
+                /* translators: 1: confidence score, 2: the minimum required */
+                __('%1$s (minimum %2$s)', 'smartlinker'), num(m.confidence, 2), num(m.min_confidence, 2))]);
         }
         if (!rows.length) { return ''; }
 
@@ -647,12 +696,12 @@
         var $out = $('.slk-diag-result');
 
         if (!source || !target) {
-            $out.html('<div class="slk-callout slk-callout-warn">' + esc('Pick both a post and a destination.') + '</div>');
+            $out.html('<div class="slk-callout slk-callout-warn">' + esc(__('Pick both a post and a destination.', 'smartlinker')) + '</div>');
             return;
         }
 
         $btn.prop('disabled', true);
-        $out.html('<p class="description">' + esc('Replaying the pipeline…') + '</p>');
+        $out.html('<p class="description">' + esc(__('Replaying the pipeline…', 'smartlinker')) + '</p>');
 
         $.post(SLK.ajaxUrl, {
             action: 'slk_diagnose',
@@ -677,7 +726,7 @@
                     (d.detail ? '<p class="slk-diag-detail">' + esc(d.detail) + '</p>' : '') +
                     diagMetrics(d.metrics) +
                     (fixes ? '<div class="slk-diag-fixes"><strong>' +
-                        esc(d.ok ? 'Details' : 'What would change it') + '</strong><ul>' + fixes + '</ul></div>' : '') +
+                        esc(d.ok ? __('Details', 'smartlinker') : __('What would change it', 'smartlinker')) + '</strong><ul>' + fixes + '</ul></div>' : '') +
                 '</div>'
             );
         }).fail(function () {
@@ -752,8 +801,12 @@
                 var pct = d.total ? Math.min(100, Math.round((d.scanned / d.total) * 100)) : 100;
 
                 $bar.find('.slk-scanbar-label').text(label);
+                /* translators: 1: items scanned, 2: items total, 3: percentage complete */
+                var countFmt = __('%1$d of %2$d · %3$d%%', 'smartlinker');
                 $bar.find('.slk-scanbar-count').text(
-                    d.total ? (d.scanned + ' of ' + d.total + ' · ' + pct + '%') : 'nothing to scan'
+                    d.total
+                        ? sprintf(countFmt, d.scanned, d.total, pct)
+                        : __('nothing to scan', 'smartlinker')
                 );
                 $bar.find('.slk-scanbar-track span').css('width', pct + '%');
 
@@ -763,9 +816,17 @@
                     var elapsed = (Date.now() - startedAt) / 1000;
                     var rate = d.scanned > 0 ? elapsed / d.scanned : 0;
                     var left = Math.round(rate * (d.total - d.scanned));
+                    /* translators: %d: number of results found so far */
+                    var foundFmt = _n('%d found so far', '%d found so far', d.found, 'smartlinker');
+                    /* translators: %d: estimated seconds remaining */
+                    var tailFmt = __(' · about %ds left', 'smartlinker');
+                    /* translators: %d: estimated seconds remaining */
+                    var aloneFmt = __('about %ds left', 'smartlinker');
                     $bar.find('.slk-scanbar-note').text(
-                        d.found ? (d.found + ' found so far' + (left > 4 ? ' · about ' + left + 's left' : ''))
-                                : (left > 4 ? 'about ' + left + 's left' : 'working…')
+                        d.found
+                            ? sprintf(foundFmt, d.found) +
+                              (left > 4 ? sprintf(tailFmt, left) : '')
+                            : (left > 4 ? sprintf(aloneFmt, left) : __('working…', 'smartlinker'))
                     );
                     step(d.scanned);
                     return;
@@ -774,7 +835,8 @@
                 $bar.addClass('is-done');
                 $bar.find('.slk-scanbar-track span').css('width', '100%');
                 $bar.find('.slk-scanbar-note').text(
-                    'Finished — ' + d.found + ' found. Reloading…'
+                    /* translators: %d: number of results the scan found */
+                    sprintf(_n('Finished — %d found. Reloading…', 'Finished — %d found. Reloading…', d.found, 'smartlinker'), d.found)
                 );
                 // The page's tables are rendered server-side, so it has to
                 // reload to show what the scan produced.
@@ -790,9 +852,9 @@
         // round trip can take seconds, and a bar with nothing in it reads as
         // broken rather than busy.
         $bar.removeClass('is-done is-error');
-        $bar.find('.slk-scanbar-label').text($btn.data('slk-label') || 'Starting…');
+        $bar.find('.slk-scanbar-label').text($btn.data('slk-label') || __('Starting…', 'smartlinker'));
         $bar.find('.slk-scanbar-count').text('');
-        $bar.find('.slk-scanbar-note').text('Counting what needs doing…');
+        $bar.find('.slk-scanbar-note').text(__('Counting what needs doing…', 'smartlinker'));
         $bar.find('.slk-scanbar-track span').css('width', '0%');
 
         $btn.prop('disabled', true).addClass('slk-btn-loading');
@@ -824,7 +886,7 @@
             }
             var items = res.data.opportunities || [];
             if (!items.length) {
-                $wrap.html('<span class="description">' + esc('No opportunities right now — every mention already links here.') + '</span>');
+                $wrap.html('<span class="description">' + esc(__('No opportunities right now — every mention already links here.', 'smartlinker')) + '</span>');
                 return;
             }
             var html = items.map(function (s) {
@@ -832,9 +894,11 @@
                     '<div class="slk-suggestion" data-url="' + esc(s.url) + '" data-phrase="' + esc(s.phrase) + '" data-source="' + esc(s.source_id) + '">' +
                         '<div class="slk-sugg-main">' +
                             '<span class="slk-phrase">' + esc(s.phrase) + '</span>' +
-                            '<span class="slk-target">' + esc('in: ') + esc(s.source_title) + '</span>' +
+                            '<span class="slk-target">' +
+                            /* translators: %s: the post the mention appears in */
+                            esc(sprintf(__('in: %s', 'smartlinker'), s.source_title)) + '</span>' +
                         '</div>' +
-                        '<button type="button" class="button slk-insert-inbound">' + esc('Insert link') + '</button>' +
+                        '<button type="button" class="button slk-insert-inbound">' + esc(__('Insert link', 'smartlinker')) + '</button>' +
                     '</div>';
             }).join('');
             $wrap.html(html);
@@ -852,7 +916,7 @@
         var $wrap = $box.find('.slk-suggestions');
         var $btn = $(this);
 
-        $status.text('Asking the AI…');
+        $status.text(__('Asking the AI…', 'smartlinker'));
         $wrap.html(skeleton(3));
         $btn.prop('disabled', true);
 
@@ -924,7 +988,7 @@
         var phrase = String(vals.phrase);
         var url = String(vals.url);
         if (!phrase || !url) {
-            $sugg.find('.slk-sugg-msg').text('Anchor text and URL are both required.');
+            $sugg.find('.slk-sugg-msg').text(__('Anchor text and URL are both required.', 'smartlinker'));
             return;
         }
 
@@ -937,15 +1001,15 @@
                 var updated = replaceFirstOutsideTags(content, phrase, buildAnchor(phrase, url));
                 if (!updated) {
                     $sugg.find('.slk-sugg-msg')
-                        .text('That exact text isn\'t in the post — adjust the anchor and try again.');
+                        .text(__('That exact text isn\'t in the post — adjust the anchor and try again.', 'smartlinker'));
                     return;
                 }
                 data.dispatch('core/editor').resetEditorBlocks(wp.blocks.parse(updated));
                 $sugg.addClass('slk-inserted slk-just-added').removeClass('slk-picked');
                 $sugg.find('.slk-sugg-check').prop('checked', false).prop('disabled', true);
                 refreshProgress($sugg.parent());
-                $btn.prop('disabled', true).removeClass('slk-btn-loading').text('✓ Added');
-                $box.find('.slk-status').text(SLK.i18n.inserted + ' Remember to Update the post to save.');
+                $btn.prop('disabled', true).removeClass('slk-btn-loading').text('✓ ' + __('Added', 'smartlinker'));
+                $box.find('.slk-status').text(SLK.i18n.inserted + ' ' + __('Remember to Update the post to save.', 'smartlinker'));
             } catch (e) {
                 $box.find('.slk-status').text(SLK.i18n.error);
             }
@@ -965,15 +1029,15 @@
                 $sugg.addClass('slk-inserted slk-just-added').removeClass('slk-picked');
                 $sugg.find('.slk-sugg-check').prop('checked', false).prop('disabled', true);
                 refreshProgress($sugg.parent());
-                $btn.prop('disabled', true).removeClass('slk-btn-loading').text('✓ Added');
+                $btn.prop('disabled', true).removeClass('slk-btn-loading').text('✓ ' + __('Added', 'smartlinker'));
                 $box.find('.slk-status').text(SLK.i18n.inserted +
-                    ' ' + '(reload the editor to see it in the content)');
+                    ' ' + __('(reload the editor to see it in the content)', 'smartlinker'));
             } else {
-                $btn.prop('disabled', false).text('Add Link');
+                $btn.prop('disabled', false).text(__('Add Link', 'smartlinker'));
                 $box.find('.slk-status').text((res && res.data && res.data.message) || SLK.i18n.error);
             }
         }).fail(function () {
-            $btn.prop('disabled', false).text('Insert');
+            $btn.prop('disabled', false).text(__('Insert', 'smartlinker'));
             $box.find('.slk-status').text(SLK.i18n.error);
         });
     });
@@ -1040,27 +1104,28 @@
             var inbound = (d.inbound && d.inbound.length)
                 ? '<ul class="slk-detail-list">' + d.inbound.map(function (l) {
                     return '<li><span class="slk-detail-anchor">' + esc(l.anchor || '—') + '</span>' +
-                        '<span class="slk-detail-sub">' + esc('from: ' + (l.post_title || '(no title)')) + '</span></li>';
+                        '<span class="slk-detail-sub">' + /* translators: %s: the post an inbound link comes from */
+                        esc(sprintf(__('from: %s', 'smartlinker'), l.post_title || __('(no title)', 'smartlinker'))) + '</span></li>';
                 }).join('') + '</ul>'
-                : '<span class="slk-detail-empty">' + esc('No inbound internal links yet.') + '</span>';
+                : '<span class="slk-detail-empty">' + esc(__('No inbound internal links yet.', 'smartlinker')) + '</span>';
 
             var outbound = (d.outbound && d.outbound.length)
                 ? '<ul class="slk-detail-list">' + d.outbound.map(function (l) {
                     var flag = '';
                     if (Number(l.broken) === 1) {
-                        flag = ' <span class="slk-badge slk-badge-bad">' + esc(l.status_code > 0 ? l.status_code : 'broken') + '</span>';
+                        flag = ' <span class="slk-badge slk-badge-bad">' + esc(l.status_code > 0 ? l.status_code : __('broken', 'smartlinker')) + '</span>';
                     } else if (l.type === 'external') {
-                        flag = ' <span class="slk-chip">' + esc('external') + '</span>';
+                        flag = ' <span class="slk-chip">' + esc(__('external', 'smartlinker')) + '</span>';
                     }
                     return '<li><span class="slk-detail-anchor">' + esc(l.anchor || '—') + flag + '</span>' +
                         '<span class="slk-detail-sub">' + esc(l.url) + '</span></li>';
                 }).join('') + '</ul>'
-                : '<span class="slk-detail-empty">' + esc('This post has no links.') + '</span>';
+                : '<span class="slk-detail-empty">' + esc(__('This post has no links.', 'smartlinker')) + '</span>';
 
             $detail.find('.slk-detail').html(
                 '<div class="slk-detail-cols">' +
-                    '<div class="slk-detail-col"><h4>' + esc('Inbound internal links') + '</h4>' + inbound + '</div>' +
-                    '<div class="slk-detail-col"><h4>' + esc('Links in this post') + '</h4>' + outbound + '</div>' +
+                    '<div class="slk-detail-col"><h4>' + esc(__('Inbound internal links', 'smartlinker')) + '</h4>' + inbound + '</div>' +
+                    '<div class="slk-detail-col"><h4>' + esc(__('Links in this post', 'smartlinker')) + '</h4>' + outbound + '</div>' +
                 '</div>'
             );
             $detail.data('loaded', true);
@@ -1130,8 +1195,10 @@
         var $checks = $wrap.find('.slk-sugg-check');
         var n = $checks.filter(':checked').length;
         var $btn = $wrap.find('.slk-add-selected');
+        /* translators: %d: number of suggestions ticked */
+        var selFmt = __('Add selected (%d)', 'smartlinker');
         $btn.prop('disabled', n === 0)
-            .text(n ? 'Add selected (' + n + ')' : 'Add selected');
+            .text(n ? sprintf(selFmt, n) : __('Add selected', 'smartlinker'));
         $wrap.find('.slk-check-all').prop('checked', n > 0 && n === $checks.length);
     }
 
@@ -1184,11 +1251,11 @@
         var $wrap = $('.slk-ai-page-results');
 
         if (!postId) {
-            $status.text('Select a post first.');
+            $status.text(__('Select a post first.', 'smartlinker'));
             return;
         }
         $btn.prop('disabled', true);
-        $status.text('Asking the AI…');
+        $status.text(__('Asking the AI…', 'smartlinker'));
         $wrap.html(skeleton(3));
 
         $.post(SLK.ajaxUrl, {
@@ -1216,11 +1283,11 @@
         var $out = $('.slk-url-preview');
         var oldUrl = $('#slk-old-url').val();
         if (!oldUrl) {
-            $out.show().html('<span class="description">' + esc('Enter the old URL first.') + '</span>');
+            $out.show().html('<span class="description">' + esc(__('Enter the old URL first.', 'smartlinker')) + '</span>');
             return;
         }
         $btn.prop('disabled', true);
-        $out.show().html('<span class="description">' + esc('Checking…') + '</span>');
+        $out.show().html('<span class="description">' + esc(__('Checking…', 'smartlinker')) + '</span>');
 
         $.post(SLK.ajaxUrl, {
             action: 'slk_url_preview',
@@ -1231,11 +1298,15 @@
             if (res && res.success) {
                 var d = res.data;
                 if (!d.occurrences) {
-                    $out.html('<div class="slk-callout">' + esc('No links found for that URL.') + '</div>');
+                    $out.html('<div class="slk-callout">' + esc(__('No links found for that URL.', 'smartlinker')) + '</div>');
                 } else {
                     $out.html('<div class="slk-callout slk-callout-good">' +
-                        esc('This will update ' + d.occurrences + ' internal link' + (d.occurrences === 1 ? '' : 's') +
-                            ' across ' + d.posts + ' post' + (d.posts === 1 ? '' : 's') + '.') + '</div>');
+                        esc(sprintf(
+                            /* translators: 1: number of links, 2: number of posts */
+                            _n('This will update %1$d internal link across %2$d post.',
+                               'This will update %1$d internal links across %2$d posts.',
+                               d.occurrences, 'smartlinker'),
+                            d.occurrences, d.posts)) + '</div>');
                 }
             } else {
                 $out.html('<span class="description">' + esc(SLK.i18n.error) + '</span>');
@@ -1665,15 +1736,22 @@
             var roomy = p.w > 110 && p.h > 54;
             var tiny = p.w < 58 || p.h < 34;
 
-            var title = c.name + ' — ' + c.count + ' post' + (c.count === 1 ? '' : 's') +
-                ', ' + pct + '% linked up' +
-                (c.orphans ? ', ' + c.orphans + ' orphan' + (c.orphans === 1 ? '' : 's') : '') +
-                (c.pillar ? ' · pillar: ' + c.pillar : '');
+            var title = sprintf(
+                /* translators: 1: cluster name, 2: post count, 3: percentage linked */
+                _n('%1$s — %2$d post, %3$d%% linked up', '%1$s — %2$d posts, %3$d%% linked up', c.count, 'smartlinker'),
+                c.name, c.count, pct) +
+                /* translators: %d: number of orphaned posts in this cluster */
+                (c.orphans ? ', ' + sprintf(_n('%d orphan', '%d orphans', c.orphans, 'smartlinker'), c.orphans) : '') +
+                /* translators: %s: the cluster's pillar post */
+                (c.pillar ? sprintf(__(' · pillar: %s', 'smartlinker'), c.pillar) : '');
 
             var label = tiny ? '' :
                 '<span class="slk-tm-name">' + esc(c.name) + '</span>' +
-                (roomy ? '<span class="slk-tm-sub">' + esc(c.count + ' post' + (c.count === 1 ? '' : 's')) +
-                    (view === 'health' ? esc(' · ' + pct + '% linked') : '') + '</span>' : '') +
+                (roomy ? '<span class="slk-tm-sub">' +
+                    /* translators: %d: number of posts in this cluster */
+                    esc(sprintf(_n('%d post', '%d posts', c.count, 'smartlinker'), c.count)) +
+                    /* translators: %d: percentage of the cluster that is linked */
+                    (view === 'health' ? esc(sprintf(__(' · %d%% linked', 'smartlinker'), pct)) : '') + '</span>' : '') +
                 (roomy && c.stage ? '<span class="slk-tm-stage slk-stage-' + esc(String(c.stage).toLowerCase()) + '">' +
                     esc(c.stage) + '</span>' : '');
 
@@ -1722,7 +1800,7 @@
         var options = [].slice.call(sel.options).map(function (o) {
             return { value: o.value, label: o.textContent.trim() };
         });
-        var placeholder = (options.length && options[0].value === '') ? options[0].label : 'Search…';
+        var placeholder = (options.length && options[0].value === '') ? options[0].label : __('Search…', 'smartlinker');
         var choices = options.filter(function (o) { return o.value !== ''; });
 
         var wrap = document.createElement('div');
@@ -1760,7 +1838,8 @@
             }).slice(0, 200);
 
             if (!shown.length) {
-                list.innerHTML = '<li class="slk-combo-empty">' + esc('Nothing matches “' + filter + '”') + '</li>';
+                list.innerHTML = '<li class="slk-combo-empty">' + /* translators: %s: what was typed into the search box */
+                    esc(sprintf(__('Nothing matches “%s”', 'smartlinker'), filter)) + '</li>';
             } else {
                 list.innerHTML = shown.map(function (o, i) {
                     return '<li role="option" class="slk-combo-opt' + (i === active ? ' is-active' : '') +
@@ -1841,7 +1920,7 @@
         var clear = document.createElement('button');
         clear.type = 'button';
         clear.className = 'slk-combo-clear';
-        clear.setAttribute('aria-label', 'Clear selection');
+        clear.setAttribute('aria-label', __('Clear selection', 'smartlinker'));
         clear.innerHTML = '&times;';
         clear.addEventListener('mousedown', function (e) {
             e.preventDefault();
@@ -1879,27 +1958,28 @@
         $panel.html(
             engineSwitch(engine || 'standard', aiReady()) +
             '<div class="slk-fix-head">' +
-                esc('“' + (d.anchor || '(no text)') + '” in ' + d.post_title) +
+                /* translators: 1: the link's anchor text, 2: the post it sits in */
+                esc(sprintf(__('“%1$s” in %2$s', 'smartlinker'), d.anchor || __('(no text)', 'smartlinker'), d.post_title)) +
             '</div>' +
             (sugg
-                ? '<div class="slk-fix-sub">' + esc('Suggested replacements') + '</div>' +
+                ? '<div class="slk-fix-sub">' + esc(__('Suggested replacements', 'smartlinker')) + '</div>' +
                   '<ul class="slk-fix-list">' + sugg + '</ul>'
                 : '<p class="description">' + esc(engine === 'ai'
-                    ? 'The AI found no page on this site that fits — enter a URL below, or remove the link.'
-                    : 'No confident replacement found — enter one below, or remove the link.') + '</p>') +
+                    ? __('The AI found no page on this site that fits — enter a URL below, or remove the link.', 'smartlinker')
+                    : __('No confident replacement found — enter one below, or remove the link.', 'smartlinker')) + '</p>') +
             '<div class="slk-fix-actions">' +
-                '<label class="slk-fix-field">' + esc('Point it at') +
+                '<label class="slk-fix-field">' + esc(__('Point it at', 'smartlinker')) +
                     '<input type="url" class="slk-fix-url-input" placeholder="https://…" />' +
                 '</label>' +
-                '<button type="button" class="slk-btn-apply slk-fix-apply" data-op="replace">' + esc('Replace URL') + '</button>' +
+                '<button type="button" class="slk-btn-apply slk-fix-apply" data-op="replace">' + esc(__('Replace URL', 'smartlinker')) + '</button>' +
             '</div>' +
             '<div class="slk-fix-actions">' +
-                '<label class="slk-fix-field">' + esc('Anchor text') +
+                '<label class="slk-fix-field">' + esc(__('Anchor text', 'smartlinker')) +
                     '<input type="text" class="slk-fix-anchor-input" value="' + esc(d.anchor || '') + '" />' +
                 '</label>' +
-                '<button type="button" class="slk-btn-reject slk-fix-apply" data-op="anchor">' + esc('Update text') + '</button>' +
-                '<button type="button" class="slk-btn-reject slk-fix-apply" data-op="remove">' + esc('Remove link, keep text') + '</button>' +
-                '<a class="slk-fix-edit" href="' + esc(d.edit || '#') + '">' + esc('Open in editor') + '</a>' +
+                '<button type="button" class="slk-btn-reject slk-fix-apply" data-op="anchor">' + esc(__('Update text', 'smartlinker')) + '</button>' +
+                '<button type="button" class="slk-btn-reject slk-fix-apply" data-op="remove">' + esc(__('Remove link, keep text', 'smartlinker')) + '</button>' +
+                '<a class="slk-fix-edit" href="' + esc(d.edit || '#') + '">' + esc(__('Open in editor', 'smartlinker')) + '</a>' +
                 '<span class="slk-fix-msg" role="status"></span>' +
             '</div>'
         );
@@ -1912,11 +1992,11 @@
 
         if ($row.attr('hidden') === undefined) {
             $row.attr('hidden', true);
-            $btn.attr('aria-expanded', 'false').text('Fix');
+            $btn.attr('aria-expanded', 'false').text(__('Fix', 'smartlinker'));
             return;
         }
         $row.removeAttr('hidden');
-        $btn.attr('aria-expanded', 'true').text('Close');
+        $btn.attr('aria-expanded', 'true').text(__('Close', 'smartlinker'));
 
         var $panel = $row.find('.slk-fixlink-panel');
         if ($panel.data('loaded')) { return; }
@@ -1952,10 +2032,10 @@
         var value = op === 'replace' ? $panel.find('.slk-fix-url-input').val()
                   : (op === 'anchor' ? $panel.find('.slk-fix-anchor-input').val() : '');
 
-        if (op === 'remove' && !window.confirm('Remove this link? The words stay, the link goes.')) { return; }
+        if (op === 'remove' && !window.confirm(__('Remove this link? The words stay, the link goes.', 'smartlinker'))) { return; }
 
         $panel.find('.slk-fix-apply').prop('disabled', true);
-        $msg.text('Working…');
+        $msg.text(__('Working…', 'smartlinker'));
 
         $.post(SLK.ajaxUrl, {
             action: 'slk_apply_fix', nonce: SLK.nonce,
@@ -1965,7 +2045,7 @@
                 $msg.text(res.data.message);
                 var $tr = $('.slk-fix-row[data-for="' + $panel.data('link') + '"]').prev('tr');
                 $tr.addClass('slk-fixed');
-                $tr.find('.slk-fix-link').prop('disabled', true).text('Fixed');
+                $tr.find('.slk-fix-link').prop('disabled', true).text(__('Fixed', 'smartlinker'));
                 toast(res.data.message, 'success');
             } else {
                 $panel.find('.slk-fix-apply').prop('disabled', false);
@@ -1990,11 +2070,11 @@
     function engineSwitch(engine, aiReady) {
         return '<div class="slk-engine">' +
             '<button type="button" class="slk-engine-btn' + (engine !== 'ai' ? ' is-on' : '') +
-                '" data-engine="standard">' + esc('Standard') + '</button>' +
+                '" data-engine="standard">' + esc(__('Standard', 'smartlinker')) + '</button>' +
             '<button type="button" class="slk-engine-btn' + (engine === 'ai' ? ' is-on' : '') +
                 (aiReady ? '' : ' is-locked') + '" data-engine="ai"' + (aiReady ? '' : ' disabled') + '>' +
-                esc('AI') + '</button>' +
-            (aiReady ? '' : '<span class="slk-engine-note">' + esc('Add an API key to use AI') + '</span>') +
+                esc(__('AI', 'smartlinker')) + '</button>' +
+            (aiReady ? '' : '<span class="slk-engine-note">' + esc(__('Add an API key to use AI', 'smartlinker')) + '</span>') +
             '</div>';
     }
 
@@ -2023,13 +2103,14 @@
             if (!items.length) {
                 $panel.append('<p class="description">' +
                     esc(engine === 'ai'
-                        ? 'The AI found nothing on this site worth linking here.'
-                        : 'Nothing on the site mentions this page yet. Add a sentence to a related post that names it, then try again.') +
+                        ? __('The AI found nothing on this site worth linking here.', 'smartlinker')
+                        : __('Nothing on the site mentions this page yet. Add a sentence to a related post that names it, then try again.', 'smartlinker')) +
                     '</p>');
                 return;
             }
             $panel.append('<div class="slk-fix-head">' +
-                esc('Posts that could link to “' + $panel.data('title') + '”') + '</div>');
+                /* translators: %s: the post other pages could link to */
+                esc(sprintf(__('Posts that could link to “%s”', 'smartlinker'), $panel.data('title'))) + '</div>');
             var $wrap = $('<div class="slk-suggestions"></div>').appendTo($panel);
             renderSuggestions($wrap, items, { sourceId: null });
         }).fail(function () {
@@ -2055,11 +2136,11 @@
 
         if (open) {
             $row.attr('hidden', true);
-            $btn.attr('aria-expanded', 'false').text('Fix');
+            $btn.attr('aria-expanded', 'false').text(__('Fix', 'smartlinker'));
             return;
         }
         $row.removeAttr('hidden');
-        $btn.attr('aria-expanded', 'true').text('Close');
+        $btn.attr('aria-expanded', 'true').text(__('Close', 'smartlinker'));
 
         var $panel = $row.find('.slk-fix-panel');
         if (!$panel.data('loaded')) {
@@ -2091,7 +2172,7 @@
                 var content = data.select('core/editor').getEditedPostContent();
                 var updated = replaceFirstOutsideTags(content, phrase, buildAnchor(phrase, url));
                 if (!updated) {
-                    return 'That exact text isn’t in the post — adjust the anchor and try again.';
+                    return __('That exact text isn’t in the post — adjust the anchor and try again.', 'smartlinker');
                 }
                 data.dispatch('core/editor').resetEditorBlocks(wp.blocks.parse(updated));
                 return null;

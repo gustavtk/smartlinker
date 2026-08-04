@@ -13,6 +13,34 @@
 
     if (!window.wp || !wp.plugins || !wp.element || !wp.data) { return; }
 
+    /*
+     * Translation helpers.
+     *
+     * wp-i18n is a declared dependency, but the fallbacks keep the panel
+     * rendering rather than throwing if it is ever missing — an untranslated
+     * sidebar is a far better failure than a blank one. sprintf is used for
+     * anything with a value in it: building a sentence by concatenating
+     * fragments cannot be translated, because other languages do not put the
+     * number, the noun and the verb in English order.
+     */
+    var i18n = wp.i18n || {};
+    var __ = i18n.__ || function (s) { return s; };
+    var _n = i18n._n || function (single, plural, n) { return n === 1 ? single : plural; };
+    var sprintf = i18n.sprintf || function (fmt) {
+        var args = Array.prototype.slice.call(arguments, 1), i = 0;
+        return String(fmt).replace(/%(\d+\$)?[sd]/g, function (m, pos) {
+            return pos ? args[parseInt(pos, 10) - 1] : args[i++];
+        });
+    };
+    /*
+     * The text domain is written out in full at every call site, never held
+     * in a constant. wp i18n make-pot resolves the domain STATICALLY: given a
+     * variable it cannot tell which domain the call belongs to, so it skips
+     * the string silently. The result is code that reads correctly, runs
+     * correctly, and produces a POT with none of these strings in it — which
+     * is how a translated plugin ends up still showing English.
+     */
+
     var el = wp.element.createElement;
     var Fragment = wp.element.Fragment;
     var useState = wp.element.useState;
@@ -30,10 +58,15 @@
      */
     function ageLabel(when) {
         var secs = Math.round((Date.now() - when) / 1000);
-        if (secs < 45) { return 'just now'; }
+        if (secs < 45) { return __('just now', 'smartlinker'); }
         var mins = Math.round(secs / 60);
-        if (mins < 60) { return mins + ' min ago'; }
-        return Math.round(mins / 60) + 'h ago';
+        if (mins < 60) {
+            /* translators: %d: number of minutes since the last scan */
+            return sprintf(_n('%d min ago', '%d mins ago', mins, 'smartlinker'), mins);
+        }
+        var hours = Math.round(mins / 60);
+        /* translators: %d: number of hours since the last scan */
+        return sprintf(_n('%dh ago', '%dh ago', hours, 'smartlinker'), hours);
     }
 
     var PluginSidebar = pkg.PluginSidebar;
@@ -117,24 +150,26 @@
                 title: s.url
             }, s.path || s.url || ''),
             el('div', { className: 'slk-sg-anchor' },
-                el('strong', null, 'Anchor:'), ' “',
+                el('strong', null, __('Anchor:', 'smartlinker')), ' “',
                 el('a', { className: 'slk-anchor-text', href: s.url, target: '_blank', rel: 'noopener' }, s.phrase || ''),
                 '”'
             ),
             props.error ? el('div', { className: 'slk-sg-err' }, props.error) : null,
             el('div', { className: 'slk-sg-actions' },
-                el('span', { className: 'slk-conf ' + tone }, 'Confidence: ' + pct + '%'),
+                el('span', { className: 'slk-conf ' + tone },
+                    /* translators: %d: match confidence as a percentage */
+                    sprintf(__('Confidence: %d%%', 'smartlinker'), pct)),
                 el('button', {
                     type: 'button',
                     className: 'slk-btn-apply',
                     disabled: state === 'added',
                     onClick: props.onAdd
                 }, state === 'added'
-                    ? (s.source_id ? '✓ Added there' : '✓ Added')
+                    ? (s.source_id ? __('✓ Added there', 'smartlinker') : __('✓ Added', 'smartlinker'))
                     // Applying an inbound suggestion saves ANOTHER post right
                     // away. The label has to admit that; "Apply Link" would
                     // read as "queue it up in what I am editing".
-                    : (s.source_id ? 'Add to that post' : 'Apply Link'))
+                    : (s.source_id ? __('Add to that post', 'smartlinker') : __('Apply Link', 'smartlinker')))
             )
         );
     }
@@ -256,26 +291,27 @@
                     type: 'button',
                     className: 'slk-sb-btn' + (loading && mode !== 'ai' ? ' is-busy' : ''),
                     disabled: loading,
-                    title: 'Find link suggestions',
+                    title: __('Find link suggestions', 'smartlinker'),
                     onClick: function () { scan('keyword'); }
-                }, icon('link'), el('span', null, 'Link')),
+                }, icon('link'), el('span', null, __('Link', 'smartlinker'))),
 
                 el('button', {
                     type: 'button',
                     className: 'slk-sb-btn' + (aiEnabled ? '' : ' is-locked') +
                         (loading && mode === 'ai' ? ' is-busy' : ''),
                     disabled: loading || !aiEnabled,
-                    title: aiEnabled ? 'AI suggestions' : 'AI suggestions need an OpenAI API key',
+                    title: aiEnabled ? __('AI suggestions', 'smartlinker')
+                                     : __('AI suggestions need an OpenAI API key', 'smartlinker'),
                     onClick: function () { if (aiEnabled) { scan('ai'); } }
-                }, icon('ai'), el('span', null, 'AI')),
+                }, icon('ai'), el('span', null, __('AI', 'smartlinker'))),
 
                 el('button', {
                     type: 'button',
                     className: 'slk-sb-btn' + (loading && mode === 'inbound' ? ' is-busy' : ''),
                     disabled: loading,
-                    title: 'Which of your posts should link TO this one',
+                    title: __('Which of your posts should link TO this one', 'smartlinker'),
                     onClick: function () { scan('inbound'); }
-                }, icon('inbound'), el('span', null, 'Links in'))
+                }, icon('inbound'), el('span', null, __('Links in', 'smartlinker')))
             ),
 
             /* Locked explanation — same copy as the meta box, from SLK.ai */
@@ -285,7 +321,7 @@
                         return el('span', { key: 'r' + i, className: 'slk-sb-locked-line' }, line);
                     }),
                     SLK.settingsUrl
-                        ? el('a', { className: 'slk-sb-locked-link', href: SLK.settingsUrl }, 'Open AI settings')
+                        ? el('a', { className: 'slk-sb-locked-link', href: SLK.settingsUrl }, __('Open AI settings', 'smartlinker'))
                         : null
                 )
                 : null,
@@ -303,8 +339,12 @@
             !loading && mode === 'ai' && items.length
                 ? el('div', { className: 'slk-sb-banner' },
                     el('span', { className: 'dashicons dashicons-superhero' }),
-                    el('span', null, 'AI found ' + items.length + ' relevant suggestion' +
-                        (items.length === 1 ? '' : 's') + ' for this post'))
+                    el('span', null, sprintf(
+                        /* translators: %d: number of suggestions the AI returned */
+                        _n('AI found %d relevant suggestion for this post',
+                           'AI found %d relevant suggestions for this post',
+                           items.length, 'smartlinker'),
+                        items.length)))
                 : null,
 
             !loading && !error && mode && !items.length
@@ -318,30 +358,33 @@
                         className: 'slk-engine-btn' + (engine !== 'ai' ? ' is-on' : ''),
                         disabled: loading,
                         onClick: function () { if (engine !== 'standard') { scan('inbound', 'standard'); } }
-                    }, 'Standard'),
+                    }, __('Standard', 'smartlinker')),
                     el('button', {
                         type: 'button',
                         className: 'slk-engine-btn' + (engine === 'ai' ? ' is-on' : '') +
                             (aiEnabled ? '' : ' is-locked'),
                         disabled: loading || !aiEnabled,
-                        title: aiEnabled ? 'Ask AI which posts should link here'
-                                         : 'AI needs an OpenAI API key',
+                        title: aiEnabled ? __('Ask AI which posts should link here', 'smartlinker')
+                                         : __('AI needs an OpenAI API key', 'smartlinker'),
                         onClick: function () { if (aiEnabled && engine !== 'ai') { scan('inbound', 'ai'); } }
-                    }, 'AI'))
+                    }, __('AI', 'smartlinker')))
                 : null,
 
             !loading && mode === 'inbound' && items.length
                 ? el('div', { className: 'slk-sb-note' },
-                    'These posts should link here. Adding one edits and saves that post straight away — it is not part of this post\u2019s next save. Undo it under SmartLinker \u2192 Activity.')
+                    __('These posts should link here. Adding one edits and saves that post straight away — it is not part of this post’s next save. Undo it under SmartLinker → Activity.', 'smartlinker'))
                 : null,
 
             !loading && items.length
                 ? el('div', { className: 'slk-sg-bar' },
-                    el('span', null, 'Suggested links (' + visible.length + ' of ' + items.length + ')'),
+                    el('span', null, sprintf(
+                        /* translators: 1: suggestions shown, 2: suggestions found */
+                        __('Suggested links (%1$d of %2$d)', 'smartlinker'),
+                        visible.length, items.length)),
                     scannedAt
                         ? el('span', {
                             className: 'slk-sg-bar-age',
-                            title: 'These are the results of the last scan. Change a setting and they will not update until you scan again.'
+                            title: __('These are the results of the last scan. Change a setting and they will not update until you scan again.', 'smartlinker')
                         }, ageLabel(scannedAt))
                         : null)
                 : null,
@@ -361,7 +404,7 @@
                     type: 'button',
                     className: 'slk-load-more',
                     onClick: function () { setShown(shown + PREVIEW_COUNT); }
-                }, 'Load More')
+                }, __('Load More', 'smartlinker'))
                 : null,
 
             addedCount
@@ -369,11 +412,18 @@
                     mode === 'inbound'
                         // Already written and saved elsewhere — telling someone
                         // to save THIS post would be plainly wrong.
-                        ? addedCount + ' link' + (addedCount === 1 ? '' : 's') +
-                          ' added to ' + (addedCount === 1 ? 'that post' : 'those posts') +
-                          ' and saved. Undo under SmartLinker \u2192 Activity.'
-                        : addedCount + ' link' + (addedCount === 1 ? '' : 's') +
-                          ' added. Remember to update the post to save.')
+                        ? sprintf(
+                            /* translators: %d: number of links added to other posts */
+                            _n('%d link added to that post and saved. Undo under SmartLinker → Activity.',
+                               '%d links added to those posts and saved. Undo under SmartLinker → Activity.',
+                               addedCount, 'smartlinker'),
+                            addedCount)
+                        : sprintf(
+                            /* translators: %d: number of links added to this post */
+                            _n('%d link added. Remember to update the post to save.',
+                               '%d links added. Remember to update the post to save.',
+                               addedCount, 'smartlinker'),
+                            addedCount))
                 : null
         );
     }

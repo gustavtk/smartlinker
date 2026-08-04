@@ -1,7 +1,7 @@
 # Translations
 
 `smartlinker.pot` is the template every translation starts from. It holds every
-translatable string in the plugin's **PHP** — 995 of them.
+translatable string in the plugin — **1,108** of them, PHP and JavaScript.
 
 ## Regenerating the POT
 
@@ -20,20 +20,37 @@ wp i18n make-pot . languages/smartlinker.pot --slug=smartlinker --domain=smartli
 WordPress looks in `wp-content/languages/plugins/` first and falls back to this
 directory, so either location works.
 
-## Known gap: JavaScript is not covered
+## JavaScript translations need a second step
 
-`wp i18n make-pot` only extracts strings wrapped in a translation function.
-Around 78 user-facing strings in `js/admin.js` and `js/editor-sidebar.js` are
-still bare English literals, so they are absent from this POT and will stay
-English in every locale.
-
-The plumbing for fixing that is already in place — `wp_set_script_translations()`
-is called for both handles — so each string only needs wrapping in
-`wp.i18n.__( '…', 'smartlinker' )`, after which:
+PHP reads `.mo` files. JavaScript cannot, so the browser is served JSON:
 
 ```
 wp i18n make-json languages --no-purge
 ```
 
-generates the JSON files the browser loads. Until then, translators should know
-the editor sidebar and the admin JavaScript remain untranslated.
+Run it after compiling each `.po`. It writes one JSON file per script, named
+`smartlinker-<locale>-<md5 of the script path>.json`, which is how WordPress
+finds them.
+
+### Never name a JavaScript file `*admin.js`
+
+That md5 is taken from the script's path after a `.min.js` suffix is stripped,
+so translations key off the unminified name. **WordPress core checks that
+suffix strictly** (`str_ends_with($relative, '.min.js')` — the dot included).
+**`wp i18n make-json` checks it loosely**, on the letters `min.js` alone.
+
+For a file called `admin.js`, make-json sees `...dmin.js`, strips seven
+characters, and writes the JSON under the hash for `js/a.js`. Core then looks
+up the hash for `js/admin.js`, finds nothing, and every string in that file
+silently stays English — no error, no warning.
+
+This is why the admin script is `js/admin-ui.js`. Any name ending in the
+letters `min.js` hits it.
+
+Verify after generating, rather than trusting it:
+
+```
+python3 -c "import json,hashlib,glob; [print(json.load(open(f))['source'], hashlib.md5(json.load(open(f))['source'].encode()).hexdigest() in f) for f in glob.glob('languages/*.json')]"
+```
+
+Every line must end in `True`.

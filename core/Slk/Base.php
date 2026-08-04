@@ -230,7 +230,20 @@ class Slk_Base
             null
         );
         wp_enqueue_style('slk-admin', SLK_PLUGIN_URL . 'css/admin.css', [], SLK_VERSION);
-        wp_enqueue_script('slk-admin', SLK_PLUGIN_URL . 'js/admin.js', ['jquery'], SLK_VERSION, true);
+        /*
+         * admin-ui.js, NOT admin.js — the name matters.
+         *
+         * WordPress finds a script's translations by hashing its path, and
+         * strips a ".min.js" suffix first so translations key off the
+         * unminified name. Core checks that suffix strictly (str_ends_with
+         * '.min.js', dot included). `wp i18n make-json` checks it loosely, on
+         * "min.js" alone — so for a file called admin.js it strips seven
+         * characters from "...dmin.js" and writes the JSON under a hash for
+         * "js/a.js". Core then looks up the hash for "js/admin.js", finds
+         * nothing, and every translated string in the file silently stays
+         * English. Any file ending in the letters "min.js" hits this.
+         */
+        wp_enqueue_script('slk-admin', SLK_PLUGIN_URL . 'js/admin-ui.js', ['jquery', 'wp-i18n'], SLK_VERSION, true);
         wp_localize_script('slk-admin', 'SLK', [
             'ajaxUrl'      => admin_url('admin-ajax.php'),
             'nonce'        => wp_create_nonce('slk_ajax'),
