@@ -228,6 +228,9 @@ class Slk_Base
             'slk-font',
             'https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap',
             [],
+            // No version on purpose: this is Google's URL, not ours, and
+            // appending ?ver= to it would only break their cache key.
+            // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
             null
         );
         wp_enqueue_style('slk-admin', SLK_PLUGIN_URL . self::asset('css/admin.css'), [], SLK_VERSION);

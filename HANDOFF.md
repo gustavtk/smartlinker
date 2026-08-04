@@ -283,6 +283,63 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## PHP 8.4 and WordPress standards audit (v0.49.1)
+
+**PHP 8.4: clean, after fixing 7 real deprecations.**
+
+`get_edit_post_link()` returns **null** — not `''` — when a post is deleted,
+has no editor, or the user cannot edit it. Passing that to `esc_url()` is a
+deprecation on 8.4 (`ltrim(): Passing null to parameter #1`), which on a site
+running WP_DEBUG means a log line per affected row of every report. Seven
+templates did it. All 25 call sites now go through `Slk_Admin::edit_url()`,
+which keeps the capability check and only removes the null. (Not to be
+confused with `Slk_Schedule::edit_url()`, which builds the URL by hand
+*because* the capability check is wrong under cron.)
+
+**How they were missed before, which is the more useful lesson.** Two flaws in
+my own earlier checks:
+1. The demo ran with `WP_DEBUG = false` the whole time, so every "no PHP
+   notices" claim in this file before v0.49.1 was weaker than it read.
+2. My first deprecation sweep filtered the error handler to files containing
+   "smartlinker" — but these fire inside `wp-includes/formatting.php`, called
+   *from* the plugin. The fix is to walk `debug_backtrace()` for the first
+   plugin frame instead of matching on the erroring file.
+
+Re-verified with `WP_DEBUG` on and `E_ALL`: 27 admin pages over HTTP and every
+`render_page()` invoked directly — zero deprecations, warnings or notices.
+`PHPCompatibilityWP` at `testVersion 7.4-` reports nothing.
+
+**WordPress Coding Standards: audited, deliberately not adopted wholesale.**
+
+The full `WordPress` standard reports ~34,000 issues, of which ~33,800 are
+auto-fixable formatting — 14,000 "use tabs not spaces" and 10,000
+"`foo( $x )` not `foo($x)`". That is WordPress's house style; this codebase is
+written consistently in a PSR-12 style. Reformatting 24,000 lines to settle a
+whitespace preference would give an unreviewable diff and real regression risk
+for nothing a user can perceive.
+
+`phpcs.xml.dist` therefore runs the rules that catch defects — escaping, SQL
+preparation, nonces, sanitisation, PHP compatibility — and documents every
+exclusion. `composer lint`, and it also runs in `bin/test.sh` as **advisory,
+not a gate**: everything it still reports was reviewed by hand and is a
+pattern PHPCS cannot follow. It earns its place because a *change* in the
+count means new code did something old code did not.
+
+**What the audit actually found, checked line by line:**
+
+| | |
+|---|---|
+| XSS | **none.** All 59 flags are helpers that escape internally — `Slk_Admin::help`/`toggle`, `slk_delta`, `Slk_History::spark`/`chart` — each verified. |
+| SQL injection | **none.** Every interpolation is a `$wpdb->prefix` table name or an `array_fill()` placeholder string passed to `prepare()`. Every dynamic `WHERE`/`ORDER BY` is a hardcoded string, a map lookup with fallback, or a two-value ternary. |
+| CSRF | **none.** Every request-reachable handler that writes verifies a nonce — asserted mechanically, not by eye. |
+| Globals clobbered | **none.** Templates are `include`d inside `render_page()` methods, so `$post` and friends are method-locals. Proven with a sentinel on the global. |
+
+Two deliberate decisions are now documented at their sites rather than left to
+look like oversights: `wp_redirect()` (not `wp_safe_redirect()`) in the URL
+Changer, because an admin may legitimately redirect to another site; and the
+Google Fonts enqueue with no version, because appending `?ver=` to someone
+else's CDN URL only breaks their cache key.
+
 ## JavaScript tests (`tests/js/`, v0.49.0)
 
 22 tests, no browser, no npm install, no build step — `node:test` is built

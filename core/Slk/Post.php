@@ -81,7 +81,7 @@ class Slk_Post
             // And drop what WordPress cached along the way.
             //
             // This is not belt-and-braces, it is the larger half of the fix.
-            // A callback that calls get_permalink() or get_edit_post_link()
+            // A callback that calls get_permalink() or Slk_Admin::edit_url()
             // — which the placement report does, for every row — makes
             // WordPress load that post into its in-memory object cache,
             // content and all. That cache is never trimmed inside a request.

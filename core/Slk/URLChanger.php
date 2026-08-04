@@ -226,6 +226,20 @@ class Slk_URLChanger
                     && self::same_host($r->new_url)) {
                     return;
                 }
+                /*
+                 * wp_redirect, not wp_safe_redirect, and deliberately so.
+                 *
+                 * This feature exists to repoint a URL that content has moved
+                 * away from, and "moved" sometimes means to another site.
+                 * wp_safe_redirect() would silently rewrite any off-site
+                 * destination to wp-admin, quietly breaking the redirect the
+                 * admin explicitly asked for.
+                 *
+                 * The destination is not visitor input: it comes from the
+                 * plugin's own table, writable only with manage_categories,
+                 * behind a nonce, and stored through esc_url_raw().
+                 */
+                // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
                 wp_redirect($r->new_url, 301);
                 exit;
             }

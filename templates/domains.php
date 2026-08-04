@@ -77,7 +77,7 @@ foreach ($rows as $r) {
                     <td><strong><?php echo esc_html($d->post_title ?: '(no title)'); ?></strong></td>
                     <td><?php echo esc_html($d->anchor ?: '—'); ?></td>
                     <td style="word-break:break-all;"><?php echo esc_html($d->url); ?></td>
-                    <td><a class="button button-small" href="<?php echo esc_url(get_edit_post_link($d->post_id)); ?>"><?php esc_html_e('Edit', 'smartlinker'); ?></a></td>
+                    <td><a class="button button-small" href="<?php echo esc_url(Slk_Admin::edit_url($d->post_id)); ?>"><?php esc_html_e('Edit', 'smartlinker'); ?></a></td>
                 </tr>
             <?php endforeach; endif; ?>
             </tbody>

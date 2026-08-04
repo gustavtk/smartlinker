@@ -209,10 +209,10 @@ class Slk_Schedule
      * ------------------------------------------------------------------ */
 
     /**
-     * Editor URL built by hand rather than via get_edit_post_link().
+     * Editor URL built by hand rather than via Slk_Admin::edit_url().
      *
      * The digest is composed under cron, where there is no logged-in user, so
-     * get_edit_post_link() fails its capability check and returns null — every
+     * Slk_Admin::edit_url() fails its capability check and returns null — every
      * link in the email would be dead. The recipient's own session decides
      * access when they click, which is where that check belongs.
      */

@@ -417,7 +417,7 @@ class Slk_Error
             'url'         => $link->url,
             'engine'      => $engine,
             'post_title'  => get_the_title($link->post_id),
-            'edit'        => get_edit_post_link($link->post_id, 'raw'),
+            'edit'        => Slk_Admin::edit_url($link->post_id, 'raw'),
             'suggestions' => $suggestions,
         ]);
     }

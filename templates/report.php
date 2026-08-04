@@ -136,7 +136,7 @@ $filters = [
                 <td class="slk-td-title">
                     <button type="button" class="slk-expand" aria-label="<?php esc_attr_e('Show links', 'smartlinker'); ?>">+</button>
                     <div class="slk-title-wrap">
-                        <a class="slk-title-link" href="<?php echo esc_url(get_edit_post_link($row->ID)); ?>"><?php echo esc_html($row->post_title ?: '(no title)'); ?></a>
+                        <a class="slk-title-link" href="<?php echo esc_url(Slk_Admin::edit_url($row->ID)); ?>"><?php echo esc_html($row->post_title ?: '(no title)'); ?></a>
                         <div class="slk-title-meta">
                             <span class="slk-chip"><?php echo esc_html($row->post_type); ?></span>
                             <?php if ($is_money) : ?><span class="slk-chip slk-chip-money">★ <?php esc_html_e('Money page', 'smartlinker'); ?></span><?php endif; ?>
@@ -155,7 +155,7 @@ $filters = [
                 <td><span class="slk-metric"><?php echo esc_html(number_format_i18n($row->external)); ?></span></td>
                 <td><span class="slk-metric"><?php echo esc_html(number_format_i18n($row->clicks)); ?></span></td>
                 <td class="slk-td-actions">
-                    <a class="slk-icon-btn" title="<?php esc_attr_e('Edit', 'smartlinker'); ?>" href="<?php echo esc_url(get_edit_post_link($row->ID)); ?>"><span class="dashicons dashicons-edit"></span></a>
+                    <a class="slk-icon-btn" title="<?php esc_attr_e('Edit', 'smartlinker'); ?>" href="<?php echo esc_url(Slk_Admin::edit_url($row->ID)); ?>"><span class="dashicons dashicons-edit"></span></a>
                     <a class="slk-icon-btn" title="<?php esc_attr_e('View', 'smartlinker'); ?>" href="<?php echo esc_url(get_permalink($row->ID)); ?>" target="_blank" rel="noopener"><span class="dashicons dashicons-visibility"></span></a>
                     <a class="slk-icon-btn" title="<?php esc_attr_e('Add inbound links', 'smartlinker'); ?>" href="<?php echo esc_url(admin_url('admin.php?page=smartlinker_inbound')); ?>"><span class="dashicons dashicons-migrate"></span></a>
                 </td>

@@ -147,6 +147,29 @@ class Slk_Admin
     /**
      * Helper: render a toggle switch bound to a checkbox input.
      */
+    /**
+     * An editor URL for a post, guaranteed to be a string.
+     *
+     * get_edit_post_link() returns NULL — not an empty string — when the post
+     * has been deleted, when its type has no editor, or when the current user
+     * cannot edit it. Passing that straight to esc_url() is a deprecation on
+     * PHP 8.4 ("Passing null to parameter #1 of type string"), which on a site
+     * running with WP_DEBUG on means a log line for every affected row of
+     * every report.
+     *
+     * The capability check is kept — the caller still gets nothing back for a
+     * post they may not edit, which is correct. Only the null is removed.
+     *
+     * Not to be confused with Slk_Schedule::edit_url(), which builds the URL
+     * by hand precisely BECAUSE the capability check is wrong under cron.
+     *
+     * @return string the edit URL, or '' when there is not one
+     */
+    public static function edit_url($post_id, $context = '')
+    {
+        return (string) get_edit_post_link((int) $post_id, $context);
+    }
+
     public static function toggle($name, $checked, $value = '1')
     {
         return '<label class="slk-switch"><input type="checkbox" name="' . esc_attr($name) . '" value="' . esc_attr($value) . '" '

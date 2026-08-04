@@ -141,7 +141,7 @@ $filtered = $filters['post'] || $filters['action'] || $filters['state'];
                     </td>
                     <td>
                         <?php if ($post) : ?>
-                            <a href="<?php echo esc_url(get_edit_post_link($row->post_id)); ?>"><?php echo esc_html(get_the_title($row->post_id)); ?></a>
+                            <a href="<?php echo esc_url(Slk_Admin::edit_url($row->post_id)); ?>"><?php echo esc_html(get_the_title($row->post_id)); ?></a>
                         <?php else : ?>
                             <span class="slk-metric-zero"><?php esc_html_e('deleted', 'smartlinker'); ?></span>
                         <?php endif; ?>
