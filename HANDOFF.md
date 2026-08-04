@@ -283,6 +283,33 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## CI (`.github/workflows/ci.yml`)
+
+Everything the project relies on used to run only when somebody remembered a
+command. Those guards had already caught real problems — a stale minified
+build, a `DELETE ... LIMIT` that fails silently on SQLite, seven PHP 8.4
+deprecations — they just were not wired to anything. Now they run on every
+push and pull request.
+
+Four jobs:
+
+- **php** — matrix across **7.4, 8.0, 8.1, 8.2, 8.3, 8.4**. Lints every file
+  then runs PHPUnit. This is what finally makes `Requires PHP: 7.4` a tested
+  claim rather than a declared one; nothing in the plugin or the tests uses
+  anything past 7.4, so the floor should hold. `fail-fast: false`, so one old
+  version breaking does not hide the others.
+- **javascript** — Node 18 and 22 (`node:test` needs 18+).
+- **standards** — PHPCS, `continue-on-error: true`. Advisory for the reason
+  given in `phpcs.xml.dist`: every remaining finding is a pattern PHPCS cannot
+  follow, and a permanently-red gate teaches people to skip it. What matters
+  is the count *changing*.
+- **assets** — re-checks `assets.json` against the sources independently of
+  PHPUnit, so a stale minified build names itself in the CI summary instead of
+  hiding inside a test run.
+
+No secrets, no network beyond Composer, `permissions: contents: read`, and
+concurrency cancellation so a newer push supersedes an in-flight run.
+
 ## PHP 8.4 and WordPress standards audit (v0.49.1)
 
 **PHP 8.4: clean, after fixing 7 real deprecations.**
