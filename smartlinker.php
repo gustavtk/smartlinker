@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SmartLinker
  * Plugin URI:  https://example.com/smartlinker
- * Version:     0.46.1
+ * Version:     0.47.0
  * Description: Build smart internal links to and from your content, auto-link keywords, track clicks, and report on your site's internal linking.
  * Author:      SmartLinker
  * Text Domain: smartlinker
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
     exit; // No direct access.
 }
 
-define('SLK_VERSION', '0.46.1');
+define('SLK_VERSION', '0.47.0');
 define('SLK_PLUGIN_FILE', __FILE__);
 define('SLK_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('SLK_PLUGIN_DIR', plugin_dir_path(__FILE__));
