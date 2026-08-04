@@ -1,0 +1,2290 @@
+/* SmartLinker admin styles */
+
+/* ============================================================
+   Brand palette — a violet → blue gradient used site-wide.
+   Change these four values to re-theme the whole plugin.
+   ============================================================ */
+:root {
+    --slk-grad-from: #a855f7;   /* violet */
+    --slk-grad-to:   #4f7bf7;   /* blue   */
+    --slk-primary:      #7c5cf0;
+    --slk-primary-dark: #6742dd;
+    --slk-primary-deep: #5b21b6;
+    --slk-tint:          #f0eafe;  /* active/selected background */
+    --slk-tint-soft:     #f7f3ff;  /* callouts, banners          */
+    --slk-tint-hover:    #faf7ff;  /* row hover                  */
+    --slk-tint-border:   #e3d9fb;
+    --slk-tint-border-2: #cbb9f5;
+    --slk-on-dark:       #b79bff;  /* accents on the dark header */
+    /* Neutral, deliberately off-brand: a locked control must read as "off",
+       not as "selected". Re-theming should not tint these. */
+    /* Suggestion panel palette. Deliberately flat blue rather than the
+       violet gradient: this surface is dense, decision-heavy UI where a
+       gradient competes with the confidence colours for attention. */
+    --slk-sg-accent:     #1a73e8;
+    --slk-sg-accent-dk:  #1765cc;
+    --slk-sg-surface:    #f8f9fa;
+    --slk-sg-border:     #e4e7eb;
+    --slk-sg-ink:        #1f2733;
+    --slk-sg-ink-soft:   #6b7280;
+    --slk-sg-good-bg:    #d6f5e3;
+    --slk-sg-good-ink:   #0f7a3d;
+    --slk-sg-warn-bg:    #fdf0d5;
+    --slk-sg-warn-ink:   #96690a;
+    --slk-sg-bad-bg:     #fde4e4;
+    --slk-sg-bad-ink:    #a32020;
+    --slk-sg-chip-bg:    #e8f0fe;
+    --slk-sg-chip-ink:   #1a56c4;
+    --slk-muted:         #f2f2f5;  /* locked control surface     */
+    --slk-muted-border:  #dcdce4;
+    --slk-muted-text:    #6b6b78;
+    /* Categorical palette for the cluster treemap. Distinct hues, matched
+       lightness so no tile shouts louder than its size warrants. */
+    --slk-cat-1: #3b82f6;
+    --slk-cat-2: #10b981;
+    --slk-cat-3: #a855f7;
+    --slk-cat-4: #f59e0b;
+    --slk-cat-5: #06b6d4;
+    --slk-cat-6: #ec4899;
+    --slk-cat-7: #6366f1;
+    --slk-cat-8: #ef4444;
+    /* Heatmap scale — how well a cluster is linked together. */
+    --slk-heat-bad:  #e5484d;
+    --slk-heat-mid:  #e8a33d;
+    --slk-heat-good: #21a366;
+    --slk-gradient: linear-gradient(135deg, var(--slk-grad-from) 0%, var(--slk-grad-to) 100%);
+    --slk-focus-ring: rgba(124, 92, 240, .3);
+    /* One radius for every button-like control, so edges match everywhere. */
+    --slk-radius-btn: 6px;
+}
+
+/* ============================================================
+   App shell (Perfmatters-style: in-page sidebar + dark header)
+   ============================================================ */
+#wpcontent { padding-left: 0; }
+.slk-app {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin: 20px 20px 40px 0;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #1f2430;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.slk-app * { box-sizing: border-box; }
+.slk-app :is(h1, h2, h3) { font-family: inherit; }
+
+/* Sidebar */
+.slk-nav {
+    flex: 0 0 244px;
+    width: 244px;
+    background: #fff;
+    border: 1px solid #e4e6eb;
+    border-radius: 14px;
+    padding: 16px 12px;
+    position: sticky;
+    top: 46px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+.slk-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px 14px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #f0f0f1;
+}
+.slk-brand .slk-logo { width: 30px; height: 30px; border-radius: 8px; }
+.slk-brand span { font-size: 21px; font-weight: 700; letter-spacing: -.02em; color: #111827; }
+.slk-nav a {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    margin-bottom: 2px;
+    border-radius: 9px;
+    color: #1f2430;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    transition: background .12s, color .12s;
+}
+.slk-nav a .dashicons { color: #7c8698; font-size: 19px; width: 19px; height: 19px; }
+.slk-nav a:hover { background: #f3f4f6; }
+.slk-nav a.active {
+    background: var(--slk-tint);
+    color: var(--slk-primary-deep);
+    font-weight: 600;
+}
+.slk-nav a.active .dashicons { color: var(--slk-primary); }
+
+/* Main column */
+.slk-main { flex: 1 1 auto; min-width: 0; }
+.slk-topbar {
+    background: #1f2430;
+    border-bottom: 3px solid transparent;
+    border-image: var(--slk-gradient) 1;
+    color: #fff;
+    border-radius: 14px 14px 0 0;
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.slk-topbar-title { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 700; }
+.slk-topbar-title .dashicons { font-size: 24px; width: 24px; height: 24px; color: var(--slk-on-dark); }
+.slk-ver { color: #9aa4b2; font-size: 13px; font-weight: 500; }
+.slk-panel {
+    background: #fff;
+    border: 1px solid #e4e6eb;
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+    padding: 26px 30px 32px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+
+/* SPA loading state */
+.slk-main { position: relative; }
+.slk-main.slk-loading { opacity: .55; pointer-events: none; transition: opacity .12s; }
+.slk-main.slk-loading::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    width: 20px;
+    height: 20px;
+    border: 2.5px solid rgba(255,255,255,.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: slk-spin .7s linear infinite;
+}
+@keyframes slk-spin { to { transform: rotate(360deg); } }
+
+/* Fold existing page templates into the panel */
+.slk-panel .wrap { margin: 0; max-width: none; }
+.slk-panel .wrap > h1:first-child { display: none; }   /* header shows the title */
+.slk-panel .description { color: #6b7280; }
+.slk-panel h2 { font-size: 15px; font-weight: 700; margin: 26px 0 10px; color: #111827; }
+.slk-toolbar { margin: 0 0 18px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Setting rows */
+.slk-section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #8a94a6;
+    font-weight: 700;
+    margin: 26px 0 4px;
+}
+.slk-section-title:first-child { margin-top: 6px; }
+.slk-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 15px 2px;
+    border-bottom: 1px solid #f0f0f1;
+}
+.slk-row:last-child { border-bottom: none; }
+.slk-row-main { min-width: 0; }
+.slk-row-label { font-size: 14.5px; font-weight: 600; color: #1f2937; }
+.slk-row-desc { font-size: 13px; color: #6b7280; margin-top: 3px; max-width: 620px; }
+.slk-row-control { flex: 0 0 auto; }
+.slk-row-control input[type="text"],
+.slk-row-control input[type="number"],
+.slk-row-control input[type="url"],
+.slk-row-control input[type="password"] { min-width: 260px; }
+.slk-row-control.slk-wide { flex: 1 1 340px; }
+.slk-row-control.slk-wide input { width: 100%; }
+
+/* Toggle switch */
+.slk-switch { position: relative; display: inline-block; width: 50px; height: 28px; flex: 0 0 auto; }
+.slk-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.slk-slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: #cfd4dc;
+    border-radius: 999px;
+    transition: background .18s;
+}
+.slk-slider::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    transition: transform .18s;
+}
+.slk-switch input:checked + .slk-slider { background: var(--slk-gradient); }
+.slk-switch input:checked + .slk-slider::before { transform: translateX(22px); }
+.slk-switch input:focus-visible + .slk-slider { box-shadow: 0 0 0 3px var(--slk-focus-ring); }
+
+/* Toggle grid (e.g. post types) */
+.slk-toggle-grid { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 4px 0 2px; }
+.slk-toggle-grid .slk-row { border: none; padding: 8px 0; gap: 12px; min-width: 200px; }
+
+@media (max-width: 900px) {
+    .slk-app { flex-direction: column; margin-right: 12px; }
+    .slk-nav { width: 100%; flex-basis: auto; position: static; }
+}
+
+/* ---- Deep styling: tables, forms, buttons inside the panel ---- */
+
+/* Tables — the same modern treatment for WP list tables and our own. */
+.slk-panel .wp-list-table {
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    box-shadow: none;
+    margin-top: 6px;
+}
+.slk-panel .wp-list-table thead th,
+.slk-panel .wp-list-table tfoot th {
+    background: #f7f8fa;
+    color: #6b7280;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 13px 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+.slk-panel .wp-list-table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f1f3;
+    font-size: 14px;
+    vertical-align: middle;
+    color: #313947;
+}
+.slk-panel .wp-list-table tbody tr:last-child td { border-bottom: none; }
+.slk-panel .wp-list-table.striped > tbody > :nth-child(odd) { background: transparent; }
+.slk-panel .wp-list-table tbody tr { transition: background .12s; }
+.slk-panel .wp-list-table tbody tr:hover td { background: var(--slk-tint-hover); }
+.slk-panel .wp-list-table tbody tr.slk-orphan td { background: #fffaf9; }
+.slk-panel .wp-list-table tbody tr.slk-orphan:hover td { background: #fff4f2; }
+.slk-panel .wp-list-table a { color: var(--slk-primary); text-decoration: none; }
+.slk-panel .wp-list-table a:hover { text-decoration: underline; }
+.slk-panel .wp-list-table td strong { color: #1f2937; }
+
+/* Card-style forms (replaces the bare .form-table look) */
+.slk-form-card {
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 6px 0 22px;
+}
+.slk-form-card > h2:first-child { margin-top: 0; }
+.slk-panel .form-table { margin-top: 0; }
+.slk-panel .form-table th {
+    padding: 14px 20px 14px 0;
+    width: 220px;
+    vertical-align: top;
+}
+.slk-panel .form-table td { padding: 12px 0; }
+.slk-inline-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 0; }
+
+/* Empty state */
+.slk-empty-state {
+    text-align: center;
+    padding: 42px 20px;
+    color: #8a94a6;
+    background: #fff;
+    border: 1px dashed #dfe3e9;
+    border-radius: 12px;
+}
+.slk-empty-state .dashicons { font-size: 34px; width: 34px; height: 34px; color: #c3cad6; margin-bottom: 8px; }
+.slk-empty-state strong { display: block; color: #4b5563; font-size: 15px; margin-bottom: 4px; }
+
+/* Page intro line */
+.slk-intro { color: #6b7280; font-size: 14px; margin: 0 0 18px; max-width: 900px; }
+
+/* Stacked form fields (label above control, breathing room below) */
+.slk-field { margin-bottom: 18px; }
+.slk-field:last-child { margin-bottom: 0; }
+.slk-field-label {
+    display: block;
+    font-size: 13px; font-weight: 600; color: #1f2937;
+    margin-bottom: 7px;
+}
+.slk-panel .slk-field select,
+.slk-panel .slk-field input[type="text"],
+.slk-panel .slk-field input[type="url"] { min-width: 420px; max-width: 100%; }
+.slk-field-hint { color: #6b7280; font-size: 12.5px; margin: 7px 0 0; }
+.slk-field-actions {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    margin-top: 20px; padding-top: 18px; border-top: 1px solid #f0f1f3;
+}
+
+/* Button loading spinner */
+.slk-panel .button.slk-btn-loading { position: relative; color: transparent !important; pointer-events: none; }
+.slk-panel .button.slk-btn-loading::after {
+    content: "";
+    position: absolute; top: 50%; left: 50%;
+    width: 14px; height: 14px; margin: -7px 0 0 -7px;
+    border: 2px solid rgba(255,255,255,.45);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: slk-spin .6s linear infinite;
+}
+.slk-panel .button.slk-btn-loading:not(.button-primary)::after {
+    border-color: rgba(0,0,0,.2); border-top-color: #6b7280;
+}
+
+/* Target-keyword inline results row: collapse until it has content */
+.slk-tk-results:empty { display: none; }
+.slk-tk-results { padding: 14px 18px; }
+tr.slk-detail-row:has(.slk-tk-results:empty) { display: none; }
+
+/* Toast */
+.slk-toast {
+    position: fixed;
+    right: 24px; bottom: 24px;
+    z-index: 100000;
+    display: flex; align-items: center; gap: 10px;
+    background: #1f2430; color: #fff;
+    padding: 13px 18px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.22);
+    font-size: 14px; font-weight: 500;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 420px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .25s ease, transform .25s ease;
+}
+.slk-toast.show { opacity: 1; transform: translateY(0); }
+.slk-toast .dashicons { font-size: 19px; width: 19px; height: 19px; flex: 0 0 auto; }
+.slk-toast-success .dashicons { color: #4ade80; }
+.slk-toast-error { background: #7f1d1d; }
+.slk-toast-error .dashicons { color: #fecaca; }
+
+/* Form fields */
+.slk-panel input[type="text"],
+.slk-panel input[type="number"],
+.slk-panel input[type="url"],
+.slk-panel input[type="password"],
+.slk-panel input[type="email"],
+.slk-panel input[type="search"],
+.slk-panel select,
+.slk-panel textarea {
+    border: 1px solid #d6dae1;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.4;
+    background: #fff;
+    color: #1f2430;
+    box-shadow: none;
+    transition: border-color .12s, box-shadow .12s;
+    min-height: 38px;
+}
+.slk-panel select { padding-right: 28px; }
+.slk-panel input:focus,
+.slk-panel select:focus,
+.slk-panel textarea:focus {
+    border-color: var(--slk-primary);
+    box-shadow: 0 0 0 3px var(--slk-focus-ring);
+    outline: none;
+}
+.slk-panel input[type="file"] {
+    font-size: 13px;
+    padding: 7px 10px;
+    border: 1px dashed #cdd3dc;
+    border-radius: 8px;
+    background: #fafbfc;
+}
+.slk-panel .form-table th { font-weight: 600; color: #1f2937; font-size: 14px; }
+.slk-panel .code, .slk-panel pre { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace; }
+
+/* Buttons — flex so an icon and its label always sit on one line,
+   vertically centred, whatever the surrounding layout. */
+.slk-panel .button,
+.slk-metabox .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.slk-panel .button .dashicons,
+.slk-metabox .button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.slk-panel .button {
+    border-radius: var(--slk-radius-btn);
+    border: 1px solid #d6dae1;
+    background: #fff;
+    color: #374151;
+    font-weight: 600;
+    font-size: 13px;
+    height: auto;
+    padding: 7px 16px;
+    line-height: 1.5;
+    transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.slk-panel .button:hover { background: #f3f4f6; border-color: #c3c9d2; color: #1f2937; }
+.slk-panel .button-primary,
+.slk-metabox .button-primary {
+    background: linear-gradient(100deg, var(--slk-grad-from) 0%, var(--slk-grad-to) 100%);
+    border-color: transparent;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    box-shadow: 0 1px 2px rgba(124,92,240,.3);
+}
+.slk-panel .button-primary:hover,
+.slk-metabox .button-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 3px 10px rgba(124,92,240,.34);
+    transform: translateY(-1px);
+}
+.slk-panel .button-primary:active,
+.slk-metabox .button-primary:active { transform: translateY(0); }
+.slk-panel .button-primary:hover {
+    background: var(--slk-gradient);
+    filter: brightness(1.07);
+    border-color: transparent;
+    color: #fff;
+}
+.slk-panel .button-primary:focus { box-shadow: 0 0 0 3px var(--slk-focus-ring); }
+.slk-panel .button.button-small { font-size: 12px; padding: 4px 10px; }
+.slk-panel .button-hero { padding: 11px 26px; font-size: 14px; }
+
+/* Notices inside the panel */
+.slk-panel .notice {
+    border-radius: 8px;
+    border-left-width: 4px;
+    margin: 4px 0 18px;
+    box-shadow: none;
+}
+
+/* Pill badges (scores, statuses) */
+.slk-panel .slk-score { font-family: inherit; }
+
+/* Description helper */
+.slk-panel p.description { font-size: 13px; margin: 6px 0 14px; }
+
+/* ---- Report UI patterns: stat tiles, tabs, badges, rank lists ---- */
+
+.slk-stat-tiles { display: flex; flex-wrap: wrap; gap: 14px; margin: 16px 0 20px; }
+.slk-tile {
+    flex: 0 1 auto;
+    min-width: 150px;
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.slk-tile-num { font-size: 27px; font-weight: 700; line-height: 1.1; color: #111827; letter-spacing: -.02em; }
+.slk-tile-label { font-size: 12.5px; color: #6b7280; font-weight: 500; }
+.slk-tile-bad .slk-tile-num { color: #dc2626; }
+.slk-tile-warn .slk-tile-num { color: #d97706; }
+.slk-tile-good .slk-tile-num { color: #16a34a; }
+
+/* Filter tabs */
+.slk-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 4px 0 16px;
+    border-bottom: 1px solid #e8eaed;
+    padding-bottom: 10px;
+}
+.slk-tab {
+    padding: 7px 14px;
+    border-radius: var(--slk-radius-btn);
+    font-size: 13px;
+    font-weight: 600;
+    color: #4b5563;
+    text-decoration: none;
+    background: #f3f4f6;
+    transition: background .12s, color .12s;
+}
+.slk-tab:hover { background: #e7e9ee; color: #1f2937; }
+.slk-tab.active { background: var(--slk-gradient); color: #fff; }
+
+/* Underline tab variant (settings) */
+.slk-tabs-underline {
+    gap: 4px;
+    border-bottom: 1px solid #e4e6eb;
+    padding-bottom: 0;
+    margin-bottom: 20px;
+}
+.slk-tabs-underline .slk-tab {
+    background: none;
+    border-radius: 0;
+    padding: 11px 16px;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: .04em;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+.slk-tabs-underline .slk-tab:hover { background: none; color: #1f2937; }
+.slk-tabs-underline .slk-tab.active {
+    background: none;
+    color: var(--slk-primary);
+    border-bottom-color: var(--slk-primary);
+}
+
+/* Range slider */
+.slk-range { display: flex; align-items: center; gap: 12px; }
+.slk-range input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 220px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--slk-gradient);
+    outline: none;
+    padding: 0;
+    min-height: 0;
+    border: none;
+}
+.slk-range input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--slk-grad-from);
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    cursor: pointer;
+}
+.slk-range-val { font-weight: 700; font-size: 13px; color: #1f2937; white-space: nowrap; }
+
+/* Danger button */
+.slk-panel .button.slk-btn-danger {
+    background: #fff;
+    border-color: #f0b8b8;
+    color: #b91c1c;
+}
+.slk-panel .button.slk-btn-danger:hover { background: #fef2f2; border-color: #e79a9a; color: #991b1b; }
+
+/* Status badges */
+.slk-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    background: #eef1f5;
+    color: #475569;
+}
+.slk-badge-bad { background: #fee2e2; color: #b91c1c; }
+.slk-badge-warn { background: #fef3c7; color: #92400e; }
+.slk-badge-good { background: #dcfce7; color: #15803d; }
+
+/* Callouts */
+.slk-callout {
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-left: 4px solid #9aa4b2;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 12px 0 18px;
+    font-size: 14px;
+}
+.slk-callout-bad { border-left-color: #dc2626; background: #fef6f6; }
+.slk-callout-good { border-left-color: #16a34a; background: #f4fdf7; }
+.slk-callout-warn { border-left-color: #d97706; background: #fffbf3; }
+
+/* Ranked list (link clicks) */
+.slk-rank-list { margin-top: 6px; }
+.slk-rank-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    margin-bottom: 9px;
+}
+.slk-rank-num {
+    flex: 0 0 auto;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--slk-gradient);
+    border-radius: 8px;
+    padding: 5px 11px;
+}
+.slk-rank-main { flex: 1 1 auto; min-width: 0; }
+.slk-rank-title { font-weight: 600; font-size: 14.5px; color: #1f2937; }
+.slk-rank-sub { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+.slk-rank-metric { flex: 0 0 auto; font-weight: 700; font-size: 14px; color: #111827; }
+
+.slk-panel .wp-list-table tbody tr.slk-row-active td { background: var(--slk-tint); }
+
+/* ---- Modern data table (Links Report) ---- */
+
+.slk-table-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin: 18px 0 12px;
+}
+.slk-toolbar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0; }
+.slk-toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
+.slk-search { position: relative; display: inline-flex; align-items: center; }
+.slk-search .dashicons {
+    position: absolute; left: 10px; color: #9aa4b2; font-size: 17px; width: 17px; height: 17px; pointer-events: none;
+}
+.slk-panel .slk-search input[type="search"] { padding-left: 34px; min-width: 240px; }
+.slk-table-meta { font-size: 13px; color: #6b7280; margin: 0 0 10px; }
+
+.slk-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 14px;
+}
+.slk-table thead th {
+    background: #f7f8fa;
+    border-bottom: 1px solid #e8eaed;
+    padding: 0;
+    text-align: left;
+    white-space: nowrap;
+}
+.slk-table thead th a {
+    display: flex; align-items: center; gap: 6px;
+    padding: 13px 16px;
+    color: #6b7280; text-decoration: none;
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+}
+.slk-table thead th a:hover { color: var(--slk-primary); }
+.slk-table thead th.active a { color: var(--slk-primary); }
+.slk-table .slk-arrow { font-size: 9px; opacity: .8; }
+.slk-table .slk-th-actions {
+    padding: 13px 16px; text-align: right;
+    color: #6b7280; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+}
+/* Help tooltip — a "?" that explains a setting on hover/focus. */
+.slk-help {
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 15px; height: 15px; border-radius: 50%;
+    background: #cdd3dc; color: #fff;
+    font-size: 10px; font-weight: 700; font-style: normal;
+    line-height: 1; text-transform: none; letter-spacing: 0;
+    cursor: help; margin-left: 6px;
+    vertical-align: middle;
+    transition: background .12s;
+}
+.slk-help:hover, .slk-help:focus { background: var(--slk-primary); outline: none; }
+
+/* Explanation panel — roomy enough for a real multi-paragraph answer,
+   shown beside the "?" so it never covers the setting you are reading. */
+.slk-help-bubble {
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-6px);
+    width: 440px;
+    max-width: min(440px, 60vw);
+    background: #2c313c;
+    color: #f3f4f6;
+    padding: 20px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0;
+    text-transform: none;
+    text-align: left;
+    white-space: normal;
+    box-shadow: 0 12px 34px rgba(0,0,0,.28);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .16s ease, transform .16s ease;
+    z-index: 1000;
+    cursor: default;
+}
+/* Arrow pointing back at the "?" */
+.slk-help-bubble::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    margin-top: -7px;
+    border: 7px solid transparent;
+    border-right-color: #2c313c;
+}
+.slk-help-p { display: block; }
+.slk-help-p + .slk-help-p { margin-top: 15px; }
+
+.slk-help:hover .slk-help-bubble,
+.slk-help:focus .slk-help-bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Flipped to the left when there isn't room on the right (set by JS). */
+.slk-help.slk-help-flip .slk-help-bubble {
+    left: auto;
+    right: calc(100% + 14px);
+    transform: translateY(-50%) translateX(6px);
+}
+.slk-help.slk-help-flip .slk-help-bubble::before {
+    right: auto;
+    left: 100%;
+    border-right-color: transparent;
+    border-left-color: #2c313c;
+}
+.slk-help.slk-help-flip:hover .slk-help-bubble,
+.slk-help.slk-help-flip:focus .slk-help-bubble { transform: translateY(-50%) translateX(0); }
+
+.slk-table tbody td { padding: 13px 16px; border-bottom: 1px solid #f0f1f3; vertical-align: middle; }
+.slk-table tbody tr:last-child td { border-bottom: none; }
+.slk-table tbody tr.slk-tr:hover td { background: var(--slk-tint-hover); }
+.slk-table tbody tr.slk-tr-warn td { background: #fffaf9; }
+.slk-table tbody tr.slk-tr-warn:hover td { background: #fff4f2; }
+.slk-empty { text-align: center; color: #9aa4b2; padding: 34px 16px !important; }
+
+.slk-td-title { display: flex; align-items: flex-start; gap: 11px; }
+.slk-expand {
+    flex: 0 0 auto;
+    width: 22px; height: 22px; margin-top: 1px;
+    border: 1px solid #d9dee6; background: #fff; color: #6b7280;
+    border-radius: var(--slk-radius-btn); cursor: pointer; line-height: 1;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .12s, color .12s, border-color .12s;
+}
+.slk-expand:hover { background: var(--slk-tint); border-color: var(--slk-tint-border-2); color: var(--slk-primary); }
+.slk-expand.open { background: var(--slk-gradient); border-color: transparent; color: #fff; }
+.slk-title-wrap { min-width: 0; }
+.slk-title-link { font-weight: 600; color: #1f2937 !important; text-decoration: none; }
+.slk-title-link:hover { color: var(--slk-primary) !important; }
+.slk-title-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; font-size: 12px; color: #9aa4b2; }
+.slk-chip {
+    background: #eef1f5; color: #566072;
+    border-radius: 5px; padding: 2px 7px; font-size: 11px; font-weight: 600; text-transform: capitalize;
+}
+.slk-chip-money { background: #fef3c7; color: #92400e; text-transform: none; }
+
+.slk-metric {
+    display: inline-block; min-width: 34px; text-align: center;
+    padding: 4px 10px; border-radius: 7px;
+    background: #f2f4f7; color: #374151;
+    font-weight: 700; font-size: 13px;
+}
+.slk-metric-good { background: #dcfce7; color: #15803d; }
+.slk-metric-bad { background: #fee2e2; color: #b91c1c; }
+
+.slk-td-actions { text-align: right; white-space: nowrap; }
+.slk-icon-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; margin-left: 3px;
+    border-radius: var(--slk-radius-btn); color: #7c8698 !important; text-decoration: none;
+    transition: background .12s, color .12s;
+}
+.slk-icon-btn:hover { background: var(--slk-tint); color: var(--slk-primary) !important; }
+.slk-icon-btn .dashicons { font-size: 17px; width: 17px; height: 17px; }
+
+/* Expandable detail */
+.slk-detail-row td { background: #fbfcfd !important; padding: 0 !important; }
+.slk-detail { padding: 16px 18px 18px 49px; }
+.slk-detail-cols { display: flex; gap: 34px; flex-wrap: wrap; }
+.slk-detail-col { flex: 1 1 300px; min-width: 260px; }
+.slk-detail-col h4 {
+    margin: 0 0 8px; font-size: 11.5px; text-transform: uppercase;
+    letter-spacing: .04em; color: #8a94a6; font-weight: 700;
+}
+.slk-detail-list { margin: 0; padding: 0; list-style: none; }
+.slk-detail-list li {
+    padding: 7px 0; border-bottom: 1px solid #eef0f3;
+    font-size: 13px; display: flex; align-items: center; gap: 8px; justify-content: space-between;
+}
+.slk-detail-list li:last-child { border-bottom: none; }
+.slk-detail-anchor { color: #1f2937; font-weight: 600; }
+.slk-detail-sub { color: #9aa4b2; font-size: 12px; word-break: break-all; }
+.slk-detail-empty { color: #9aa4b2; font-size: 13px; font-style: italic; }
+
+/* Pagination */
+.slk-pagination { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 18px; }
+.slk-page-btn {
+    padding: 7px 14px; border: 1px solid #d9dee6; border-radius: var(--slk-radius-btn);
+    background: #fff; color: #374151 !important; text-decoration: none; font-size: 13px; font-weight: 600;
+}
+.slk-page-btn:hover { background: #f3f4f6; color: #1f2937 !important; }
+.slk-page-btn.disabled { opacity: .45; pointer-events: none; }
+.slk-page-info { font-size: 13px; color: #6b7280; }
+
+/* ---- Dashboard ---- */
+
+.slk-greeting { margin: 2px 0 18px; }
+.slk-greeting h2 { font-size: 22px; font-weight: 700; margin: 0 0 4px; color: #111827; }
+.slk-greeting p { color: #6b7280; margin: 0; font-size: 14px; }
+
+/* Recommendation cards */
+.slk-reco {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--slk-tint-soft);
+    border: 1px solid var(--slk-tint-border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+}
+.slk-reco-icon {
+    flex: 0 0 auto;
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--slk-gradient); color: #fff;
+    border-radius: 10px;
+    font-size: 19px;
+}
+.slk-reco-main { flex: 1 1 auto; min-width: 0; }
+.slk-reco-title { font-weight: 700; font-size: 15px; color: #111827; }
+.slk-reco-desc { color: #4b5563; font-size: 13.5px; margin: 3px 0 9px; }
+.slk-reco-foot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+/* Wide stat tiles with caption + progress. Grid keeps wrapped tiles from
+   stretching to full width the way a flex row would. */
+.slk-stat-tiles-wide {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+.slk-stat-tiles-wide .slk-tile { min-width: 0; }
+.slk-tile-cap {
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: #8a94a6; margin-bottom: 2px;
+}
+.slk-tile-num small { font-size: 15px; font-weight: 600; color: #6b7280; }
+.slk-progress { height: 5px; background: #e8eaed; border-radius: 999px; margin: 8px 0 6px; overflow: hidden; }
+.slk-progress span { display: block; height: 100%; background: var(--slk-gradient); border-radius: 999px; }
+.slk-delta { font-size: 12.5px; font-weight: 600; color: #6b7280; }
+.slk-delta.slk-up { color: #16a34a; }
+.slk-delta.slk-down { color: #dc2626; }
+.slk-good { color: #16a34a; }
+.slk-bad { color: #dc2626; }
+.slk-warn { color: #d97706; }
+
+/* Block card (link distribution) */
+.slk-card-block {
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 6px 0 20px;
+}
+.slk-block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.slk-block-head h2 { margin: 0 0 12px; font-size: 17px; }
+.slk-dist-bar { display: flex; height: 34px; border-radius: 8px; overflow: hidden; background: #eef0f3; }
+.slk-dist-internal { background: var(--slk-gradient); }
+.slk-dist-external { background: #16a34a; }
+.slk-legend { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 14px; }
+.slk-legend-item { display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; }
+.slk-dot { width: 13px; height: 13px; border-radius: 4px; margin-top: 3px; flex: 0 0 auto; }
+.slk-dot-internal { background: var(--slk-gradient); }
+.slk-dot-external { background: #16a34a; }
+.slk-note {
+    margin-top: 14px; padding: 11px 14px;
+    background: var(--slk-tint-soft); border-left: 3px solid var(--slk-primary);
+    border-radius: 6px; font-size: 13.5px; color: #374151;
+}
+
+/* Score cards */
+.slk-score-cards { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px; }
+.slk-score-card {
+    flex: 1 1 200px; min-width: 200px;
+    background: #fff; border: 1px solid #e8eaed;
+    border-radius: 12px; padding: 18px 20px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 7px;
+}
+.slk-score-num { font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: -.02em; color: #111827; }
+.slk-score-num small { font-size: 16px; font-weight: 600; color: #9aa4b2; }
+.slk-score-card p { font-size: 13px; color: #6b7280; margin: 2px 0 6px; flex: 1 1 auto; }
+
+/* Two column footer */
+.slk-two-col { display: flex; flex-wrap: wrap; gap: 28px; }
+.slk-two-col > div { flex: 1 1 320px; min-width: 300px; }
+.slk-two-col h2 { margin-top: 0; }
+.slk-action {
+    display: flex; align-items: center; gap: 11px;
+    padding: 13px 16px; margin-bottom: 8px;
+    background: #fff; border: 1px solid #e8eaed; border-radius: var(--slk-radius-btn);
+    text-decoration: none; color: #1f2937; font-weight: 600; font-size: 14px;
+    transition: background .12s, border-color .12s;
+}
+.slk-action:hover { background: var(--slk-tint-hover); border-color: var(--slk-tint-border-2); color: var(--slk-primary-dark); }
+.slk-action .dashicons { color: var(--slk-primary); }
+.slk-feature {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 14px 16px; margin-bottom: 8px;
+    background: #fff; border: 1px solid #e8eaed; border-radius: 10px;
+}
+.slk-feature-main { min-width: 0; }
+
+/* ---- AI suggestion cards (match-score style) ---- */
+.slk-ai-banner {
+    display: flex; align-items: center; gap: 9px;
+    background: var(--slk-tint-soft); border: 1px solid var(--slk-tint-border);
+    border-radius: 10px; padding: 12px 15px; margin-bottom: 12px;
+    color: var(--slk-primary-dark); font-weight: 600; font-size: 14px;
+}
+/* Two classes so this beats the legacy `.slk-suggestion { display:flex }`
+   rule defined further down the file, whatever the source order. */
+.slk-sugg-card,
+.slk-suggestion.slk-sugg-card {
+    display: block;
+    background: #fff; border: 1px solid #e8eaed; border-radius: 12px;
+    padding: 15px 17px; margin-bottom: 10px;
+}
+/* ── Compact suggestion rows (editor + inbound + AI pages) ────────────
+   One row per suggestion: FROM | TO | actions, all on a single line.
+   Editing is inline and only appears when the pencil is clicked.        */
+
+.slk-sugg-head {
+    display: grid;
+    grid-template-columns: 30px minmax(0,1fr) minmax(0,1fr) auto;
+    gap: 0 16px;
+    padding: 0 14px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #8a94a6;
+}
+
+.slk-sugg-card,
+.slk-suggestion.slk-sugg-card {
+    display: grid;
+    grid-template-columns: 30px minmax(0,1fr) minmax(0,1fr) auto;
+    gap: 0 16px;
+    align-items: center;
+    padding: 10px 14px;
+    margin-bottom: 7px;
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: var(--slk-radius-btn);
+    transition: border-color .12s, box-shadow .12s, opacity .18s, transform .18s;
+}
+.slk-sugg-card:hover { border-color: var(--slk-tint-border-2); box-shadow: 0 2px 8px rgba(124,92,240,.08); }
+.slk-sugg-card.slk-inserted { opacity: .5; }
+.slk-sugg-card.slk-sugg-gone { opacity: 0; transform: translateX(14px); }
+
+.slk-cell { min-width: 0; }
+.slk-view { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.slk-edit input { width: 100%; }
+
+/* Sentence preview, clamped to two lines so rows stay short */
+
+.slk-cell-to .slk-view { gap: 7px; }
+.slk-sugg-name {
+    font-weight: 600; font-size: 15px; color: #1f2937;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+}
+.slk-sugg-reason {
+    font-size: 12px; color: #9aa4b2; margin-top: 2px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.slk-sugg-inpost { font-size: 11.5px; color: #9aa4b2; margin-top: 2px; }
+
+
+
+/* ── Delight layer: motion, meters, progress, skeletons ─────────────── */
+
+/* Rows fade+rise in, staggered by index */
+@keyframes slk-rise {
+    from { opacity: 0; transform: translateY(7px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.slk-sugg-card {
+    opacity: 0;
+    animation: slk-rise .34s cubic-bezier(.22,.68,.36,1) forwards;
+    animation-delay: calc(var(--slk-i, 0) * 45ms);
+    position: relative;
+    overflow: hidden;
+}
+/* Gradient accent that slides in on hover / when picked */
+.slk-sugg-card::before {
+    content: "";
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--slk-gradient);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform .2s cubic-bezier(.22,.68,.36,1);
+}
+.slk-sugg-card:hover::before,
+.slk-sugg-card.slk-picked::before { transform: scaleY(1); }
+.slk-sugg-card:hover { transform: translateY(-1px); }
+.slk-sugg-card.slk-inserted::before { background: #22c55e; transform: scaleY(1); }
+
+/* Header progress */
+.slk-progress-wrap { display: flex; align-items: center; gap: 9px; margin-left: 4px; }
+.slk-progress-track {
+    width: 90px; height: 5px; border-radius: 999px;
+    background: #e8eaef; overflow: hidden;
+}
+.slk-progress-fill {
+    display: block; height: 100%; width: 0;
+    background: var(--slk-gradient);
+    border-radius: 999px;
+    transition: width .45s cubic-bezier(.22,.68,.36,1);
+}
+.slk-progress-text { font-size: 12px; color: #9aa4b2; font-variant-numeric: tabular-nums; }
+.slk-sugg-bar.slk-all-done .slk-progress-fill { background: #22c55e; }
+.slk-sugg-bar.slk-all-done .slk-progress-text { color: #16a34a; font-weight: 600; }
+
+.slk-done-note {
+    margin-top: 10px; padding: 12px 15px;
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--slk-radius-btn);
+    color: #15803d; font-size: 13.5px; font-weight: 500;
+    animation: slk-rise .35s ease-out;
+}
+
+/* Loading skeleton */
+@keyframes slk-shimmer { to { background-position: 200% 0; } }
+.slk-skel-row {
+    display: grid;
+    grid-template-columns: 30px minmax(0,1fr) minmax(0,1fr) auto;
+    gap: 0 16px; align-items: center;
+    padding: 12px 14px; margin-bottom: 7px;
+    background: #fff; border: 1px solid #eef0f3; border-radius: var(--slk-radius-btn);
+}
+.slk-skel-col { display: flex; flex-direction: column; gap: 6px; }
+.slk-skel {
+    background: linear-gradient(90deg, #eef0f3 25%, #f7f8fa 50%, #eef0f3 75%);
+    background-size: 200% 100%;
+    animation: slk-shimmer 1.3s linear infinite;
+    border-radius: 4px;
+}
+.slk-skel-check { width: 16px; height: 16px; border-radius: 4px; }
+.slk-skel-line { height: 10px; width: 100%; }
+.slk-skel-line.short { width: 62%; }
+.slk-skel-line.mid { width: 55%; height: 12px; }
+.slk-skel-line.tiny { width: 32%; height: 8px; }
+.slk-skel-btn { width: 62px; height: 26px; border-radius: var(--slk-radius-btn); }
+
+/* Micro-interactions */
+.slk-pick input[type="checkbox"] { transition: transform .12s; }
+.slk-pick input[type="checkbox"]:active { transform: scale(.86); }
+.slk-edit-btn:active { transform: scale(.9); }
+
+@media (prefers-reduced-motion: reduce) {
+    .slk-sugg-card { animation: none; opacity: 1; }
+    .slk-skel { animation: none; }
+    .slk-sugg-card:hover { transform: none; }
+}
+
+/* Bulk bar above the list */
+.slk-sugg-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 0 10px;
+}
+.slk-sugg-count { font-size: 13px; font-weight: 600; color: #6b7280; }
+.slk-bulk-wrap { margin-left: auto; }
+.slk-pick { display: flex; align-items: center; justify-content: center; }
+.slk-pick input[type="checkbox"] {
+    width: 16px; height: 16px; margin: 0; cursor: pointer;
+    accent-color: var(--slk-primary);
+}
+.slk-sugg-card.slk-picked {
+    border-color: var(--slk-tint-border-2);
+    background: var(--slk-tint-hover);
+}
+
+/* Destination: title on top, URL underneath */
+.slk-to-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.slk-to-title { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.slk-to-url {
+    font-size: 13px; color: #8a94a6;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Inline edit field + its discard button.
+   :not([hidden]) matters — a bare `display:flex` would beat the browser's
+   `[hidden] { display:none }` and leave the collapsed editor taking up space. */
+.slk-edit:not([hidden]) { display: flex; align-items: center; gap: 6px; }
+.slk-cancel-edit {
+    flex: 0 0 auto;
+    width: 26px; height: 26px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #fff; border: 1px solid #e6c8c8; border-radius: var(--slk-radius-btn);
+    color: #b91c1c; cursor: pointer; transition: background .12s, border-color .12s;
+}
+.slk-cancel-edit:hover { background: #fef2f2; border-color: #e79a9a; }
+.slk-cancel-edit .dashicons { font-size: 15px; width: 15px; height: 15px; }
+
+/* Success flash after an insert */
+@keyframes slk-flash {
+    0%   { background: #dcfce7; border-color: #86efac; }
+    100% { background: #fff; border-color: #e8eaed; }
+}
+.slk-sugg-card.slk-just-added { animation: slk-flash 1.1s ease-out; }
+
+/* Pencil */
+.slk-edit-btn {
+    flex: 0 0 auto;
+    width: 24px; height: 24px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: none; border: 1px solid transparent; border-radius: var(--slk-radius-btn);
+    color: #b3bac5; cursor: pointer;
+    transition: background .12s, color .12s, border-color .12s;
+}
+.slk-edit-btn:hover { background: var(--slk-tint); color: var(--slk-primary); border-color: var(--slk-tint-border); }
+.slk-edit-btn .dashicons { font-size: 15px; width: 15px; height: 15px; }
+.slk-sugg-card:hover .slk-edit-btn { color: #8a94a6; }
+
+/* Inline inputs */
+.slk-metabox .slk-anchor-input, .slk-metabox .slk-url-input,
+.slk-panel .slk-anchor-input, .slk-panel .slk-url-input {
+    width: 100%;
+    border: 1px solid var(--slk-primary);
+    border-radius: var(--slk-radius-btn);
+    padding: 6px 10px;
+    font-size: 13px;
+    min-height: 0;
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--slk-focus-ring);
+}
+.slk-cell.slk-editing { position: relative; }
+
+/* Actions inline on the right */
+.slk-cell-act { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.slk-cell-act .button-small { padding: 4px 14px; font-size: 12.5px; }
+.slk-sugg-msg { font-size: 12px; color: #b91c1c; max-width: 190px; }
+
+@media (max-width: 860px) {
+    .slk-sugg-head { display: none; }
+    .slk-sugg-card, .slk-suggestion.slk-sugg-card {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+    .slk-cell-act { justify-content: flex-start; }
+}
+
+.slk-sugg-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.slk-sugg-name { font-weight: 700; font-size: 15px; color: #111827; }
+/* Score badge, colour-coded: green = strong, amber = average, red = weak. */
+.slk-match {
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    border: 1px solid transparent;
+}
+.slk-match-high { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.slk-match-mid  { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.slk-match-low  { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+.slk-sugg-anchor { margin: 9px 0 4px; font-size: 13px; color: #6b7280; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.slk-anchor-pill { background: var(--slk-tint); color: var(--slk-primary-dark); border-radius: 6px; padding: 4px 10px; font-weight: 600; font-size: 13px; }
+.slk-sugg-bottom { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 8px; }
+.slk-sugg-url { font-size: 12.5px; color: #9aa4b2; word-break: break-all; }
+.slk-sugg-card.slk-inserted { opacity: .55; }
+
+.slk-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 20px 0;
+}
+.slk-card {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 18px 22px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+}
+.slk-card .slk-num {
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.1;
+}
+.slk-card .slk-label {
+    color: #646970;
+    margin-top: 6px;
+    font-size: 13px;
+}
+.slk-card-warn .slk-num { color: #b32d2e; }
+.slk-orphan td { background: #fcf0f1; }
+
+/* Scan actions — compact, and hoisted into the meta box title bar by JS. */
+.slk-scan-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 0;
+}
+/* Keep the buttons on the title's line: stop the title claiming all the
+   width, and never let the bar wrap onto a second row. */
+.postbox-header .slk-scan-bar-inline {
+    margin-left: 16px;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+}
+.postbox-header .hndle { flex: 0 1 auto; }
+.postbox-header .handle-actions { margin-left: auto; }
+
+/* The bar gets hoisted out of .slk-metabox into the postbox header, so the
+   brand styling has to hang off .slk-scan-btn itself, not a parent. */
+.button.slk-scan-btn.button-primary {
+    /* Same white-fill / gradient-border treatment as Apply Link. */
+    border: 1.5px solid transparent;
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        var(--slk-gradient) border-box;
+    color: var(--slk-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    white-space: nowrap;
+    transition: color .12s, background .12s;
+}
+.button.slk-scan-btn.button-primary:hover:not(:disabled) {
+    background:
+        linear-gradient(var(--slk-tint-hover), var(--slk-tint-hover)) padding-box,
+        var(--slk-gradient) border-box;
+    color: var(--slk-primary-dark);
+}
+.slk-scan-ico { width: 14px; height: 14px; flex: 0 0 auto; }
+/* Transient: a scan is in flight. */
+.button.slk-scan-btn.button-primary:disabled { opacity: .6; }
+
+/* Locked: the feature exists but isn't configured yet. Flat and grey on
+   purpose — it must not be mistaken for the faded in-flight state above,
+   which is why this overrides the gradient rather than just dimming it.
+
+   !important is required, not lazy: core ships
+   `.wp-core-ui .button-primary:disabled { background:#e2e2e2!important }`,
+   which no amount of specificity can outrank. Core's grey also fails contrast
+   for the label, which is the other reason to take these over. */
+.button.slk-scan-btn.button-primary.slk-scan-btn-locked,
+.button.slk-scan-btn.button-primary.slk-scan-btn-locked:hover,
+.button.slk-scan-btn.button-primary.slk-scan-btn-locked:disabled {
+    background: var(--slk-muted) !important;
+    border-color: var(--slk-muted-border) !important;
+    color: var(--slk-muted-text) !important;
+    box-shadow: none;
+    opacity: 1;
+    filter: none;
+    transform: none;
+    cursor: not-allowed;
+}
+.slk-scan-btn-locked .dashicons { opacity: .8; }
+
+/* Explains a locked button, in the panel body where there is room. */
+.slk-callout-locked {
+    border-left-color: var(--slk-muted-border);
+    background: var(--slk-muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    margin: 10px 0 4px;
+    font-size: 13px;
+    color: #4a4a56;
+}
+.slk-callout-locked .dashicons {
+    flex: 0 0 auto;
+    color: var(--slk-muted-text);
+    font-size: 18px; width: 18px; height: 18px;
+}
+.slk-callout-locked .slk-locked-line { display: block; }
+.slk-callout-locked .slk-locked-line + .slk-locked-line { margin-top: 4px; }
+
+/* =====================================================================
+   Suggestion cards — destination first, then confidence, anchor, reason.
+
+   Work Sans is the plugin's typeface throughout. These rules cover the
+   editor panels, which sit outside .slk-app / .slk-panel and so inherit the
+   WordPress admin font rather than the plugin's.
+   ===================================================================== */
+.slk-metabox,
+.slk-sb,
+.postbox-header .slk-scan-bar-inline {
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+/* The italic reason line needs the real italic, not a synthesised slant. */
+.slk-sg-reason { font-synthesis: none; }
+
+.slk-sg-bar {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; color: #7b8794; margin: 4px 0 14px;
+}
+
+/* .slk-suggestion stays on the card as the JS hook for insertion, but it
+   also carries the old compact-row layout (flex/centre/space-between), which
+   would squash the card to its content width. Reset it here — two classes
+   outrank the one-class rule further down the file. */
+.slk-sg.slk-suggestion,
+.slk-sg {
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    gap: 0;
+    background: var(--slk-sg-surface);
+    border: 1px solid var(--slk-sg-border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    transition: border-color .12s, opacity .18s;
+}
+.slk-sg:hover { border-color: #d5d9e0; }
+.slk-sg.slk-inserted { background: #f2fbf5; border-color: #bfe6cb; }
+.slk-sg-rejected { opacity: .35; }
+
+.slk-sg-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 18px; margin-bottom: 6px;
+}
+/* The title stays on one line and truncates. Wrapping pushed the confidence
+   badge out of alignment and made a list of cards hard to scan down. */
+.slk-sg-title {
+    font-size: 16px; font-weight: 700; line-height: 1.25;
+    color: var(--slk-sg-ink); letter-spacing: -.01em;
+    display: flex; gap: 10px; align-items: center;
+    min-width: 0; flex: 1 1 auto;
+}
+.slk-sg-title .slk-sg-name {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+/* An SVG has no baseline, so the title row centres instead of baseline-aligning
+   — otherwise the icon hangs below the text. Sized to the 37:15 viewBox so the
+   arrow is not squashed; fill is currentColor so it follows the title colour
+   rather than being pinned to one hex. */
+.slk-sg-arrow {
+    flex: 0 0 auto;
+    width: 27px; height: 11px;
+    color: var(--slk-sg-ink);
+}
+.slk-conf {
+    flex: 0 0 auto; white-space: nowrap;
+    padding: 5px 12px; border-radius: 5px;
+    font-size: 12px; font-weight: 600;
+}
+.slk-conf-high { background: var(--slk-sg-good-bg); color: var(--slk-sg-good-ink); }
+.slk-conf-mid  { background: var(--slk-sg-warn-bg); color: var(--slk-sg-warn-ink); }
+.slk-conf-low  { background: var(--slk-sg-bad-bg);  color: var(--slk-sg-bad-ink); }
+
+/* Anchor and destination on one line: "this text" ⟶ "this page".
+   Deliberately normal inline flow, NOT flex: flex turns the bare quote
+   characters around the anchor into their own flex items, which detaches them
+   from the phrase and wraps the row. */
+.slk-sg-anchor {
+    font-size: 13.5px; color: var(--slk-sg-ink); margin-bottom: 5px;
+}
+.slk-sg-arrow-sm {
+    display: inline-block; vertical-align: middle;
+    width: 18px; height: 7px; margin: 0 7px;
+    color: var(--slk-sg-ink-soft); opacity: .7;
+}
+.slk-sg-dest {
+    color: var(--slk-sg-ink-soft); text-decoration: none;
+    font-size: 12.5px; overflow-wrap: anywhere; min-width: 0;
+}
+.slk-sg-dest:hover { color: var(--slk-primary); text-decoration: underline; }
+.slk-sg-anchor strong { font-weight: 700; }
+.slk-anchor-text { color: var(--slk-sg-accent); text-decoration: underline; }
+.slk-anchor-text:hover { color: var(--slk-sg-accent-dk); }
+.slk-sg-reason {
+    font-size: 13px; font-style: italic; color: var(--slk-sg-ink-soft);
+    line-height: 1.45; margin-bottom: 10px;
+}
+
+.slk-sg-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* White fill, brand gradient as the border — two backgrounds, the white one
+   clipped to the padding box over the gradient clipped to the border box, so
+   only the border shows gradient and the corners stay rounded. Shared by the
+   meta box, the sidebar and the scan buttons. */
+.slk-btn-apply {
+    border: 1.5px solid transparent; border-radius: 5px;
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        var(--slk-gradient) border-box;
+    color: var(--slk-primary);
+    padding: 6px 14px;
+    font-size: 12.5px; font-weight: 700; cursor: pointer; line-height: 1.3;
+}
+.slk-btn-apply:hover:not(:disabled) {
+    background:
+        linear-gradient(var(--slk-tint-hover), var(--slk-tint-hover)) padding-box,
+        var(--slk-gradient) border-box;
+    color: var(--slk-primary-dark);
+}
+.slk-btn-apply:disabled {
+    background: var(--slk-sg-good-bg); border-color: var(--slk-sg-good-bg);
+    color: var(--slk-sg-good-ink); cursor: default;
+}
+.slk-btn-reject {
+    background: #fff; border: 1px solid #d3d8de; color: var(--slk-sg-ink);
+    padding: 6px 14px; border-radius: 5px;
+    font-size: 12.5px; font-weight: 600; cursor: pointer; line-height: 1.3;
+}
+.slk-btn-reject:hover { background: #f4f5f7; }
+
+.slk-load-more {
+    display: block; width: 100%;
+    background: #fff; border: 1px solid var(--slk-sg-border); border-radius: 8px;
+    padding: 11px; font-size: 13px; font-weight: 600; color: var(--slk-sg-ink);
+    cursor: pointer; text-align: center;
+}
+.slk-load-more:hover { background: #f4f5f7; }
+
+/* --- target keywords, edited beside the suggestions --- */
+.slk-kw-panel { border-top: 1px solid var(--slk-sg-border); margin-top: 18px; padding-top: 16px; }
+.slk-kw-head {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; color: #7b8794; margin-bottom: 11px;
+}
+.slk-kw-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.slk-kw-chip {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: var(--slk-sg-chip-bg); color: var(--slk-sg-chip-ink);
+    padding: 5px 11px; border-radius: 999px; font-size: 12px; font-weight: 500;
+}
+.slk-kw-chip.is-seo { background: #e3f0e8; color: #14663a; }
+.slk-kw-src { font-style: normal; font-size: 9px; letter-spacing: .06em; opacity: .75; }
+.slk-kw-del {
+    background: none; border: 0; padding: 0; cursor: pointer; line-height: 1;
+    color: inherit; opacity: .6; font-size: 14px;
+}
+.slk-kw-del:hover { opacity: 1; }
+.slk-kw-add { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.slk-kw-extract {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    color: var(--slk-sg-accent); font-weight: 600; font-size: 12.5px;
+    display: inline-flex; align-items: center; gap: 7px;
+}
+.slk-kw-extract:hover { color: var(--slk-sg-accent-dk); }
+.slk-kw-extract:disabled { opacity: .55; cursor: default; }
+.slk-kw-spark { font-size: 13px; }
+.slk-kw-msg { font-size: 12px; color: var(--slk-sg-ink-soft); }
+
+/* The tip is shared with other screens — only shrink it inside the editor
+   panel, where it sits under the denser keyword section. */
+.slk-metabox .slk-note {
+    font-size: 12px; margin-top: 12px; padding: 9px 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .slk-sg { transition: none; }
+}
+
+/* Orphans: the fix panel that opens inside the table row. */
+.slk-fix-row > td { background: #fbfbfd; padding: 0; }
+.slk-fix-panel { padding: 16px 18px 8px; }
+.slk-fix-head {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: #7b8794; margin-bottom: 12px;
+}
+.slk-fix-panel .slk-sg { background: #fff; }
+
+/* .slk-suggestion is a JS hook (the insert handler finds it with .closest),
+   but it also carries the old compact-row card styling — display:flex, padding,
+   border. On a <tr> that destroys table layout: every cell becomes a flex item
+   and the columns collapse to their content width. Keep the hook, strip the
+   styling, exactly as the .slk-sg card does. */
+tr.slk-suggestion {
+    display: table-row;
+    align-items: initial;
+    justify-content: initial;
+    gap: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    margin: 0;
+    background: none;
+}
+.slk-opp-table td { vertical-align: top; }
+.slk-opp-table .slk-kw-chip { border-radius: 6px; }
+.slk-opp-table .slk-title-meta { max-width: 34ch; }
+
+/* Searchable post picker. The native <select> stays in the DOM (hidden) so
+   every existing .val() reader and form submit keeps working. */
+.slk-combo { position: relative; display: inline-block; min-width: 360px; max-width: 100%; }
+.slk-combo-native { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+.slk-combo-input {
+    width: 100%; padding: 7px 12px;
+    border: 1px solid #dcdce4; border-radius: var(--slk-radius-btn);
+    font-size: 13.5px; background: #fff;
+}
+.slk-combo-input:focus {
+    border-color: var(--slk-primary);
+    box-shadow: 0 0 0 3px var(--slk-focus-ring); outline: none;
+}
+.slk-combo-list {
+    position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px);
+    margin: 0; padding: 4px; list-style: none;
+    max-height: 280px; overflow-y: auto;
+    background: #fff; border: 1px solid #dcdce4; border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(30,30,43,.12);
+}
+.slk-combo-opt {
+    padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 13.5px;
+}
+.slk-combo-opt:hover, .slk-combo-opt.is-active {
+    background: var(--slk-tint); color: var(--slk-primary-deep);
+}
+.slk-combo-empty { padding: 10px; font-size: 13px; color: var(--slk-sg-ink-soft); }
+.slk-combo-input { padding-right: 30px; }
+.slk-combo-clear {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: 0; padding: 0 4px; cursor: pointer;
+    font-size: 17px; line-height: 1; color: #9aa0ad;
+}
+.slk-combo-clear:hover { color: var(--slk-sg-ink); }
+
+/* Standard / AI switch, shared by the fix panels and the opportunities page. */
+.slk-engine { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-bottom: 12px; }
+.slk-engine-btn {
+    background: #fff; border: 1px solid #dcdce4; color: #4a4a56;
+    padding: 5px 15px; font-size: 12px; font-weight: 600; cursor: pointer;
+    text-decoration: none; line-height: 1.6;
+}
+.slk-engine-btn:first-child { border-radius: var(--slk-radius-btn) 0 0 var(--slk-radius-btn); }
+.slk-engine-btn:nth-child(2) { border-radius: 0 var(--slk-radius-btn) var(--slk-radius-btn) 0; border-left: 0; }
+.slk-engine-btn:hover:not(.is-on):not(.is-locked) { background: var(--slk-tint-hover); color: var(--slk-primary); }
+.slk-engine-btn.is-on { background: var(--slk-gradient); border-color: transparent; color: #fff; }
+.slk-engine-btn.is-locked { background: var(--slk-muted); color: var(--slk-muted-text); cursor: not-allowed; }
+.slk-engine-note { font-size: 11.5px; color: var(--slk-sg-ink-soft); margin-left: 12px; max-width: 60ch; }
+
+/* Broken links: the repair panel inside the row. */
+.slk-fixlink-panel { padding: 16px 18px; }
+.slk-fix-sub {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: #7b8794; margin: 4px 0 8px;
+}
+.slk-fix-list { list-style: none; margin: 0 0 16px; padding: 0; }
+.slk-fix-list li {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    padding: 6px 0; border-bottom: 1px solid #eceef1;
+}
+.slk-fix-pick {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    color: var(--slk-sg-accent); font-weight: 600; font-size: 13px;
+}
+.slk-fix-pick:hover { text-decoration: underline; }
+.slk-fix-why { font-size: 12px; color: var(--slk-sg-ink-soft); }
+.slk-fix-url { font-size: 11.5px; color: #9aa0ad; overflow-wrap: anywhere; }
+.slk-fix-actions {
+    display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.slk-fix-field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--slk-sg-ink-soft); }
+.slk-fix-field input { min-width: 320px; }
+.slk-fix-edit { font-size: 12.5px; margin-left: 4px; }
+.slk-fix-msg { font-size: 12.5px; color: var(--slk-sg-ink-soft); }
+.slk-tr.slk-fixed { opacity: .55; }
+
+/* Activity log filter bar */
+.slk-activity-filters {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+}
+.slk-activity-filters label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.slk-activity-filters select { min-width: 170px; }
+.slk-activity-filters .slk-activity-count { margin-left: auto; align-self: center; }
+
+/* Link Opportunities — bulk apply */
+.slk-bulk-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    background: var(--slk-muted, #f2f2f5);
+    border: 1px solid var(--slk-muted-border, #dcdce4);
+    border-radius: 8px;
+}
+.slk-bulk-bar[hidden] { display: none; }
+.slk-bulk-count { font-weight: 600; font-size: 13px; }
+.slk-bulk-status { font-size: 13px; color: var(--slk-muted-text, #6b6b78); }
+.slk-bulk-status.slk-bulk-busy::after {
+    content: '';
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    margin-left: 7px;
+    vertical-align: -1px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: slk-spin .7s linear infinite;
+}
+.slk-th-check, .slk-td-check { width: 34px; text-align: center; padding-right: 0; }
+.slk-td-check input[disabled] { opacity: .4; }
+
+/* Anchor text report */
+.slk-anchor-dest { font-size: 13px; line-height: 1.5; }
+.slk-anchor-split { font-size: 12px; color: #b45309; margin-bottom: 3px; }
+.slk-anchor-detail > td { background: #fafbfc; padding: 12px 14px !important; }
+.slk-anchor-uses { display: flex; flex-direction: column; gap: 7px; }
+.slk-anchor-use { font-size: 13px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.slk-anchor-table .slk-badge { margin-left: 6px; }
+.slk-metric-warn { color: #b45309; }
+
+/* Reports — the tab strip above whichever report is showing */
+.slk-reports-tabs {
+    margin: 0 0 4px;
+    padding: 0 0 2px;
+}
+.slk-reports-tabs .slk-tabs { margin-bottom: 0; }
+/* The report templates each open with their own <h1>; inside the tabbed
+   shell that heading is redundant with the tab that is already lit. */
+.slk-reports-tabs + .wrap > h1 { display: none; }
+.slk-reports-tabs + .wrap { margin-top: 0; }
+
+/* "Why not?" diagnostic */
+.slk-diagnose-form {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin: 0 0 18px;
+    padding: 16px;
+    background: var(--slk-muted, #f2f2f5);
+    border: 1px solid var(--slk-muted-border, #dcdce4);
+    border-radius: 10px;
+}
+.slk-diagnose-form label { display: flex; flex-direction: column; gap: 5px; }
+.slk-diagnose-form select { min-width: 240px; }
+.slk-diag-arrow { padding-bottom: 6px; font-size: 17px; color: var(--slk-muted-text, #6b6b78); }
+.slk-diag-verdict {
+    border: 1px solid var(--slk-sg-border, #e4e7eb);
+    border-left-width: 4px;
+    border-radius: 10px;
+    padding: 18px 20px;
+}
+.slk-diag-verdict.is-ok { border-left-color: #22c55e; background: #f4fcf7; }
+.slk-diag-verdict.is-blocked { border-left-color: #f0a13a; background: #fffbf4; }
+.slk-diag-headline { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.slk-diag-detail { margin: 0 0 12px; font-size: 13.5px; line-height: 1.6; max-width: 70ch; }
+.slk-diag-metrics { margin: 0 0 14px; max-width: 520px; background: #fff; }
+.slk-diag-metrics td:first-child { color: var(--slk-muted-text, #6b6b78); width: 45%; }
+.slk-diag-fixes { font-size: 13.5px; }
+.slk-diag-fixes ul { margin: 6px 0 0; padding-left: 20px; }
+.slk-diag-fixes li { margin-bottom: 5px; line-height: 1.55; }
+
+/* Link equity bars */
+.slk-equity-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--slk-muted, #f2f2f5);
+    overflow: hidden;
+    margin-bottom: 4px;
+    max-width: 170px;
+}
+.slk-equity-bar span { display: block; height: 100%; border-radius: 4px; }
+.slk-equity-bar span.slk-conf-high { background: #22c55e; }
+.slk-equity-bar span.slk-conf-mid  { background: #f0a13a; }
+.slk-equity-bar span.slk-conf-low  { background: #d97b7b; }
+.slk-equity-table td { vertical-align: middle; }
+
+/* Sidebar: when the visible suggestions were produced */
+.slk-sg-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.slk-sg-bar-age { font-size: 10.5px; font-weight: 500; color: var(--slk-muted-text, #6b6b78); text-transform: none; letter-spacing: 0; }
+
+/* Cannibalisation — the competing pair */
+.slk-cann-pair { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.slk-cann-post { display: flex; flex-direction: column; gap: 2px; min-width: 180px; flex: 1; }
+.slk-cann-vs {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--slk-muted-text, #6b6b78);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    flex: 0 0 auto;
+}
+.slk-cann-advice { font-size: 13px; line-height: 1.5; }
+.slk-cannibal-table td { vertical-align: top; }
+
+/* Link placement — a track showing where each link falls in the post */
+.slk-place-track {
+    position: relative;
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(to right,
+        rgba(34,197,94,.20) 0%, rgba(34,197,94,.20) 25%,
+        var(--slk-muted, #f2f2f5) 25%, var(--slk-muted, #f2f2f5) 75%,
+        rgba(240,161,58,.22) 75%, rgba(240,161,58,.22) 100%);
+    border: 1px solid var(--slk-muted-border, #dcdce4);
+    max-width: 210px;
+    margin-bottom: 3px;
+}
+.slk-place-dot {
+    position: absolute;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-left: -3.5px;
+    border-radius: 50%;
+    background: #5b6270;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 1.5px #fff;
+}
+.slk-place-dot.is-early { background: #22c55e; }
+.slk-place-dot.is-late  { background: #e0871f; }
+.slk-placement-table td { vertical-align: middle; }
+
+/* Scan progress bar */
+.slk-scanbar {
+    margin: 12px 0 4px;
+    padding: 14px 16px;
+    border: 1px solid var(--slk-muted-border, #dcdce4);
+    border-radius: 10px;
+    background: #fff;
+    max-width: 560px;
+}
+.slk-scanbar-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 9px;
+}
+.slk-scanbar-label { font-size: 13.5px; font-weight: 600; color: #111827; }
+.slk-scanbar-count { font-size: 12.5px; color: var(--slk-muted-text, #6b6b78); white-space: nowrap; }
+.slk-scanbar-track {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--slk-muted, #f2f2f5);
+    overflow: hidden;
+}
+.slk-scanbar-track span {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #7c5cff, #4f46e5);
+    /* Eased rather than instant, so a fast batch still reads as movement
+       instead of the bar teleporting. */
+    transition: width .35s ease;
+}
+.slk-scanbar-note { margin-top: 8px; font-size: 12.5px; color: var(--slk-muted-text, #6b6b78); }
+
+/* Sidebar: inbound results write to another post, so they get a caveat line */
+.slk-sb-note {
+    margin: 0 0 10px;
+    padding: 9px 11px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #4b5563;
+    background: var(--slk-muted, #f2f2f5);
+    border-radius: 7px;
+}
+/* Three buttons share the row in a narrow sidebar: tighten them rather than
+   let a label truncate to something unreadable like "INBOU…". */
+.slk-sb-actions .slk-sb-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 5px;
+}
+.slk-sb-actions .slk-sb-btn span {
+    font-size: 11px;
+    letter-spacing: .02em;
+    white-space: nowrap;
+}
+.slk-sb-actions .slk-sb-ico { flex: 0 0 auto; }
+
+/* Sidebar engine switch — same control as the reports, sized for the column */
+.slk-sb-engine { display: flex; gap: 6px; margin: 0 0 10px; }
+.slk-sb-engine .slk-engine-btn { flex: 1 1 0; font-size: 11px; padding: 5px 8px; }
+
+/* Meta box inbound: engine switch + the "this saves another post" caveat */
+.slk-inbound-head { margin: 0 0 12px; }
+.slk-inbound-caveat {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--slk-muted-text, #6b6b78);
+}
+.slk-scanbar.is-done .slk-scanbar-track span { background: #22c55e; }
+.slk-scanbar.is-error .slk-scanbar-track span { background: #dc2626; }
+.slk-scanbar.is-error .slk-scanbar-note { color: #b91c1c; }
+
+/* While a scan runs the whole page must not look idle. */
+.slk-scanbar:not(.is-done):not(.is-error) .slk-scanbar-label::after {
+    content: "";
+    display: inline-block;
+    width: 9px; height: 9px;
+    margin-left: 8px;
+    vertical-align: -1px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: slk-spin .7s linear infinite;
+}
+
+/* Save row: button, then the result beside it as plain text */
+.slk-save-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 26px;
+}
+.slk-save-status {
+    /* No background, no border, no chip — it is a sentence, not a control. */
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--slk-muted-text, #6b6b78);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity .22s ease, transform .22s ease;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+.slk-save-status.show { opacity: 1; transform: none; }
+.slk-save-status.is-done { color: #15803d; }
+.slk-save-status.is-error { color: #b91c1c; }
+
+/* A drawn tick rather than a dashicon, so it inherits the text colour and
+   needs no icon font to have loaded. */
+.slk-save-status.is-done::before {
+    content: "";
+    width: 14px;
+    height: 8px;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg) translate(1px, -2px);
+}
+.slk-save-status.is-error::before {
+    content: "!";
+    font-weight: 700;
+}
+
+/* First-run checklist */
+.slk-setup {
+    border: 1px solid var(--slk-muted-border, #dcdce4);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 0 0 22px;
+    background: #fff;
+}
+.slk-setup-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.slk-setup-title { font-size: 16px; font-weight: 600; color: #111827; }
+.slk-setup-sub { margin: 4px 0 0; font-size: 13.5px; color: var(--slk-muted-text, #6b6b78); max-width: 62ch; line-height: 1.55; }
+.slk-setup-count { font-size: 12.5px; font-weight: 600; color: var(--slk-muted-text, #6b6b78); white-space: nowrap; padding-top: 3px; }
+
+.slk-setup-bar { height: 5px; border-radius: 3px; background: var(--slk-muted, #f2f2f5); margin: 16px 0 4px; overflow: hidden; }
+.slk-setup-bar span { display: block; height: 100%; background: #22c55e; border-radius: 3px; transition: width .3s ease; }
+
+.slk-setup-steps { list-style: none; margin: 14px 0 0; padding: 0; }
+.slk-setup-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 15px 0;
+    border-top: 1px solid var(--slk-muted, #f2f2f5);
+}
+.slk-setup-mark {
+    flex: 0 0 auto;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--slk-muted, #f2f2f5);
+    color: var(--slk-muted-text, #6b6b78);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+}
+.slk-setup-step.is-done .slk-setup-mark { background: #dcfce7; }
+/* A drawn tick, so it needs no icon font and follows the text colour. */
+.slk-setup-step.is-done .slk-setup-mark::after {
+    content: "";
+    width: 10px; height: 5px;
+    border-left: 2px solid #15803d;
+    border-bottom: 2px solid #15803d;
+    transform: rotate(-45deg) translate(1px, -1px);
+}
+.slk-setup-body { flex: 1; min-width: 0; }
+.slk-setup-step-title { font-size: 14px; font-weight: 600; color: #111827; }
+.slk-setup-step.is-done .slk-setup-step-title { color: var(--slk-muted-text, #6b6b78); }
+.slk-setup-optional {
+    margin-left: 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--slk-muted-text, #6b6b78);
+}
+.slk-setup-why { margin: 4px 0 0; font-size: 13px; line-height: 1.55; color: #4b5563; max-width: 74ch; }
+.slk-setup-detail { margin: 5px 0 0; font-size: 12.5px; color: var(--slk-muted-text, #6b6b78); }
+.slk-setup-action { flex: 0 0 auto; padding-top: 2px; }
+.slk-setup-tick { display: none; }
+.slk-setup-foot { margin: 16px 0 0; display: flex; gap: 12px; align-items: baseline; font-size: 12.5px; }
+
+@media (max-width: 782px) {
+    .slk-setup-step { flex-wrap: wrap; }
+    .slk-setup-action { width: 100%; padding-left: 38px; }
+}
+
+/* =====================================================================
+   Topic clusters — treemap / heatmap
+   ===================================================================== */
+.slk-cluster-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin: 18px 0 12px;
+}
+.slk-view-toggle { display: inline-flex; align-items: center; gap: 0; }
+.slk-view-btn {
+    background: #fff; border: 1px solid #dcdce4; color: #4a4a56;
+    padding: 6px 16px; font-size: 12px; font-weight: 600; cursor: pointer;
+    letter-spacing: .02em;
+}
+.slk-view-btn:first-of-type { border-radius: var(--slk-radius-btn) 0 0 var(--slk-radius-btn); }
+.slk-view-btn:last-of-type  { border-radius: 0 var(--slk-radius-btn) var(--slk-radius-btn) 0; border-left: 0; }
+.slk-view-btn:hover { background: var(--slk-tint-hover); }
+.slk-view-btn.is-on {
+    background: var(--slk-gradient); border-color: transparent; color: #fff;
+}
+.slk-view-toggle .slk-help { margin-left: 10px; }
+.slk-cluster-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.slk-chip-ai { background: var(--slk-tint); color: var(--slk-primary-deep); }
+
+.slk-treemap { margin: 0 0 26px; }
+.slk-treemap-canvas { position: relative; width: 100%; }
+.slk-tm-tile {
+    position: absolute;
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #fff;
+    overflow: hidden;
+    display: flex; flex-direction: column; align-items: flex-start;
+    transition: filter .12s, transform .12s;
+    cursor: default;
+}
+.slk-tm-tile:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.slk-tm-name {
+    font-weight: 700; font-size: 15px; line-height: 1.25;
+    text-shadow: 0 1px 2px rgba(0,0,0,.18);
+    overflow-wrap: anywhere;
+}
+.slk-tm-sub { font-size: 12px; opacity: .92; margin-top: 3px; }
+.slk-tm-stage {
+    margin-top: auto; align-self: flex-start;
+    background: rgba(0,0,0,.22); color: #fff;
+    padding: 2px 9px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+}
+
+.slk-tm-c1 { background: var(--slk-cat-1); }
+.slk-tm-c2 { background: var(--slk-cat-2); }
+.slk-tm-c3 { background: var(--slk-cat-3); }
+.slk-tm-c4 { background: var(--slk-cat-4); }
+.slk-tm-c5 { background: var(--slk-cat-5); }
+.slk-tm-c6 { background: var(--slk-cat-6); }
+.slk-tm-c7 { background: var(--slk-cat-7); }
+.slk-tm-c8 { background: var(--slk-cat-8); }
+.slk-tm-bad  { background: var(--slk-heat-bad); }
+.slk-tm-mid  { background: var(--slk-heat-mid); }
+.slk-tm-good { background: var(--slk-heat-good); }
+
+/* Funnel stage chips, in the detail table */
+.slk-stage { font-weight: 700; letter-spacing: .04em; }
+.slk-stage-tofu { background: #e6f0fe; color: #1d4ed8; }
+.slk-stage-mofu { background: #fdf1e3; color: #a35a08; }
+.slk-stage-bofu { background: #e7f7ec; color: #16733a; }
+
+@media (prefers-reduced-motion: reduce) {
+    .slk-tm-tile { transition: none; }
+    .slk-tm-tile:hover { transform: none; }
+}
+
+/* A metric that resolved to nothing — present, but not competing for
+   attention with the counts that actually matter. */
+.slk-metric-zero { color: var(--slk-muted-text); font-weight: 600; }
+.slk-metric-muted { opacity: .65; }
+
+/* =====================================================================
+   Block-editor sidebar (js/editor-sidebar.js)
+   Same design language as the meta box, reflowed for a ~280px column:
+   every row stacks, nothing sits side by side except title + badge.
+   ===================================================================== */
+.slk-sb {
+    padding: 12px;
+    font-size: 13px;
+    color: #1e1e2b;
+}
+/* Both scan buttons share one row; each takes half the width. */
+.slk-sb-actions { display: flex; flex-direction: row; gap: 8px; margin-bottom: 14px; }
+.slk-sb-btn {
+    flex: 1 1 0; min-width: 0;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 32px; padding: 6px 10px;
+    border: 1.5px solid transparent; border-radius: var(--slk-radius-btn);
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .03em; cursor: pointer;
+    /* Same two-background trick as the Apply Link: white clipped to the
+       padding box over the gradient clipped to the border box, so only the
+       border shows gradient and the corners stay rounded. */
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        var(--slk-gradient) border-box;
+    color: var(--slk-primary);
+    transition: color .12s, background .12s;
+}
+.slk-sb-btn:hover:not(:disabled) {
+    background:
+        linear-gradient(var(--slk-tint-hover), var(--slk-tint-hover)) padding-box,
+        var(--slk-gradient) border-box;
+    color: var(--slk-primary-dark);
+}
+.slk-sb-btn.is-busy { opacity: .55; cursor: default; }
+.slk-sb-ico { width: 14px; height: 14px; flex: 0 0 auto; }
+
+/* Locked: flat and grey, never mistaken for "loading". */
+.slk-sb-btn.is-locked,
+.slk-sb-btn.is-locked:disabled,
+.slk-sb-btn.is-locked:hover {
+    background: var(--slk-muted);
+    border-color: var(--slk-muted-border);
+    color: var(--slk-muted-text);
+    cursor: not-allowed; opacity: 1;
+}
+
+.slk-sb-locked {
+    background: var(--slk-muted);
+    border: 1px solid var(--slk-muted-border);
+    border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 14px;
+    font-size: 12px; line-height: 1.5; color: #4a4a56;
+}
+.slk-sb-locked-line { display: block; }
+.slk-sb-locked-line + .slk-sb-locked-line { margin-top: 4px; }
+.slk-sb-locked-link { display: inline-block; margin-top: 8px; font-weight: 600; }
+
+.slk-sb-banner {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: var(--slk-tint-soft);
+    border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;
+    font-weight: 600; color: var(--slk-primary-deep); line-height: 1.4;
+}
+.slk-sb-banner .dashicons { flex: 0 0 auto; font-size: 17px; width: 17px; height: 17px; }
+
+/* The sidebar reuses the meta box's .slk-sg card wholesale, INCLUDING its
+   type scale — one size everywhere, so the two surfaces cannot drift. Only
+   what genuinely cannot survive a ~280px column is overridden: the title and
+   confidence badge stack instead of sharing a line, and the buttons split the
+   width. Do not add font-size rules here. */
+.slk-sb .slk-sg { padding: 10px 11px; }
+/* The head now holds only the title — the confidence badge moved down to sit
+   beside Apply Link, and the destination path took its place. */
+.slk-sb .slk-sg-head { margin-bottom: 4px; }
+
+/* The one place the shared type scale is overridden on purpose: in a 280px
+   column a 16px title truncates after a handful of words. Smaller type plus a
+   shorter arrow and tighter gutters buy roughly a third more title before the
+   ellipsis. */
+.slk-sb .slk-sg-title { width: 100%; font-size: 14px; gap: 7px; }
+.slk-sb .slk-sg-arrow { width: 20px; height: 8px; }
+
+/* Where this link actually goes. Sits directly under the title so the pair
+   reads as "destination, and its address". */
+.slk-sb-dest {
+    display: block;
+    font-size: 11.5px; line-height: 1.35;
+    color: var(--slk-sg-ink-soft);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    margin-bottom: 8px;
+}
+.slk-sb-dest:hover { color: var(--slk-primary); text-decoration: underline; }
+
+/* Badge left, button pushed to the right edge. */
+.slk-sb .slk-sg-actions { justify-content: space-between; align-items: center; }
+.slk-sb .slk-conf { font-size: 11px; padding: 4px 9px; }
+.slk-sb .slk-sg-actions { gap: 8px; }
+
+/* Style is inherited from .slk-btn-apply; only the layout differs here. */
+.slk-sb .slk-btn-apply { flex: 0 0 auto; padding: 6px 16px; text-align: center; }
+.slk-sb .slk-sg-err { color: var(--slk-sg-bad-ink); font-size: 12px; margin-bottom: 8px; line-height: 1.4; }
+
+/* --- legacy sidebar card (kept for the skeleton/loading state) --- */
+.slk-sb-card {
+    border: 1px solid #e6e6ec;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #fff;
+    transition: border-color .12s, box-shadow .12s;
+}
+.slk-sb-card:hover { border-color: var(--slk-tint-border-2); box-shadow: 0 1px 6px rgba(30,30,43,.06); }
+.slk-sb-card.is-added { background: #f6fdf8; border-color: #bfe6cb; }
+
+.slk-sb-card-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.slk-sb-title { flex: 1 1 auto; font-weight: 700; line-height: 1.35; word-break: break-word; }
+.slk-sb-match {
+    flex: 0 0 auto; align-self: flex-start;
+    padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.slk-sb-match-high { background: #e7f7ec; color: #16733a; }
+.slk-sb-match-mid  { background: #fdf3e3; color: #94620d; }
+.slk-sb-match-low  { background: #fdeaea; color: #a32020; }
+
+.slk-sb-anchor-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 6px; }
+.slk-sb-anchor-label { color: #6b6b78; font-size: 12px; }
+.slk-sb-anchor {
+    background: var(--slk-tint); color: var(--slk-primary-deep);
+    padding: 2px 9px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; word-break: break-word;
+}
+.slk-sb-path {
+    color: #7a7a88; font-size: 12px; margin-bottom: 10px;
+    overflow-wrap: anywhere;
+}
+.slk-sb-card-err { color: #a32020; font-size: 12px; margin-bottom: 8px; line-height: 1.4; }
+
+.slk-sb-add {
+    width: 100%; min-height: 32px; padding: 6px 14px;
+    border: 0; border-radius: var(--slk-radius-btn);
+    background: linear-gradient(100deg, var(--slk-grad-from) 0%, var(--slk-grad-to) 100%);
+    color: #fff; font-size: 11.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .03em; cursor: pointer;
+}
+.slk-sb-add:hover:not(:disabled) { filter: brightness(1.08); }
+.slk-sb-add.is-done {
+    background: #e7f7ec; color: #16733a; cursor: default;
+}
+
+.slk-sb-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; flex-wrap: wrap;
+    border-top: 1px solid #e6e6ec; padding-top: 10px; margin-top: 4px;
+    font-size: 12px; color: #7a7a88;
+}
+.slk-sb-link {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    color: var(--slk-primary); font-weight: 600; font-size: 12px;
+}
+.slk-sb-link:hover { text-decoration: underline; }
+
+.slk-sb-empty, .slk-sb-note { color: #6b6b78; font-size: 12px; line-height: 1.5; }
+.slk-sb-error { color: #a32020; font-size: 12px; margin-bottom: 10px; }
+
+.slk-sb-skel-row {
+    height: 92px; border-radius: 10px; margin-bottom: 10px;
+    background: linear-gradient(90deg, #f2f2f5 25%, #e9e9ef 37%, #f2f2f5 63%);
+    background-size: 400% 100%;
+    animation: slk-shimmer 1.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .slk-sb-skel-row { animation: none; }
+    .slk-sb-btn, .slk-sb-card, .slk-sb-add { transition: none; }
+}
+
+.slk-metabox .button.slk-scan-btn,
+.postbox-header .button.slk-scan-btn {
+    padding: 6px 16px;
+    font-size: 11.5px;
+    line-height: 1.2;
+    min-height: 30px;
+    border-radius: var(--slk-radius-btn);
+    letter-spacing: .03em;
+}
+.postbox-header .button.slk-scan-btn .dashicons {
+    font-size: 15px; width: 15px; height: 15px;
+}
+
+/* No dead space at the top of the panel */
+.slk-metabox { padding-top: 0; }
+.slk-metabox-intro,
+.slk-metabox .slk-scan-status:empty { display: none; }
+.slk-scan-status { margin: 0 0 10px; min-height: 0; }
+.slk-scan-status:not(:has(.slk-status:not(:empty))) { margin: 0; }
+.slk-metabox .slk-suggestions:first-child { margin-top: 0; }
+.slk-status { margin-left: 10px; color: #646970; }
+.slk-suggestions { margin-top: 12px; }
+.slk-suggestion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    background: #fff;
+}
+.slk-suggestion .slk-sugg-main { flex: 1; min-width: 0; }
+.slk-suggestion .slk-phrase { font-weight: 600; }
+.slk-suggestion .slk-target { color: #646970; font-size: 12px; display: block; margin-top: 2px; }
+.slk-suggestion .slk-score {
+    background: var(--slk-tint);
+    color: var(--slk-primary-deep);
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 11px;
+    margin-left: 6px;
+}
+.slk-suggestion.slk-inserted { opacity: .55; }
+
+/* ---------------------------------------------------------------------------
+   Trends
+   ------------------------------------------------------------------------ */
+/* The four metrics are one set and belong on one row; 165px is the widest
+   minimum that still fits four across the admin content column. */
+.slk-trend-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 12px; margin: 18px 0 22px; }
+.slk-trend-tile {
+    display: block; padding: 13px 15px 9px; background: #fff; border: 1px solid #e2e6ec;
+    border-radius: 8px; text-decoration: none; color: inherit; transition: border-color .12s, box-shadow .12s;
+}
+.slk-trend-tile:hover { border-color: #c3cad6; box-shadow: 0 1px 3px rgba(16,24,40,.06); color: inherit; }
+.slk-trend-tile.is-active { border-color: #3858e9; box-shadow: 0 0 0 1px #3858e9; }
+.slk-trend-label { display: block; font-size: 12.5px; color: #6b7280; font-weight: 500; }
+.slk-trend-row { display: flex; align-items: baseline; gap: 8px; margin: 3px 0 2px; }
+.slk-trend-now { font-size: 25px; font-weight: 700; line-height: 1.1; color: #111827; letter-spacing: -.02em; }
+.slk-trend-delta { font-size: 12.5px; font-weight: 600; }
+.slk-trend-good { color: #15803d; }
+.slk-trend-bad { color: #dc2626; }
+.slk-spark { display: block; width: 100%; height: 34px; margin-top: 2px; }
+.slk-trend-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+.slk-trend-head .slk-tabs { margin: 0; }
+.slk-chart-wrap { background: #fff; border: 1px solid #e2e6ec; border-radius: 8px; padding: 10px 8px 4px; overflow-x: auto; }
+.slk-chart { display: block; width: 100%; height: auto; min-width: 480px; }
+.slk-trend-verdict { font-size: 13.5px; color: #4b5563; margin: 12px 0 0; }
+.slk-trend-inline { font-size: 11.5px; font-weight: 600; margin-left: 4px; }
+.slk-block-link { font-size: 13px; text-decoration: none; white-space: nowrap; }
