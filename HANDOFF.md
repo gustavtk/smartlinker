@@ -283,6 +283,44 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Instant subpage navigation (v0.56.0)
+
+Asked for directly: *"the settings tabs load without even a second of buffer —
+that is how I want all pages to load."*
+
+The settings tabs are instant because **every panel is already in the page**;
+switching is pure DOM. That cannot be copied to the subpages, and there is a
+comment in `templates/settings.php` saying so — each section runs real
+queries, and rendering seventeen up front would make the first load far worse
+than the clicks it saved.
+
+So the wait is removed rather than the work:
+
+- **Prefetch on intent.** `pointerenter`, `focusin` and `touchstart` start the
+  fetch before the click. There is typically 150–400ms between a pointer
+  reaching a link and the button going down, which on a remote server is most
+  of the round trip. Keyboard users get the same head start rather than being
+  the slow path; `touchstart` buys ~100ms on a phone, where there is no hover
+  at all.
+- **A 30-second cache**, so revisiting a page costs nothing and shows no
+  loading state. Short on purpose: a section is a report, and showing a stale
+  one is worse than waiting for a fresh one.
+- **Invalidated on any write.** A jQuery `ajaxSuccess` hook clears the whole
+  cache after any `slk_*` action, and any form submit does the same. Applying
+  a link changes the reports, the orphan list and the opportunity count at
+  once, and there is no cheap way to know which cached sections are wrong —
+  throwing the lot away costs one fetch; a stale number costs trust in every
+  number.
+
+**Measured in the browser:** hovering fires one request and de-duplicates on a
+second hover; the click that follows costs **0 network requests** and renders
+in 71ms of pure DOM work; after a data-changing AJAX call the same section
+correctly refetches.
+
+Only links inside `.slk-app` are touched — WordPress's own admin menu is
+excluded, as are anything with a nonce (those are actions, and still take the
+full page path).
+
 ## The same cache bug, found in a second place (v0.55.3)
 
 The reporter mentioned the previous version *"worked after clearing the
