@@ -148,8 +148,10 @@ class Slk_Query
             user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
             reverted TINYINT(1) NOT NULL DEFAULT 0,
             created DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+            batch VARCHAR(32) NOT NULL DEFAULT '',
             PRIMARY KEY  (id),
             KEY post_id (post_id),
+            KEY batch (batch),
             KEY created (created)
         ) {$charset_collate};";
 
