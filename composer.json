@@ -10,7 +10,9 @@
         "phpunit/phpunit": "^9.6"
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "bin/test.sh",
+        "test:php": "phpunit",
+        "test:js": "node --test \"tests/js/*.test.mjs\""
     },
     "config": {
         "optimize-autoloader": true

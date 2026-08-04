@@ -283,6 +283,43 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## JavaScript tests (`tests/js/`, v0.49.0)
+
+22 tests, no browser, no npm install, no build step — `node:test` is built
+into Node 18+. `composer test` (or `bin/test.sh`) now runs PHP and JS together;
+`bin/test.sh` is the single command worth remembering.
+
+**They load the real shipped file.** `tests/js/harness.mjs` runs
+`js/admin-ui.js` inside `node:vm` with a stub jQuery, then reads
+`window.SlkBridge`. Copying the functions into the test would have been far
+easier and worth nothing — it would pass forever while the real file drifted.
+Only one stub has behaviour: `$('<div>').text(s).html()`, the file's
+HTML-escape idiom, which has to escape properly or every assertion about
+generated markup is meaningless. The harness also supplies **no `wp.i18n`**, so
+loading it at all exercises the fallback path.
+
+`SlkBridge` gained `buildAnchor` and `replaceFirstOutsideTags`. Those two
+rewrite the user's post content and are the riskiest code in the file — their
+failure modes are quiet ones: a corrupted URL, a nested anchor, the wrong
+occurrence replaced. None of it looks like an error; it looks like the post.
+
+**Verified the tests actually bite.** Deleting the `insideAnchor` guard from
+`replaceFirstOutsideTags` fails 4 tests across 2 suites. A test suite that has
+never been seen to fail is a decoration.
+
+**A limitation found and documented, not silently "fixed":** a phrase that
+begins or ends with a non-word character can never match, because `\b` needs a
+word/non-word transition and there is none between `+` and a space. So `C++`
+and `#wordpress` are unlinkable. Left as-is deliberately — the PHP side
+(`Slk_Link`, `Slk_AI`, `Slk_TargetKeyword`) uses the same `\b…\b` construction
+and behaves identically, verified directly. The engines agreeing matters more
+than the edge case: a link the editor inserts must be one the server would
+have inserted too. **If this is ever changed, change both.**
+
+Not covered: the DOM-heavy half of `admin-ui.js` (event handlers, SPA
+navigation, rendering) and `editor-sidebar.js`, which needs a React renderer.
+Those still rely on driving a browser by hand.
+
 ## Click-log retention and throttling (`core/Slk/ClickTracker.php`, v0.48.0)
 
 `wp_slk_clicks` was the one table in the plugin written by people who are not
@@ -1063,10 +1100,11 @@ it a worklist like Link Opportunities rather than a report.
 ## Tests (`tests/`, v0.22.0)
 
 ```bash
-composer install && ./vendor/bin/phpunit --testdox
+composer install && bin/test.sh
 ```
 
-210 tests, no database, no WordPress, runs in ~90ms.
+**210 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
 harness needs MySQL and a WP checkout, which makes the suite slow and

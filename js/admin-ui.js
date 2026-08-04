@@ -2161,6 +2161,20 @@
         isBlockEditor: function () { return !!blockEditor(); },
         strengthOf: strengthOf,
 
+        /*
+         * The two pure functions behind insert(), exposed so tests/js can
+         * exercise them directly.
+         *
+         * They are the riskiest code in this file: replaceFirstOutsideTags()
+         * rewrites the user's post content, and getting it wrong corrupts a
+         * URL, nests an anchor, or silently edits the wrong occurrence — none
+         * of which look like failures until someone reads the published page.
+         * A seam that lets them be tested without a browser is worth the two
+         * extra keys.
+         */
+        buildAnchor: buildAnchor,
+        replaceFirstOutsideTags: replaceFirstOutsideTags,
+
         /**
          * Insert phrase -> url into the editor's own content.
          * @return {string|null} null on success, else a human-readable error.
