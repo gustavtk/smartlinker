@@ -1,0 +1,4403 @@
+# Copyright (C) 2026 SmartLinker
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: SmartLinker 0.43.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smartlinker\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-04T10:57:15+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: smartlinker\n"
+
+#. Plugin Name of the plugin
+#. Author of the plugin
+#: smartlinker.php
+#: core/Slk/Base.php:138
+#: core/Slk/Base.php:139
+msgid "SmartLinker"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: smartlinker.php
+msgid "https://example.com/smartlinker"
+msgstr ""
+
+#. Description of the plugin
+#: smartlinker.php
+msgid "Build smart internal links to and from your content, auto-link keywords, track clicks, and report on your site's internal linking."
+msgstr ""
+
+#: core/Slk/Activity.php:87
+msgid "Link added"
+msgstr ""
+
+#: core/Slk/Activity.php:88
+msgid "Link repointed"
+msgstr ""
+
+#: core/Slk/Activity.php:89
+msgid "Anchor changed"
+msgstr ""
+
+#: core/Slk/Activity.php:90
+msgid "Link removed"
+msgstr ""
+
+#: core/Slk/Activity.php:150
+#, php-format
+msgid "Post %d (deleted)"
+msgstr ""
+
+#: core/Slk/Activity.php:178
+msgid "That entry is no longer in the log."
+msgstr ""
+
+#: core/Slk/Activity.php:181
+msgid "Already undone."
+msgstr ""
+
+#: core/Slk/Activity.php:187
+msgid "That post no longer exists."
+msgstr ""
+
+#: core/Slk/Activity.php:190
+#: core/Slk/AI.php:701
+#: core/Slk/Anchor.php:281
+#: core/Slk/Base.php:75
+#: core/Slk/Diagnose.php:421
+#: core/Slk/Error.php:394
+#: core/Slk/Error.php:440
+#: core/Slk/Report.php:228
+#: core/Slk/Scan.php:162
+#: core/Slk/Suggestion.php:285
+#: core/Slk/Suggestion.php:897
+#: core/Slk/Suggestion.php:910
+#: core/Slk/Suggestion.php:1173
+#: core/Slk/TargetKeyword.php:185
+#: core/Slk/TargetKeyword.php:230
+#: core/Slk/TargetKeyword.php:326
+#: core/Slk/URLChanger.php:158
+msgid "Permission denied."
+msgstr ""
+
+#: core/Slk/Activity.php:196
+msgid "This post has been edited since, so undoing would discard that work. Open the post and remove the link by hand."
+msgstr ""
+
+#: core/Slk/Admin.php:21
+#: templates/dashboard.php:30
+msgid "Dashboard"
+msgstr ""
+
+#: core/Slk/Admin.php:22
+#: core/Slk/Base.php:107
+msgid "Reports"
+msgstr ""
+
+#: core/Slk/Admin.php:23
+#: core/Slk/Base.php:108
+#: templates/clusters.php:13
+msgid "Topic Clusters"
+msgstr ""
+
+#: core/Slk/Admin.php:24
+#: core/Slk/Base.php:109
+#: templates/opportunities.php:27
+msgid "Link Opportunities"
+msgstr ""
+
+#: core/Slk/Admin.php:25
+#: core/Slk/Base.php:110
+#: core/Slk/Dashboard.php:164
+#: templates/orphans.php:9
+msgid "Orphaned Posts"
+msgstr ""
+
+#: core/Slk/Admin.php:26
+msgid "Inbound Links"
+msgstr ""
+
+#: core/Slk/Admin.php:27
+#: core/Slk/Base.php:112
+#: core/Slk/Dashboard.php:210
+#: templates/ai.php:8
+#: templates/meta_box.php:24
+msgid "AI Suggestions"
+msgstr ""
+
+#: core/Slk/Admin.php:28
+#: core/Slk/Base.php:126
+#: templates/diagnose.php:8
+msgid "Why not?"
+msgstr ""
+
+#: core/Slk/Admin.php:29
+#: core/Slk/Base.php:113
+#: core/Slk/Dashboard.php:226
+#: templates/money_pages.php:8
+msgid "Money Pages"
+msgstr ""
+
+#: core/Slk/Admin.php:30
+#: core/Slk/Base.php:114
+#: templates/target_keywords.php:15
+msgid "Target Keywords"
+msgstr ""
+
+#: core/Slk/Admin.php:31
+#: core/Slk/Base.php:115
+#: core/Slk/Dashboard.php:218
+msgid "Auto-Linking"
+msgstr ""
+
+#: core/Slk/Admin.php:32
+msgid "Link Map"
+msgstr ""
+
+#: core/Slk/Admin.php:33
+#: core/Slk/Base.php:117
+#: templates/url_changer.php:8
+msgid "URL Changer"
+msgstr ""
+
+#: core/Slk/Admin.php:34
+#: core/Slk/Base.php:121
+msgid "Search Console"
+msgstr ""
+
+#: core/Slk/Admin.php:35
+#: core/Slk/Base.php:122
+#: templates/external_sites.php:8
+msgid "External Sites"
+msgstr ""
+
+#: core/Slk/Admin.php:36
+#: core/Slk/Base.php:128
+#: templates/activity.php:15
+msgid "Activity"
+msgstr ""
+
+#: core/Slk/Admin.php:37
+#: core/Slk/Base.php:129
+#: core/Slk/Base.php:277
+#: templates/settings.php:33
+msgid "Settings"
+msgstr ""
+
+#: core/Slk/Admin.php:95
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: core/Slk/AI.php:85
+msgid "AI suggestions need an OpenAI API key before they can run."
+msgstr ""
+
+#: core/Slk/AI.php:86
+msgid "Add one under SmartLinker → Settings → AI. The key is stored in your own site’s database, and every scan is billed to your own OpenAI account."
+msgstr ""
+
+#: core/Slk/AI.php:91
+msgid "AI suggestions are switched off for this site."
+msgstr ""
+
+#: core/Slk/AI.php:92
+msgid "Your API key is already saved — turn the feature on under SmartLinker → Settings → AI."
+msgstr ""
+
+#: core/Slk/AI.php:230
+msgid "No OpenAI API key configured. Add one in SmartLinker → Settings."
+msgstr ""
+
+#: core/Slk/AI.php:234
+#: core/Slk/AI.php:517
+#: core/Slk/Link.php:23
+#: core/Slk/TargetKeyword.php:238
+msgid "Post not found."
+msgstr ""
+
+#: core/Slk/AI.php:356
+#: core/Slk/AI.php:599
+msgid "Anchor chosen by AI."
+msgstr ""
+
+#: core/Slk/AI.php:444
+#: core/Slk/AI.php:489
+#: core/Slk/Cluster.php:380
+#: core/Slk/Embedding.php:238
+#: core/Slk/TargetKeyword.php:273
+#, php-format
+msgid "OpenAI API error (HTTP %d)."
+msgstr ""
+
+#: core/Slk/AI.php:452
+#: core/Slk/AI.php:453
+#: core/Slk/Cluster.php:388
+msgid "Could not parse the AI response."
+msgstr ""
+
+#: core/Slk/AI.php:495
+#: core/Slk/TargetKeyword.php:280
+msgid "Could not read the AI response."
+msgstr ""
+
+#: core/Slk/AI.php:513
+#: core/Slk/AI.php:619
+#: core/Slk/Cluster.php:331
+#: core/Slk/Embedding.php:181
+#: core/Slk/TargetKeyword.php:233
+msgid "Add an OpenAI API key under Settings → AI first."
+msgstr ""
+
+#: core/Slk/AI.php:664
+msgid "Suggested by AI."
+msgstr ""
+
+#: core/Slk/Anchor.php:285
+msgid "No anchor given."
+msgstr ""
+
+#: core/Slk/Base.php:70
+msgid "Unknown section."
+msgstr ""
+
+#: core/Slk/Base.php:106
+msgid "SmartLinker Dashboard"
+msgstr ""
+
+#: core/Slk/Base.php:111
+#: templates/inbound.php:8
+msgid "Add Inbound Internal Links"
+msgstr ""
+
+#: core/Slk/Base.php:116
+#: templates/link_map.php:7
+msgid "Bulk Link Map"
+msgstr ""
+
+#: core/Slk/Base.php:118
+#: core/Slk/Dashboard.php:173
+#: core/Slk/Reports.php:35
+#: templates/broken.php:17
+msgid "Broken Links"
+msgstr ""
+
+#: core/Slk/Base.php:119
+#: core/Slk/Reports.php:36
+#: templates/clicks.php:18
+msgid "Link Clicks"
+msgstr ""
+
+#: core/Slk/Base.php:120
+#: templates/domains.php:13
+msgid "Domain Report"
+msgstr ""
+
+#: core/Slk/Base.php:123
+#: templates/placement.php:28
+msgid "Link Placement"
+msgstr ""
+
+#: core/Slk/Base.php:124
+#: core/Slk/Reports.php:39
+#: templates/cannibal.php:24
+msgid "Cannibalisation"
+msgstr ""
+
+#: core/Slk/Base.php:125
+#: core/Slk/Reports.php:38
+#: templates/equity.php:43
+msgid "Link Equity"
+msgstr ""
+
+#: core/Slk/Base.php:127
+#: core/Slk/Reports.php:34
+#: templates/anchors.php:21
+msgid "Anchor Text"
+msgstr ""
+
+#: core/Slk/Base.php:190
+msgid "SmartLinker — Internal Link Suggestions"
+msgstr ""
+
+#: core/Slk/Base.php:244
+msgid "Finding suggestions…"
+msgstr ""
+
+#: core/Slk/Base.php:245
+#: core/Slk/Suggestion.php:943
+msgid "Link inserted."
+msgstr ""
+
+#: core/Slk/Base.php:246
+msgid "Something went wrong."
+msgstr ""
+
+#: core/Slk/Base.php:247
+msgid "No suggestions found for this content yet."
+msgstr ""
+
+#: core/Slk/Cluster.php:216
+msgid "Unclustered"
+msgstr ""
+
+#: core/Slk/Cluster.php:247
+msgid "No category"
+msgstr ""
+
+#: core/Slk/Cluster.php:336
+msgid "Not enough published content to cluster yet."
+msgstr ""
+
+#: core/Slk/Cluster.php:387
+msgid "Could not parse the AI clustering response."
+msgstr ""
+
+#: core/Slk/Cluster.php:407
+msgid "The AI returned no usable clusters."
+msgstr ""
+
+#: core/Slk/Dashboard.php:133
+msgid "Excellent"
+msgstr ""
+
+#: core/Slk/Dashboard.php:136
+msgid "Good"
+msgstr ""
+
+#: core/Slk/Dashboard.php:139
+#: templates/dashboard.php:195
+#: templates/dashboard.php:202
+msgid "Needs Work"
+msgstr ""
+
+#: core/Slk/Dashboard.php:141
+msgid "Poor"
+msgstr ""
+
+#: core/Slk/Dashboard.php:153
+msgid "Run your first scan"
+msgstr ""
+
+#: core/Slk/Dashboard.php:154
+msgid "SmartLinker has not indexed your links yet. Scan the site to unlock every report and suggestion."
+msgstr ""
+
+#: core/Slk/Dashboard.php:157
+msgid "Scan now"
+msgstr ""
+
+#: core/Slk/Dashboard.php:165
+msgid "Brings your hidden pages back to life by adding internal links that help visitors and search engines find them."
+msgstr ""
+
+#: core/Slk/Dashboard.php:168
+#: core/Slk/Dashboard.php:177
+#: core/Slk/Dashboard.php:186
+#: core/Slk/Dashboard.php:221
+#: core/Slk/Dashboard.php:229
+msgid "Review"
+msgstr ""
+
+#: core/Slk/Dashboard.php:174
+msgid "Dead links waste crawl budget and frustrate readers. Repair or remove them to protect your rankings."
+msgstr ""
+
+#: core/Slk/Dashboard.php:182
+msgid "Link Coverage"
+msgstr ""
+
+#: core/Slk/Dashboard.php:183
+msgid "Fills in missing internal links across your site so your content works together and performs better in search."
+msgstr ""
+
+#: core/Slk/Dashboard.php:202
+msgid "Click Tracking"
+msgstr ""
+
+#: core/Slk/Dashboard.php:203
+msgid "See which internal links actually get clicked, so you can improve weak anchor text."
+msgstr ""
+
+#: core/Slk/Dashboard.php:205
+msgid "Enable"
+msgstr ""
+
+#: core/Slk/Dashboard.php:211
+msgid "Add your OpenAI key for semantic, context-aware link suggestions with relevance scores."
+msgstr ""
+
+#: core/Slk/Dashboard.php:213
+msgid "Set up"
+msgstr ""
+
+#: core/Slk/Dashboard.php:219
+msgid "Create keyword rules once and let SmartLinker link them everywhere, automatically."
+msgstr ""
+
+#: core/Slk/Dashboard.php:227
+msgid "Mark your revenue pages so SmartLinker prioritises building links to them."
+msgstr ""
+
+#: core/Slk/Dashboard.php:234
+msgid "Search Console Priorities"
+msgstr ""
+
+#: core/Slk/Dashboard.php:235
+msgid "Import your Search Console export to find high-impression pages that lack internal links."
+msgstr ""
+
+#: core/Slk/Dashboard.php:237
+msgid "Import"
+msgstr ""
+
+#: core/Slk/Dashboard.php:251
+msgid "Good morning"
+msgstr ""
+
+#: core/Slk/Dashboard.php:254
+msgid "Good afternoon"
+msgstr ""
+
+#: core/Slk/Dashboard.php:256
+msgid "Good evening"
+msgstr ""
+
+#: core/Slk/Diagnose.php:47
+msgid "One of those posts no longer exists."
+msgstr ""
+
+#: core/Slk/Diagnose.php:50
+msgid "That is the same post twice."
+msgstr ""
+
+#: core/Slk/Diagnose.php:50
+msgid "A post cannot link to itself."
+msgstr ""
+
+#: core/Slk/Diagnose.php:67
+msgid "The source post has no linkable text."
+msgstr ""
+
+#: core/Slk/Diagnose.php:68
+msgid "Anchors are taken from the words already in the post, so an empty or image-only post can never produce one."
+msgstr ""
+
+#: core/Slk/Diagnose.php:97
+msgid "That post is not eligible as a link target."
+msgstr ""
+
+#: core/Slk/Diagnose.php:98
+msgid "It is excluded before anything is scored — usually because its post type is not enabled, it is not published, or it is listed under Settings → Content Ignoring."
+msgstr ""
+
+#: core/Slk/Diagnose.php:101
+msgid "Check Settings → General → post types."
+msgstr ""
+
+#: core/Slk/Diagnose.php:102
+msgid "Check Settings → Content Ignoring for its post ID or category."
+msgstr ""
+
+#: core/Slk/Diagnose.php:103
+msgid "Confirm the post is published, not draft or private."
+msgstr ""
+
+#: core/Slk/Diagnose.php:114
+msgid "This post already links there."
+msgstr ""
+
+#: core/Slk/Diagnose.php:115
+msgid "SmartLinker never suggests a second link to a page the post already points at — that is one wasted click, not two useful ones."
+msgstr ""
+
+#: core/Slk/Diagnose.php:125
+msgid "You rejected this suggestion on this post."
+msgstr ""
+
+#: core/Slk/Diagnose.php:126
+msgid "Rejections stick, so the same suggestion is not offered again on this post."
+msgstr ""
+
+#: core/Slk/Diagnose.php:128
+msgid "Clear it by editing the post and removing the _slk_rejected custom field, or reject fewer things here."
+msgstr ""
+
+#: core/Slk/Diagnose.php:153
+msgid "No usable anchor text exists in this post."
+msgstr ""
+
+#: core/Slk/Diagnose.php:154
+msgid "This is the most common reason, and it is deliberate. An anchor has to be words already in your writing that also name the destination — SmartLinker will not invent a phrase or link something vague just to make a suggestion appear."
+msgstr ""
+
+#. translators: %s: comma-separated phrases
+#: core/Slk/Diagnose.php:160
+#, php-format
+msgid "It looked for these and found none of them in your text: %s"
+msgstr ""
+
+#: core/Slk/Diagnose.php:165
+msgid "The target has no focus keyword and its title is all filler words, so there was nothing to look for."
+msgstr ""
+
+#: core/Slk/Diagnose.php:166
+msgid "Fix it by mentioning the destination naturally in this post, or by giving the target a focus keyword that matches how you actually write about it."
+msgstr ""
+
+#: core/Slk/Diagnose.php:178
+msgid "everywhere on the site"
+msgstr ""
+
+#: core/Slk/Diagnose.php:179
+msgid "for this destination"
+msgstr ""
+
+#. translators: 1: anchor text, 2: scope
+#: core/Slk/Diagnose.php:184
+#, php-format
+msgid "You have retired “%1$s” %2$s."
+msgstr ""
+
+#: core/Slk/Diagnose.php:188
+msgid "Rejecting the same suggestion on enough different posts retires it site-wide."
+msgstr ""
+
+#: core/Slk/Diagnose.php:190
+msgid "Bring it back under Reports → Anchor Text → Suppressed, or raise the thresholds in Settings → General."
+msgstr ""
+
+#: core/Slk/Diagnose.php:219
+msgid "The two posts are not related enough."
+msgstr ""
+
+#. translators: 1: similarity, 2: floor, 3: which measure
+#: core/Slk/Diagnose.php:222
+#, php-format
+msgid "Similarity is %1$s, and the floor is %2$s (%3$s)."
+msgstr ""
+
+#: core/Slk/Diagnose.php:226
+msgid "measured by meaning, from the semantic index"
+msgstr ""
+
+#: core/Slk/Diagnose.php:227
+msgid "measured by shared distinctive vocabulary"
+msgstr ""
+
+#: core/Slk/Diagnose.php:233
+msgid "Build the semantic index under Settings → AI. Word overlap misses posts that mean the same thing in different words, which is usually what is happening here."
+msgstr ""
+
+#: core/Slk/Diagnose.php:234
+msgid "Lower “minimum relatedness” in Settings if you want a wider net — at the cost of looser suggestions."
+msgstr ""
+
+#. translators: %s: the anchor
+#: core/Slk/Diagnose.php:258
+#, php-format
+msgid "“%s” is too common on this site to identify anything."
+msgstr ""
+
+#. translators: 1: percentage, 2: threshold percentage
+#: core/Slk/Diagnose.php:263
+#, php-format
+msgid "It appears in %1$s%% of your posts; the limit is %2$s%%. A word that shows up almost everywhere tells a reader nothing about where the link goes."
+msgstr ""
+
+#: core/Slk/Diagnose.php:269
+msgid "Give the target a multi-word focus keyword so a more specific anchor can be found."
+msgstr ""
+
+#: core/Slk/Diagnose.php:270
+msgid "Or raise “maximum anchor document share” in Settings."
+msgstr ""
+
+#: core/Slk/Diagnose.php:312
+msgid "It scored below your confidence threshold."
+msgstr ""
+
+#. translators: 1: score, 2: threshold
+#: core/Slk/Diagnose.php:315
+#, php-format
+msgid "Confidence is %1$s and the minimum is %2$s. Everything else passed — an anchor was found and the posts are related. This is the closest kind of near-miss."
+msgstr ""
+
+#. translators: 1: tier name, 2: weight
+#: core/Slk/Diagnose.php:323
+#, php-format
+msgid "The anchor came from “%1$s”, which is weighted %2$s. An exact focus-keyword match scores highest."
+msgstr ""
+
+#: core/Slk/Diagnose.php:327
+msgid "Lower “minimum confidence” in Settings, or put the two posts in the same topic cluster."
+msgstr ""
+
+#: core/Slk/Diagnose.php:339
+msgid "It is being suggested."
+msgstr ""
+
+#. translators: 1: anchor, 2: confidence
+#: core/Slk/Diagnose.php:342
+#, php-format
+msgid "Anchor “%1$s”, confidence %2$s."
+msgstr ""
+
+#: core/Slk/Diagnose.php:355
+msgid "It passed every check but was crowded out."
+msgstr ""
+
+#. translators: %d: the per-post limit
+#: core/Slk/Diagnose.php:358
+#, php-format
+msgid "Only the top %d suggestions are kept per post, and other candidates scored higher."
+msgstr ""
+
+#: core/Slk/Diagnose.php:362
+msgid "Raise “suggestions per post” in Settings → General."
+msgstr ""
+
+#: core/Slk/Diagnose.php:426
+msgid "Pick both a source post and a destination."
+msgstr ""
+
+#: core/Slk/Embedding.php:243
+msgid "The embeddings response could not be read."
+msgstr ""
+
+#: core/Slk/Equity.php:274
+#: core/Slk/Placement.php:161
+msgid "(no title)"
+msgstr ""
+
+#: core/Slk/Error.php:324
+msgid "You renamed this URL — this is where it went."
+msgstr ""
+
+#: core/Slk/Error.php:335
+msgid "Where this redirect currently lands — links straight there instead."
+msgstr ""
+
+#: core/Slk/Error.php:347
+msgid "A published post with the same slug."
+msgstr ""
+
+#: core/Slk/Error.php:383
+msgid "Its title contains the anchor text."
+msgstr ""
+
+#: core/Slk/Error.php:402
+#: core/Slk/Error.php:437
+msgid "Link not found — re-run the scan."
+msgstr ""
+
+#: core/Slk/Error.php:446
+msgid "Enter a URL to link to instead."
+msgstr ""
+
+#: core/Slk/Error.php:451
+msgid "Enter the anchor text you want."
+msgstr ""
+
+#: core/Slk/Error.php:454
+msgid "Unknown action."
+msgstr ""
+
+#: core/Slk/Error.php:460
+msgid "That link is no longer in the post — re-run the scan."
+msgstr ""
+
+#: core/Slk/Error.php:471
+#, php-format
+msgid "Removed the link on “%s”"
+msgstr ""
+
+#: core/Slk/Error.php:473
+#, php-format
+msgid "Renamed anchor “%1$s” to “%2$s”"
+msgstr ""
+
+#: core/Slk/Error.php:474
+#, php-format
+msgid "Repointed “%1$s” to %2$s"
+msgstr ""
+
+#: core/Slk/Error.php:481
+msgid "Link removed, text kept."
+msgstr ""
+
+#: core/Slk/Error.php:482
+msgid "Anchor text updated."
+msgstr ""
+
+#: core/Slk/Error.php:482
+msgid "Link repointed."
+msgstr ""
+
+#. translators: %d: how many links now point at the same page
+#: core/Slk/Error.php:498
+#, php-format
+msgid "Note: this post now links to that page %d times."
+msgstr ""
+
+#: core/Slk/History.php:177
+#: templates/anchors.php:33
+#: templates/report.php:61
+#: templates/trends.php:63
+#: templates/trends.php:156
+msgid "Internal links"
+msgstr ""
+
+#: core/Slk/History.php:177
+msgid "Links between your own posts."
+msgstr ""
+
+#: core/Slk/History.php:178
+#: templates/dashboard.php:193
+#: templates/trends.php:64
+msgid "Orphaned posts"
+msgstr ""
+
+#: core/Slk/History.php:178
+msgid "Published posts nothing links to."
+msgstr ""
+
+#: core/Slk/History.php:179
+#: templates/dashboard.php:200
+#: templates/report.php:75
+#: templates/trends.php:65
+msgid "Broken links"
+msgstr ""
+
+#: core/Slk/History.php:179
+msgid "Links that no longer resolve."
+msgstr ""
+
+#: core/Slk/History.php:180
+#: templates/trends.php:66
+msgid "Open opportunities"
+msgstr ""
+
+#: core/Slk/History.php:180
+msgid "Suggested links you have not applied yet."
+msgstr ""
+
+#: core/Slk/History.php:311
+msgid "Trend over time"
+msgstr ""
+
+#: core/Slk/Link.php:31
+msgid "Could not find the phrase in the post content."
+msgstr ""
+
+#: core/Slk/PostsColumn.php:97
+#: core/Slk/PostsColumn.php:102
+#: templates/autolinks.php:83
+#: templates/domains.php:39
+#: templates/placement.php:117
+msgid "Links"
+msgstr ""
+
+#: core/Slk/PostsColumn.php:204
+msgid "Nothing links to this post — find posts that should"
+msgstr ""
+
+#. translators: %d: number of links
+#: core/Slk/PostsColumn.php:207
+#, php-format
+msgid "%d post links to this one"
+msgid_plural "%d posts link to this one"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of links
+#: core/Slk/PostsColumn.php:219
+#, php-format
+msgid "%d internal link out of this post"
+msgid_plural "%d internal links out of this post"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of links
+#: core/Slk/PostsColumn.php:230
+#, php-format
+msgid "%d link to another site"
+msgid_plural "%d links to other sites"
+msgstr[0] ""
+msgstr[1] ""
+
+#: core/Slk/PostsColumn.php:238
+msgid "orphan"
+msgstr ""
+
+#: core/Slk/Reports.php:33
+msgid "Overview"
+msgstr ""
+
+#: core/Slk/Reports.php:37
+msgid "Domains"
+msgstr ""
+
+#: core/Slk/Reports.php:40
+msgid "Placement"
+msgstr ""
+
+#: core/Slk/Reports.php:41
+#: templates/trends.php:26
+msgid "Trends"
+msgstr ""
+
+#: core/Slk/Scan.php:37
+msgid "Indexing links"
+msgstr ""
+
+#: core/Slk/Scan.php:43
+msgid "Checking links"
+msgstr ""
+
+#: core/Slk/Scan.php:51
+msgid "Finding opportunities"
+msgstr ""
+
+#: core/Slk/Scan.php:57
+msgid "Comparing posts"
+msgstr ""
+
+#: core/Slk/Scan.php:168
+msgid "Unknown scan."
+msgstr ""
+
+#: core/Slk/Schedule.php:49
+msgid "Once weekly"
+msgstr ""
+
+#: core/Slk/Schedule.php:170
+msgid "Nothing changed since the last run."
+msgstr ""
+
+#. translators: %d: number of links
+#: core/Slk/Schedule.php:320
+#, php-format
+msgid "%d link broke"
+msgid_plural "%d links broke"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of opportunities
+#: core/Slk/Schedule.php:327
+#, php-format
+msgid "%d new link opportunity"
+msgid_plural "%d new link opportunities"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of posts
+#: core/Slk/Schedule.php:334
+#, php-format
+msgid "%d new orphan"
+msgid_plural "%d new orphans"
+msgstr[0] ""
+msgstr[1] ""
+
+#: core/Slk/Schedule.php:340
+#, php-format
+msgid "[%s] Internal links: nothing new"
+msgstr ""
+
+#: core/Slk/Schedule.php:342
+#, php-format
+msgid "[%1$s] %2$s"
+msgstr ""
+
+#: core/Slk/Settings.php:135
+msgid "General Settings"
+msgstr ""
+
+#: core/Slk/Settings.php:136
+msgid "Content Ignoring"
+msgstr ""
+
+#: core/Slk/Settings.php:137
+msgid "Scheduled Scans"
+msgstr ""
+
+#: core/Slk/Settings.php:138
+msgid "AI Settings"
+msgstr ""
+
+#: core/Slk/Setup.php:48
+msgid "Index the links you already have"
+msgstr ""
+
+#: core/Slk/Setup.php:49
+msgid "Every report reads from this index. Until it is built, the reports are empty because nothing has been looked at yet — not because there is nothing to find."
+msgstr ""
+
+#. translators: %s: number of links
+#: core/Slk/Setup.php:55
+#, php-format
+msgid "%s link indexed."
+msgid_plural "%s links indexed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: core/Slk/Setup.php:58
+msgid "Nothing indexed yet."
+msgstr ""
+
+#: core/Slk/Setup.php:60
+msgid "Scan my links"
+msgstr ""
+
+#: core/Slk/Setup.php:64
+msgid "Decide where focus keywords come from"
+msgstr ""
+
+#: core/Slk/Setup.php:65
+msgid "Anchor text is chosen from what a page is actually about. A focus keyword is the strongest signal available, and without one SmartLinker falls back to the title, which is weaker."
+msgstr ""
+
+#. translators: 1: number of posts, 2: detected SEO plugins
+#: core/Slk/Setup.php:71
+#, php-format
+msgid "%1$s posts have a focus keyword%2$s."
+msgstr ""
+
+#: core/Slk/Setup.php:73
+#, php-format
+msgid "read live from %s"
+msgstr ""
+
+#. translators: %s: detected SEO plugin names
+#: core/Slk/Setup.php:78
+#, php-format
+msgid "%s found, but no keywords are set yet."
+msgstr ""
+
+#: core/Slk/Setup.php:81
+msgid "No SEO plugin detected. You can set keywords yourself under Target Keywords."
+msgstr ""
+
+#: core/Slk/Setup.php:84
+msgid "Import from my SEO plugin"
+msgstr ""
+
+#: core/Slk/Setup.php:85
+msgid "Set target keywords"
+msgstr ""
+
+#: core/Slk/Setup.php:89
+msgid "Find your first linking opportunities"
+msgstr ""
+
+#: core/Slk/Setup.php:90
+msgid "This is the payoff: every place on the site where one post already says something that names another post, ready to apply in one click."
+msgstr ""
+
+#. translators: 1: opportunities found, 2: posts scanned
+#: core/Slk/Setup.php:96
+#, php-format
+msgid "%1$s opportunities across %2$s posts."
+msgstr ""
+
+#: core/Slk/Setup.php:100
+msgid "Not scanned yet."
+msgstr ""
+
+#: core/Slk/Setup.php:102
+#: templates/opportunities.php:73
+msgid "Scan the site"
+msgstr ""
+
+#: core/Slk/Setup.php:106
+msgid "Build the semantic index"
+msgstr ""
+
+#: core/Slk/Setup.php:107
+msgid "Lets SmartLinker match posts that mean the same thing in different words, and unlocks the cannibalisation report. It calls OpenAI and is billed to your own account, which is why it is optional — everything else works without it."
+msgstr ""
+
+#. translators: %s: number of posts
+#: core/Slk/Setup.php:113
+#, php-format
+msgid "%s posts in the semantic index."
+msgstr ""
+
+#: core/Slk/Setup.php:116
+msgid "Not built. Needs an OpenAI API key."
+msgstr ""
+
+#: core/Slk/Setup.php:118
+msgid "Set up AI"
+msgstr ""
+
+#: core/Slk/Sitemap.php:40
+msgid "External site"
+msgstr ""
+
+#. translators: %s: the anchor text
+#: core/Slk/Suggestion.php:306
+#, php-format
+msgid "Got it — “%s” will not be suggested anywhere now."
+msgstr ""
+
+#: core/Slk/Suggestion.php:310
+msgid "Got it — that pairing will not be suggested anywhere now."
+msgstr ""
+
+#: core/Slk/Suggestion.php:397
+msgid "same topic cluster"
+msgstr ""
+
+#: core/Slk/Suggestion.php:403
+msgid "related cluster"
+msgstr ""
+
+#. translators: 1: similarity 0-1, 2: overlap percentage, 3: cluster note, 4: anchor note
+#: core/Slk/Suggestion.php:450
+#: core/Slk/Suggestion.php:1078
+#, php-format
+msgid "Post similarity %1$s, keyword overlap %2$d%%%3$s. %4$s"
+msgstr ""
+
+#: core/Slk/Suggestion.php:463
+msgid "Anchor matches target keyword exactly."
+msgstr ""
+
+#: core/Slk/Suggestion.php:465
+msgid "Anchor matches part of target keyword."
+msgstr ""
+
+#: core/Slk/Suggestion.php:467
+msgid "Phrase taken from the target post title."
+msgstr ""
+
+#: core/Slk/Suggestion.php:469
+msgid "Salient noun phrase from target post."
+msgstr ""
+
+#. translators: 1: similarity 0-1, 2: overlap percentage, 3: cluster note, 4: how the anchor was chosen, 5: equity note
+#: core/Slk/Suggestion.php:723
+#, php-format
+msgid "Post similarity %1$s, keyword overlap %2$d%%%3$s. %4$s%5$s"
+msgstr ""
+
+#: core/Slk/Suggestion.php:762
+msgid "Imported page from a site you own. Anchor matches its title."
+msgstr ""
+
+#: core/Slk/Suggestion.php:806
+msgid "Archive for a topic this article belongs to. Anchor from the term name."
+msgstr ""
+
+#: core/Slk/Suggestion.php:843
+msgid "Ranked above a closer match because few links point here."
+msgstr ""
+
+#: core/Slk/Suggestion.php:913
+msgid "Missing phrase or URL."
+msgstr ""
+
+#. translators: 1: anchor text, 2: destination title
+#: core/Slk/Suggestion.php:934
+#, php-format
+msgid "Linked “%1$s” to %2$s"
+msgstr ""
+
+#: templates/activity.php:17
+msgid "Every change SmartLinker wrote to a post directly, newest first — and a way to undo it. Links you insert from the editor are not listed: you review those before saving, and WordPress revisions already cover them."
+msgstr ""
+
+#: templates/activity.php:21
+msgid "Change undone and the post re-indexed."
+msgstr ""
+
+#. translators: %s: link to the settings page
+#: templates/activity.php:31
+#, php-format
+msgid "The activity log is switched off, so nothing new is being recorded and applied changes cannot be undone. Turn it back on under %s."
+msgstr ""
+
+#: templates/activity.php:32
+#: templates/anchors.php:84
+msgid "Settings → General"
+msgstr ""
+
+#: templates/activity.php:41
+msgid "Nothing yet"
+msgstr ""
+
+#: templates/activity.php:42
+msgid "Apply a link from Link Opportunities, Orphaned Posts or Broken Links and it will appear here."
+msgstr ""
+
+#: templates/activity.php:50
+#: templates/placement.php:114
+#: templates/target_keywords.php:90
+msgid "Post"
+msgstr ""
+
+#: templates/activity.php:52
+#: templates/placement.php:12
+msgid "All posts"
+msgstr ""
+
+#: templates/activity.php:62
+#: templates/activity.php:110
+msgid "Change"
+msgstr ""
+
+#: templates/activity.php:64
+msgid "All changes"
+msgstr ""
+
+#: templates/activity.php:74
+msgid "State"
+msgstr ""
+
+#: templates/activity.php:76
+msgid "Any"
+msgstr ""
+
+#: templates/activity.php:77
+msgid "Not undone"
+msgstr ""
+
+#: templates/activity.php:78
+#: templates/activity.php:157
+msgid "Undone"
+msgstr ""
+
+#: templates/activity.php:82
+#: templates/opportunities.php:95
+msgid "Filter"
+msgstr ""
+
+#: templates/activity.php:84
+#: templates/opportunities.php:97
+msgid "Clear"
+msgstr ""
+
+#. translators: 1: rows shown, 2: total entries, 3: retention cap
+#: templates/activity.php:91
+#, php-format
+msgid "Showing %1$s of %2$s kept (limit %3$s)"
+msgstr ""
+
+#: templates/activity.php:103
+msgid "Nothing matches that filter"
+msgstr ""
+
+#: templates/activity.php:104
+msgid "Widen it, or clear the filter to see everything."
+msgstr ""
+
+#: templates/activity.php:111
+msgid "What happened"
+msgstr ""
+
+#: templates/activity.php:112
+#: templates/equity.php:139
+msgid "In"
+msgstr ""
+
+#: templates/activity.php:113
+#: templates/url_changer.php:72
+msgid "When"
+msgstr ""
+
+#: templates/activity.php:114
+#: templates/anchors.php:103
+#: templates/anchors.php:259
+#: templates/autolinks.php:89
+#: templates/broken.php:78
+#: templates/external_sites.php:54
+#: templates/money_pages.php:47
+#: templates/opportunities.php:119
+#: templates/orphans.php:39
+#: templates/report.php:125
+#: templates/target_keywords.php:47
+#: templates/target_keywords.php:174
+msgid "Actions"
+msgstr ""
+
+#: templates/activity.php:146
+msgid "deleted"
+msgstr ""
+
+#: templates/activity.php:159
+msgid "The post was deleted, so there is nothing left to restore."
+msgstr ""
+
+#: templates/activity.php:160
+msgid "Post deleted"
+msgstr ""
+
+#: templates/activity.php:163
+msgid "The post has been edited since, so undoing would discard that work."
+msgstr ""
+
+#: templates/activity.php:164
+msgid "Edited since"
+msgstr ""
+
+#: templates/activity.php:168
+msgid "Undo this change? The post goes back to how it was."
+msgstr ""
+
+#: templates/activity.php:169
+msgid "Undo"
+msgstr ""
+
+#: templates/ai.php:10
+msgid "Let AI read a post and recommend the internal links that genuinely belong in it — scored by how relevant each target page is, with the anchor text already chosen. Pick a post below, or use the “AI Suggestions” button inside any editor."
+msgstr ""
+
+#: templates/ai.php:15
+msgid "Add your OpenAI API key to get started."
+msgstr ""
+
+#: templates/ai.php:17
+msgid "AI suggestions run on your own OpenAI account, so calls are billed to you and no data passes through us."
+msgstr ""
+
+#: templates/ai.php:21
+msgid "Open Settings"
+msgstr ""
+
+#: templates/ai.php:28
+#: templates/autolinks.php:88
+#: templates/broken.php:77
+#: templates/money_pages.php:46
+#: templates/settings.php:280
+#: templates/target_keywords.php:92
+msgid "Status"
+msgstr ""
+
+#: templates/ai.php:29
+msgid "Connected"
+msgstr ""
+
+#: templates/ai.php:30
+msgid "API key saved"
+msgstr ""
+
+#: templates/ai.php:33
+#: templates/settings.php:353
+msgid "Model"
+msgstr ""
+
+#: templates/ai.php:35
+msgid "Billed to your OpenAI account"
+msgstr ""
+
+#: templates/ai.php:38
+msgid "Editor button"
+msgstr ""
+
+#: templates/ai.php:40
+msgid "On"
+msgstr ""
+
+#: templates/ai.php:40
+msgid "Off"
+msgstr ""
+
+#: templates/ai.php:42
+msgid "Shows in the post editor"
+msgstr ""
+
+#: templates/ai.php:48
+msgid "Semantic index"
+msgstr ""
+
+#: templates/ai.php:49
+msgid "An embedding is a numeric fingerprint of a page's meaning. With one stored per post, SmartLinker can tell that \"which grinder should I buy\" belongs with \"Choosing a Burr Grinder\" — two pages that share no words at all."
+msgstr ""
+
+#: templates/ai.php:50
+msgid "Without it, suggestions fall back to comparing vocabulary, which only finds pages that happen to use the same words."
+msgstr ""
+
+#: templates/ai.php:51
+msgid "Indexing is a one-off cost per post, re-run only when you edit that post. At current OpenAI prices a 500-post site costs well under one cent in total."
+msgstr ""
+
+#: templates/ai.php:55
+msgid "Semantic index is up to date."
+msgstr ""
+
+#: templates/ai.php:57
+msgid "Semantic index cleared."
+msgstr ""
+
+#: templates/ai.php:64
+#, php-format
+msgid "%1$d of %2$d posts indexed (%3$d%%)."
+msgstr ""
+
+#: templates/ai.php:69
+#, php-format
+msgid "%d still needs indexing."
+msgid_plural "%d still need indexing."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/ai.php:82
+msgid "Build semantic index"
+msgstr ""
+
+#: templates/ai.php:85
+msgid "Up to date"
+msgstr ""
+
+#: templates/ai.php:89
+msgid "Delete every stored embedding? You can rebuild them, at the cost of another round of API calls."
+msgstr ""
+
+#: templates/ai.php:90
+msgid "Clear index"
+msgstr ""
+
+#: templates/ai.php:97
+msgid "Analyse a post"
+msgstr ""
+
+#: templates/ai.php:100
+#: templates/inbound.php:18
+msgid "— Select a post or page —"
+msgstr ""
+
+#: templates/ai.php:107
+msgid "Get AI Suggestions"
+msgstr ""
+
+#: templates/anchors.php:12
+msgid "All anchors"
+msgstr ""
+
+#: templates/anchors.php:13
+msgid "Same words, different pages"
+msgstr ""
+
+#: templates/anchors.php:14
+msgid "Says nothing"
+msgstr ""
+
+#: templates/anchors.php:15
+msgid "Over-repeated"
+msgstr ""
+
+#: templates/anchors.php:16
+msgid "Pages with no variety"
+msgstr ""
+
+#: templates/anchors.php:17
+msgid "Suppressed"
+msgstr ""
+
+#: templates/anchors.php:23
+msgid "What your internal links actually say. Every other report asks whether a link exists — this one asks whether the words are doing any work. Nothing here is auto-fixed: these are judgement calls about writing, so each row links to the post."
+msgstr ""
+
+#: templates/anchors.php:29
+msgid "Distinct anchors"
+msgstr ""
+
+#: templates/anchors.php:37
+msgid "Point two ways"
+msgstr ""
+
+#: templates/anchors.php:41
+msgid "Say nothing"
+msgstr ""
+
+#: templates/anchors.php:56
+#: templates/broken.php:52
+#: templates/cannibal.php:91
+#: templates/domains.php:33
+#: templates/equity.php:84
+#: templates/placement.php:69
+#: templates/report.php:104
+#: templates/trends.php:139
+msgid "Export CSV"
+msgstr ""
+
+#: templates/anchors.php:57
+msgid "One row per anchor and destination, so a phrase pointing at three posts exports as three rows."
+msgstr ""
+
+#: templates/anchors.php:64
+msgid "Back in circulation — it can be suggested again."
+msgstr ""
+
+#. translators: 1: pair threshold, 2: anchor threshold
+#: templates/anchors.php:71
+#, php-format
+msgid "Anchors you have rejected often enough that SmartLinker stopped offering them. Turning down the same anchor and destination on %1$d different posts retires that pairing; turning down the same anchor on %2$d different posts retires the anchor everywhere. Nothing here is permanent — restore anything you want back."
+msgstr ""
+
+#. translators: %s: link to the settings page
+#: templates/anchors.php:83
+#, php-format
+msgid "Learning from rejections is switched off, so nothing is being suppressed. Anything already learned is kept and will apply again if you turn it back on under %s."
+msgstr ""
+
+#: templates/anchors.php:93
+msgid "Nothing suppressed"
+msgstr ""
+
+#: templates/anchors.php:94
+msgid "Reject the same suggestion on a few different posts and it will stop being offered site-wide."
+msgstr ""
+
+#: templates/anchors.php:100
+#: templates/broken.php:75
+#: templates/domains.php:67
+#: templates/opportunities.php:116
+msgid "Anchor"
+msgstr ""
+
+#: templates/anchors.php:101
+msgid "Not offered"
+msgstr ""
+
+#: templates/anchors.php:102
+msgid "You rejected it in"
+msgstr ""
+
+#: templates/anchors.php:121
+msgid "anywhere on the site"
+msgstr ""
+
+#: templates/anchors.php:123
+msgid "pointing at"
+msgstr ""
+
+#. translators: %d: number of posts
+#: templates/anchors.php:133
+#, php-format
+msgid "%d post"
+msgid_plural "%d posts"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/anchors.php:142
+#, php-format
+msgid " +%d more"
+msgstr ""
+
+#: templates/anchors.php:148
+msgid "Restore"
+msgstr ""
+
+#: templates/anchors.php:157
+msgid "On their way"
+msgstr ""
+
+#: templates/anchors.php:159
+msgid "Rejected before, but not yet on enough posts to be retired. Shown so a suppression is never a surprise."
+msgstr ""
+
+#. translators: 1: rejections so far, 2: rejections needed
+#: templates/anchors.php:170
+#, php-format
+msgid "rejected in %1$d of %2$d posts needed"
+msgstr ""
+
+#: templates/anchors.php:186
+msgid "Pages with four or more inbound links where every single one uses the identical anchor text. Search engines learn what a page is about partly from the words people use to link to it — when every link says the same thing, that page has no vocabulary around it."
+msgstr ""
+
+#: templates/anchors.php:193
+msgid "Nothing to flag"
+msgstr ""
+
+#: templates/anchors.php:194
+msgid "Every page with a few inbound links is described more than one way."
+msgstr ""
+
+#: templates/anchors.php:200
+#: templates/equity.php:136
+#: templates/money_pages.php:44
+#: templates/search_console.php:41
+msgid "Page"
+msgstr ""
+
+#: templates/anchors.php:201
+msgid "Always called"
+msgstr ""
+
+#: templates/anchors.php:202
+msgid "Inbound links"
+msgstr ""
+
+#: templates/anchors.php:223
+msgid "Nothing here"
+msgstr ""
+
+#: templates/anchors.php:226
+msgid "No internal links with anchor text have been indexed yet. Run a re-scan from the Links Report."
+msgstr ""
+
+#: templates/anchors.php:227
+msgid "Nothing matches this filter — which is the good outcome."
+msgstr ""
+
+#: templates/anchors.php:235
+msgid "The same words pointing at different pages. A reader who learned that a phrase means one article gets sent somewhere else by identical words, and a search engine has no idea which page the phrase belongs to."
+msgstr ""
+
+#: templates/anchors.php:239
+msgid "Anchors that describe nothing — \"click here\", \"read more\", \"this page\". The link still works; it just does no work. Replace them with words that name the destination."
+msgstr ""
+
+#. translators: %d: repeat threshold
+#: templates/anchors.php:246
+#, php-format
+msgid "The identical anchor pointing at one page %d times or more. Natural writing varies; a long run of exact repeats reads as a pattern whether or not it was meant that way."
+msgstr ""
+
+#: templates/anchors.php:256
+msgid "Anchor text"
+msgstr ""
+
+#: templates/anchors.php:257
+msgid "Used"
+msgstr ""
+
+#: templates/anchors.php:258
+msgid "Points at"
+msgstr ""
+
+#: templates/anchors.php:268
+msgid "This tells a reader nothing about where the link goes."
+msgstr ""
+
+#: templates/anchors.php:268
+msgid "says nothing"
+msgstr ""
+
+#: templates/anchors.php:271
+msgid "Repeated many times at the same destination."
+msgstr ""
+
+#: templates/anchors.php:271
+msgid "over-repeated"
+msgstr ""
+
+#. translators: %d: number of posts
+#: templates/anchors.php:277
+#, php-format
+msgid "in %d post"
+msgid_plural "in %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of destinations
+#: templates/anchors.php:291
+#, php-format
+msgid "%d different pages"
+msgstr ""
+
+#. translators: %d: number of further destinations
+#: templates/anchors.php:309
+#, php-format
+msgid "…and %d more"
+msgstr ""
+
+#: templates/anchors.php:317
+msgid "Where?"
+msgstr ""
+
+#: templates/autolinks.php:8
+msgid "Auto-Linking Rules"
+msgstr ""
+
+#: templates/autolinks.php:10
+msgid "Automatically turn a keyword into a link everywhere it appears in your content. Rules are applied on the frontend and never modify your stored posts."
+msgstr ""
+
+#: templates/autolinks.php:14
+msgid "Rule added."
+msgstr ""
+
+#: templates/autolinks.php:16
+msgid "Rule deleted."
+msgstr ""
+
+#: templates/autolinks.php:19
+#, php-format
+msgid "Imported %1$d rule(s), skipped %2$d."
+msgstr ""
+
+#: templates/autolinks.php:24
+msgid "Could not read the uploaded CSV file."
+msgstr ""
+
+#: templates/autolinks.php:30
+msgid "Export rules (CSV)"
+msgstr ""
+
+#: templates/autolinks.php:35
+msgid "Import rules (CSV)"
+msgstr ""
+
+#: templates/autolinks.php:37
+msgid "CSV columns: keyword, url, case_sensitive, partial_match, new_tab, nofollow, max_per_post, active"
+msgstr ""
+
+#: templates/autolinks.php:41
+msgid "Add a rule"
+msgstr ""
+
+#: templates/autolinks.php:46
+#: templates/autolinks.php:80
+#: templates/target_keywords.php:91
+#: templates/target_keywords.php:171
+msgid "Keyword"
+msgstr ""
+
+#: templates/autolinks.php:50
+msgid "Destination URL"
+msgstr ""
+
+#: templates/autolinks.php:54
+msgid "Options"
+msgstr ""
+
+#: templates/autolinks.php:56
+msgid "Case sensitive"
+msgstr ""
+
+#: templates/autolinks.php:57
+msgid "Match inside words (partial)"
+msgstr ""
+
+#: templates/autolinks.php:57
+msgid "Off, \"cat\" only matches the whole word \"cat\". On, it also matches inside words like \"catalogue\" — usually not what you want."
+msgstr ""
+
+#: templates/autolinks.php:58
+#: templates/settings.php:118
+msgid "Open in new tab"
+msgstr ""
+
+#: templates/autolinks.php:59
+msgid "rel=\"nofollow\""
+msgstr ""
+
+#: templates/autolinks.php:60
+msgid "Max links per post:"
+msgstr ""
+
+#: templates/autolinks.php:60
+msgid "How many times this keyword may be linked within a single post. 1 is usually right — repeating the same link adds no SEO value."
+msgstr ""
+
+#: templates/autolinks.php:65
+msgid "Add Rule"
+msgstr ""
+
+#: templates/autolinks.php:69
+msgid "Existing rules"
+msgstr ""
+
+#: templates/autolinks.php:73
+msgid "No auto-link rules yet"
+msgstr ""
+
+#: templates/autolinks.php:74
+msgid "Add a keyword above and SmartLinker will link it automatically wherever it appears."
+msgstr ""
+
+#: templates/autolinks.php:81
+msgid "Destination"
+msgstr ""
+
+#: templates/autolinks.php:82
+msgid "Max"
+msgstr ""
+
+#: templates/autolinks.php:84
+msgid "How many links this rule currently creates across your published content."
+msgstr ""
+
+#: templates/autolinks.php:85
+msgid "Auto-links are added as the page is rendered and are never written into your posts, so this is counted by running the rule — the same matching the frontend uses, respecting case sensitivity, partial matching and the max-per-post cap."
+msgstr ""
+
+#: templates/autolinks.php:86
+msgid "A paused rule still shows a number: that is what you would get by activating it."
+msgstr ""
+
+#: templates/autolinks.php:98
+msgid "partial"
+msgstr ""
+
+#: templates/autolinks.php:99
+msgid "new tab"
+msgstr ""
+
+#: templates/autolinks.php:121
+msgid "no matches"
+msgstr ""
+
+#: templates/autolinks.php:126
+msgid "Active"
+msgstr ""
+
+#: templates/autolinks.php:126
+msgid "Paused"
+msgstr ""
+
+#: templates/autolinks.php:130
+msgid "Pause"
+msgstr ""
+
+#: templates/autolinks.php:130
+msgid "Activate"
+msgstr ""
+
+#: templates/autolinks.php:131
+#: templates/external_sites.php:71
+#: templates/target_keywords.php:199
+msgid "Delete"
+msgstr ""
+
+#: templates/autolinks.php:131
+msgid "Delete this rule?"
+msgstr ""
+
+#: templates/broken.php:10
+#, php-format
+msgid "All (%d)"
+msgstr ""
+
+#: templates/broken.php:11
+msgid "404 Only"
+msgstr ""
+
+#: templates/broken.php:12
+#: templates/broken.php:37
+msgid "Redirects"
+msgstr ""
+
+#: templates/broken.php:13
+msgid "Timeouts"
+msgstr ""
+
+#: templates/broken.php:20
+#: templates/cannibal.php:30
+#: templates/opportunities.php:49
+msgid "Scan complete."
+msgstr ""
+
+#: templates/broken.php:24
+msgid "Every broken link is a dead end for users and wastes crawl budget. SmartLinker checks each link and reports the exact response."
+msgstr ""
+
+#: templates/broken.php:26
+#, php-format
+msgid "Last scan: %s."
+msgstr ""
+
+#: templates/broken.php:33
+msgid "404 Not Found"
+msgstr ""
+
+#: templates/broken.php:37
+msgid "These links still work, but each one costs an extra hop for visitors and search crawlers. Updating them to the final URL is a quick win."
+msgstr ""
+
+#: templates/broken.php:41
+msgid "Timeout / errors"
+msgstr ""
+
+#: templates/broken.php:45
+msgid "Other errors"
+msgstr ""
+
+#: templates/broken.php:50
+#: templates/dashboard.php:224
+msgid "Scan for broken links"
+msgstr ""
+
+#: templates/broken.php:67
+msgid "Nothing to fix here"
+msgstr ""
+
+#: templates/broken.php:68
+msgid "No links match this filter."
+msgstr ""
+
+#: templates/broken.php:74
+#: templates/domains.php:66
+msgid "Found in"
+msgstr ""
+
+#: templates/broken.php:76
+#: templates/domains.php:68
+msgid "URL"
+msgstr ""
+
+#: templates/broken.php:77
+msgid "The HTTP response the link returned. 404 = page not found, 5xx = server error, 3xx = redirect."
+msgstr ""
+
+#: templates/broken.php:100
+#: templates/orphans.php:57
+msgid "Fix"
+msgstr ""
+
+#: templates/cannibal.php:11
+msgid "All clashes"
+msgstr ""
+
+#: templates/cannibal.php:12
+msgid "Direct"
+msgstr ""
+
+#: templates/cannibal.php:13
+#: templates/cannibal.php:56
+msgid "Same keyword"
+msgstr ""
+
+#: templates/cannibal.php:14
+#: templates/cannibal.php:20
+msgid "Overlapping content"
+msgstr ""
+
+#: templates/cannibal.php:18
+msgid "Direct clash"
+msgstr ""
+
+#: templates/cannibal.php:19
+msgid "Same target keyword"
+msgstr ""
+
+#: templates/cannibal.php:26
+msgid "Posts on your own site competing with each other. When two articles chase the same query a search engine has to pick one — usually not the one you would have chosen — and both rank worse than a single stronger article would. Internal linking makes it worse, not better: your links get split between the rivals, so neither accumulates enough authority to win."
+msgstr ""
+
+#. translators: %s: link to AI settings
+#: templates/cannibal.php:38
+#, php-format
+msgid "Only keyword clashes are shown. Finding posts that mean the same thing without sharing a keyword needs the semantic index — build it under %s. That is the half that finds the clashes you do not already know about."
+msgstr ""
+
+#: templates/cannibal.php:39
+msgid "Settings → AI"
+msgstr ""
+
+#: templates/cannibal.php:48
+msgid "Competing pairs"
+msgstr ""
+
+#: templates/cannibal.php:52
+msgid "Direct clashes"
+msgstr ""
+
+#: templates/cannibal.php:60
+msgid "Overlapping only"
+msgstr ""
+
+#: templates/cannibal.php:73
+msgid "Re-scan for overlaps"
+msgstr ""
+
+#: templates/cannibal.php:73
+msgid "Scan for overlapping content"
+msgstr ""
+
+#. translators: 1: scanned, 2: total, 3: date
+#: templates/cannibal.php:80
+#, php-format
+msgid "Compared %1$s of %2$s posts. Last run %3$s."
+msgstr ""
+
+#: templates/cannibal.php:87
+msgid "Keyword clashes are listed without scanning. The scan adds posts that overlap in meaning."
+msgstr ""
+
+#: templates/cannibal.php:98
+msgid "Nothing competing"
+msgstr ""
+
+#: templates/cannibal.php:101
+msgid "No two posts share a focus keyword, and none of the pairs compared cover the same ground."
+msgstr ""
+
+#: templates/cannibal.php:102
+msgid "Nothing in this category — which is the good outcome."
+msgstr ""
+
+#: templates/cannibal.php:109
+msgid "Clash"
+msgstr ""
+
+#: templates/cannibal.php:110
+msgid "These two posts compete"
+msgstr ""
+
+#: templates/cannibal.php:111
+msgid "What to do"
+msgstr ""
+
+#. translators: %s: cosine similarity as a percentage
+#: templates/cannibal.php:132
+#, php-format
+msgid "%s%% alike"
+msgstr ""
+
+#: templates/cannibal.php:144
+#: templates/cannibal.php:152
+msgid "no focus keyword"
+msgstr ""
+
+#: templates/cannibal.php:148
+msgid "vs"
+msgstr ""
+
+#: templates/cannibal.php:161
+msgid "Merge them."
+msgstr ""
+
+#: templates/cannibal.php:162
+msgid "Same keyword and near-identical content — there is no reading of this where two pages help."
+msgstr ""
+
+#: templates/cannibal.php:164
+msgid "Re-target one."
+msgstr ""
+
+#: templates/cannibal.php:165
+msgid "The content differs, so give one a keyword that matches what it actually covers."
+msgstr ""
+
+#: templates/cannibal.php:167
+msgid "Differentiate or merge."
+msgstr ""
+
+#: templates/cannibal.php:168
+msgid "Different keywords, but they say much the same thing."
+msgstr ""
+
+#. translators: 1: title to keep, 2: its equity, 3: the other's equity
+#: templates/cannibal.php:175
+#, php-format
+msgid "Keep “%1$s” as the main page — it already holds more link value (%2$s× vs %3$s×)."
+msgstr ""
+
+#: templates/cannibal.php:181
+msgid "Neither has a link-value advantage — pick on merit, then point the other at it."
+msgstr ""
+
+#: templates/clicks.php:8
+msgid "Last 7 days"
+msgstr ""
+
+#: templates/clicks.php:9
+#: templates/dashboard.php:106
+msgid "Last 30 days"
+msgstr ""
+
+#: templates/clicks.php:10
+msgid "All time"
+msgstr ""
+
+#: templates/clicks.php:20
+msgid "Which internal links actually get clicked — not just which ones exist. Use this to spot links that need better anchor text or placement."
+msgstr ""
+
+#: templates/clicks.php:33
+msgid "No clicks recorded for this period yet. Click tracking must be enabled in Settings, and data appears once visitors start following your internal links."
+msgstr ""
+
+#: templates/clicks.php:39
+msgid "Total clicks"
+msgstr ""
+
+#: templates/clicks.php:43
+msgid "Distinct links clicked"
+msgstr ""
+
+#: templates/clicks.php:56
+msgid "anchor:"
+msgstr ""
+
+#: templates/clicks.php:58
+#, php-format
+msgid "from %d post"
+msgid_plural "from %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/clicks.php:61
+#, php-format
+msgid "%s click"
+msgid_plural "%s clicks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/clusters.php:15
+msgid "See your whole site as one map. Spot the holes. Build real topical authority."
+msgstr ""
+
+#: templates/clusters.php:20
+#, php-format
+msgid "AI grouped your content into %1$d themes in %2$ds."
+msgstr ""
+
+#: templates/clusters.php:25
+msgid "Back to your own categories."
+msgstr ""
+
+#: templates/clusters.php:33
+msgid "Clusters"
+msgstr ""
+
+#: templates/clusters.php:37
+msgid "Pillars"
+msgstr ""
+
+#: templates/clusters.php:37
+msgid "The most-linked-to post in each cluster — the page the rest of your site already treats as the main one. A cluster with nothing pointing into it has no pillar yet."
+msgstr ""
+
+#: templates/clusters.php:41
+#: templates/clusters.php:126
+#: templates/domains.php:40
+#: templates/trends.php:160
+#: templates/url_changer.php:69
+msgid "Posts"
+msgstr ""
+
+#: templates/clusters.php:45
+#: templates/clusters.php:129
+#: templates/trends.php:157
+msgid "Orphans"
+msgstr ""
+
+#: templates/clusters.php:50
+msgid "Map view"
+msgstr ""
+
+#: templates/clusters.php:52
+msgid "Treemap"
+msgstr ""
+
+#: templates/clusters.php:55
+msgid "Heatmap"
+msgstr ""
+
+#: templates/clusters.php:58
+msgid "Treemap sizes every cluster by how many posts it holds, so you can see the shape of your site at a glance."
+msgstr ""
+
+#: templates/clusters.php:59
+msgid "Heatmap keeps the same sizes but colours each cluster by how well it is linked together: the share of its posts that another post in the same cluster links to. Red means the posts sit side by side without referencing each other — that is the hole."
+msgstr ""
+
+#: templates/clusters.php:65
+msgid "AI themed"
+msgstr ""
+
+#: templates/clusters.php:67
+msgid "Use my categories"
+msgstr ""
+
+#: templates/clusters.php:70
+msgid "From your categories"
+msgstr ""
+
+#: templates/clusters.php:80
+msgid "Re-theme with AI"
+msgstr ""
+
+#: templates/clusters.php:81
+msgid "Theme with AI"
+msgstr ""
+
+#: templates/clusters.php:94
+msgid "The map below still works — it is built from your own categories."
+msgstr ""
+
+#: templates/clusters.php:102
+msgid "Nothing to map yet"
+msgstr ""
+
+#: templates/clusters.php:103
+msgid "Publish some content, then run a scan from the Links Report so SmartLinker can see how it connects."
+msgstr ""
+
+#: templates/clusters.php:118
+msgid "Topic clusters sized by number of posts"
+msgstr ""
+
+#: templates/clusters.php:121
+msgid "Cluster detail"
+msgstr ""
+
+#: templates/clusters.php:125
+msgid "Cluster"
+msgstr ""
+
+#: templates/clusters.php:127
+msgid "Linked up"
+msgstr ""
+
+#: templates/clusters.php:127
+msgid "The share of this cluster's posts that another post in the same cluster links to. Low means the posts are not referencing each other yet."
+msgstr ""
+
+#: templates/clusters.php:128
+msgid "Pillar"
+msgstr ""
+
+#: templates/clusters.php:154
+#, php-format
+msgid "%d inbound link"
+msgid_plural "%d inbound links"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/clusters.php:158
+msgid "none yet"
+msgstr ""
+
+#: templates/dashboard.php:25
+msgid "vs previous 30 days"
+msgstr ""
+
+#: templates/dashboard.php:34
+msgid "Here is your latest internal linking snapshot."
+msgstr ""
+
+#: templates/dashboard.php:56
+#, php-format
+msgid "Impact: %s"
+msgstr ""
+
+#: templates/dashboard.php:56
+msgid "High"
+msgstr ""
+
+#: templates/dashboard.php:56
+msgid "Medium"
+msgstr ""
+
+#: templates/dashboard.php:65
+msgid "Your internal linking is in great shape."
+msgstr ""
+
+#: templates/dashboard.php:66
+msgid "No orphaned posts, no broken links, and strong link coverage. Keep publishing."
+msgstr ""
+
+#: templates/dashboard.php:72
+msgid "Posts crawled"
+msgstr ""
+
+#: templates/dashboard.php:76
+#, php-format
+msgid "%s%% indexed of %s published"
+msgstr ""
+
+#: templates/dashboard.php:80
+msgid "Clicks tracked"
+msgstr ""
+
+#: templates/dashboard.php:83
+#: templates/dashboard.php:89
+#, php-format
+msgid "Previous 30 days: %s"
+msgstr ""
+
+#: templates/dashboard.php:86
+msgid "Links created (30d)"
+msgstr ""
+
+#: templates/dashboard.php:92
+msgid "Time saved this month"
+msgstr ""
+
+#: templates/dashboard.php:92
+msgid "An estimate: the number of links SmartLinker inserted in the last 30 days, multiplied by roughly 2 minutes of manual work per link."
+msgstr ""
+
+#: templates/dashboard.php:93
+msgid "hrs"
+msgstr ""
+
+#: templates/dashboard.php:94
+#, php-format
+msgid "Based on ~%d min of manual work per link."
+msgstr ""
+
+#: templates/dashboard.php:107
+msgid "See the full trend"
+msgstr ""
+
+#: templates/dashboard.php:120
+#: templates/trends.php:18
+msgid "no change"
+msgstr ""
+
+#: templates/dashboard.php:132
+msgid "Link Distribution"
+msgstr ""
+
+#: templates/dashboard.php:133
+#, php-format
+msgid "Total: %s links"
+msgstr ""
+
+#: templates/dashboard.php:144
+msgid "Internal Links"
+msgstr ""
+
+#: templates/dashboard.php:151
+msgid "External Links"
+msgstr ""
+
+#: templates/dashboard.php:158
+msgid "External ratio is low. Consider citing more relevant high-authority sources."
+msgstr ""
+
+#: templates/dashboard.php:160
+msgid "You link out more than you link internally. Adding internal links will keep more authority on your site."
+msgstr ""
+
+#: templates/dashboard.php:162
+msgid "Healthy balance between internal and external links."
+msgstr ""
+
+#: templates/dashboard.php:166
+msgid "No links indexed yet — run a scan to see your distribution."
+msgstr ""
+
+#: templates/dashboard.php:172
+msgid "Site health score"
+msgstr ""
+
+#: templates/dashboard.php:172
+msgid "A 0–100 summary of your internal linking: mostly link coverage, reduced by orphaned posts and broken links. Above 85 is excellent."
+msgstr ""
+
+#: templates/dashboard.php:175
+msgid "Overall internal linking health, weighted by coverage, orphans and broken links."
+msgstr ""
+
+#: templates/dashboard.php:176
+msgid "View breakdown"
+msgstr ""
+
+#: templates/dashboard.php:179
+msgid "Link quality score"
+msgstr ""
+
+#: templates/dashboard.php:179
+msgid "How well-connected your content is: the average number of internal links per post, plus how many posts link out at all. Aim for roughly 3 internal links per post."
+msgstr ""
+
+#: templates/dashboard.php:182
+msgid "Link density and how many posts link out to other content."
+msgstr ""
+
+#: templates/dashboard.php:183
+#: templates/dashboard.php:190
+msgid "View details"
+msgstr ""
+
+#: templates/dashboard.php:186
+msgid "Link coverage"
+msgstr ""
+
+#: templates/dashboard.php:186
+msgid "The share of your published content that has at least one internal link pointing at it. Pages with none are effectively invisible to search engines."
+msgstr ""
+
+#: templates/dashboard.php:189
+#, php-format
+msgid "%1$s of %2$s posts have at least one inbound internal link."
+msgstr ""
+
+#: templates/dashboard.php:195
+#: templates/dashboard.php:202
+msgid "All good"
+msgstr ""
+
+#: templates/dashboard.php:196
+msgid "Published items with no inbound internal links."
+msgstr ""
+
+#: templates/dashboard.php:197
+msgid "Connect posts"
+msgstr ""
+
+#: templates/dashboard.php:203
+msgid "Links that return an error and need updating or removing."
+msgstr ""
+
+#: templates/dashboard.php:204
+msgid "Fix links"
+msgstr ""
+
+#: templates/dashboard.php:210
+msgid "Quick actions"
+msgstr ""
+
+#: templates/dashboard.php:212
+msgid "Fix orphaned posts"
+msgstr ""
+
+#: templates/dashboard.php:215
+msgid "Get linking suggestions"
+msgstr ""
+
+#: templates/dashboard.php:218
+msgid "Run AI suggestions"
+msgstr ""
+
+#: templates/dashboard.php:221
+msgid "Re-scan the site"
+msgstr ""
+
+#: templates/dashboard.php:228
+msgid "Features you're not using"
+msgstr ""
+
+#: templates/dashboard.php:230
+msgid "Nice — every SmartLinker feature is set up."
+msgstr ""
+
+#: templates/diagnose.php:10
+msgid "When a link you expected does not appear, this shows you exactly which check it failed and what would have to change. It replays the same pipeline the engine uses, so the answer is the real reason, not a guess."
+msgstr ""
+
+#: templates/diagnose.php:15
+msgid "I am editing this post…"
+msgstr ""
+
+#: templates/diagnose.php:17
+msgid "Choose a post"
+msgstr ""
+
+#: templates/diagnose.php:27
+msgid "…and expected it to link to"
+msgstr ""
+
+#: templates/diagnose.php:29
+msgid "Choose a destination"
+msgstr ""
+
+#: templates/diagnose.php:36
+msgid "Explain"
+msgstr ""
+
+#: templates/domains.php:15
+msgid "Every external domain you link to across the site. Use it to audit your outbound link profile and see where your affiliate or reference links are concentrated."
+msgstr ""
+
+#: templates/domains.php:21
+msgid "External domains"
+msgstr ""
+
+#: templates/domains.php:25
+msgid "Outbound external links"
+msgstr ""
+
+#: templates/domains.php:30
+msgid "No external links indexed yet. Run a re-scan from the Links Report."
+msgstr ""
+
+#: templates/domains.php:38
+msgid "Domain"
+msgstr ""
+
+#: templates/domains.php:52
+msgid "Breakdown"
+msgstr ""
+
+#: templates/domains.php:62
+#, php-format
+msgid "Links to %s"
+msgstr ""
+
+#: templates/domains.php:74
+msgid "No links found."
+msgstr ""
+
+#: templates/domains.php:80
+#: templates/orphans.php:58
+#: templates/report.php:158
+msgid "Edit"
+msgstr ""
+
+#: templates/email_digest.php:24
+#: templates/email_digest.php:46
+msgid "internal links"
+msgstr ""
+
+#. translators: %s: date and time
+#: templates/email_digest.php:29
+#, php-format
+msgid "Scanned %s"
+msgstr ""
+
+#: templates/email_digest.php:37
+msgid "This is the first scheduled scan, so there is nothing to compare against yet. Here is where the site stands — from the next run onward this email will only report what changed."
+msgstr ""
+
+#: templates/email_digest.php:50
+msgid "broken"
+msgstr ""
+
+#: templates/email_digest.php:54
+msgid "orphans"
+msgstr ""
+
+#: templates/email_digest.php:60
+msgid "Nothing changed"
+msgstr ""
+
+#: templates/email_digest.php:62
+msgid "No links broke, no new orphans appeared, and no new linking opportunities turned up since the last scan."
+msgstr ""
+
+#. translators: %d: number of links
+#: templates/email_digest.php:71
+#, php-format
+msgid "%d link broke since the last scan"
+msgid_plural "%d links broke since the last scan"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/email_digest.php:80
+msgid "in"
+msgstr ""
+
+#. translators: %d: number of further links
+#: templates/email_digest.php:91
+#, php-format
+msgid "…and %d more."
+msgstr ""
+
+#. translators: %d: number of links
+#: templates/email_digest.php:104
+#, php-format
+msgid "%d broken link was fixed."
+msgid_plural "%d broken links were fixed."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of posts
+#: templates/email_digest.php:116
+#, php-format
+msgid "%d post has no links pointing to it"
+msgid_plural "%d posts have no links pointing to them"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of opportunities
+#: templates/email_digest.php:136
+#, php-format
+msgid "%d new linking opportunity"
+msgid_plural "%d new linking opportunities"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/email_digest.php:140
+msgid "Linking opportunities waiting"
+msgstr ""
+
+#. translators: %d: total opportunities
+#: templates/email_digest.php:158
+#, php-format
+msgid "%d in the full list."
+msgstr ""
+
+#: templates/email_digest.php:166
+msgid "Open SmartLinker"
+msgstr ""
+
+#. translators: %s: settings URL
+#: templates/email_digest.php:173
+#, php-format
+msgid "You are getting this because scheduled scans are on. Change or switch them off under Settings → Scheduled Scans: %s"
+msgstr ""
+
+#: templates/email_digest.php:174
+msgid "digest settings"
+msgstr ""
+
+#: templates/equity.php:13
+msgid "All pages"
+msgstr ""
+
+#: templates/equity.php:14
+msgid "Starved of value"
+msgstr ""
+
+#: templates/equity.php:15
+msgid "Buried deep"
+msgstr ""
+
+#: templates/equity.php:16
+#: templates/equity.php:70
+msgid "No content-link route"
+msgstr ""
+
+#: templates/equity.php:17
+msgid "Holding the most"
+msgstr ""
+
+#: templates/equity.php:45
+msgid "Where link value pools on your site, and how far each page sits from the front door. Orphans are pages with no inbound links; these are the pages whose inbound links are themselves worth very little — nearly as invisible, and far harder to spot by eye."
+msgstr ""
+
+#: templates/equity.php:48
+msgid "Both measures follow links written inside your post content — the ones you and SmartLinker place. Menus, category archives, blog pagination and your sitemap are not counted, so a page shown here as having no route is still findable by other means. What it does not have is an editorial path, and that is what carries link value."
+msgstr ""
+
+#: templates/equity.php:52
+#: templates/placement.php:37
+msgid "Recalculated."
+msgstr ""
+
+#: templates/equity.php:58
+msgid "Pages in the graph"
+msgstr ""
+
+#: templates/equity.php:62
+msgid "Average clicks deep"
+msgstr ""
+
+#: templates/equity.php:66
+#, php-format
+msgid "More than %d clicks"
+msgstr ""
+
+#: templates/equity.php:82
+#: templates/placement.php:67
+msgid "Recalculate"
+msgstr ""
+
+#. translators: 1: date, 2: where depth is measured from
+#: templates/equity.php:90
+#, php-format
+msgid "Built %1$s. Depth is counted from %2$s."
+msgstr ""
+
+#: templates/equity.php:93
+msgid "your static front page"
+msgstr ""
+
+#. translators: %d: number of posts
+#: templates/equity.php:96
+#, php-format
+msgid "the %d post listed on your blog home page"
+msgid_plural "the %d posts listed on your blog home page"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/equity.php:106
+msgid "Pages holding less than half the link value an average page here holds. Either few pages link to them, or the pages that do are themselves weak. Linking to these from a strong, related article is the single most useful thing you can do with an internal link."
+msgstr ""
+
+#: templates/equity.php:110
+msgid "Pages a visitor — or a crawler — has to click through several others to reach. Depth is about routes, not authority: a page can hold decent value and still be hard to arrive at."
+msgstr ""
+
+#: templates/equity.php:114
+msgid "No chain of in-content links reaches these from the front page. They are still reachable through your menu, category archives, blog pagination and sitemap — this is not \"invisible to Google\". What it means is that no article leads to them, so no link value flows their way. On a blog whose home page lists recent posts, older articles land here routinely; that is the honest shape of most sites, not an emergency."
+msgstr ""
+
+#: templates/equity.php:118
+msgid "Where value has collected. These are your strongest pages internally — which makes them the best places to link OUT from when you want to lift something else."
+msgstr ""
+
+#: templates/equity.php:125
+#: templates/placement.php:103
+msgid "Nothing to show"
+msgstr ""
+
+#: templates/equity.php:128
+msgid "No published posts have been indexed yet. Run a link scan from the Overview tab."
+msgstr ""
+
+#: templates/equity.php:129
+msgid "Nothing matches this view — which is the good outcome."
+msgstr ""
+
+#: templates/equity.php:137
+msgid "Share of link value"
+msgstr ""
+
+#: templates/equity.php:138
+msgid "Clicks deep"
+msgstr ""
+
+#: templates/equity.php:140
+msgid "Out"
+msgstr ""
+
+#: templates/equity.php:155
+msgid "front page"
+msgstr ""
+
+#. translators: %s: multiple of an average page
+#: templates/equity.php:164
+#, php-format
+msgid "%s× an average page"
+msgstr ""
+
+#: templates/equity.php:172
+msgid "No path of in-content links reaches this from the front page. Menus, archives and pagination are not counted."
+msgstr ""
+
+#: templates/equity.php:172
+msgid "no route"
+msgstr ""
+
+#: templates/equity.php:186
+#, php-format
+msgid "Showing the first 300 of %s."
+msgstr ""
+
+#: templates/external_sites.php:10
+msgid "Import another site’s XML sitemap (e.g. a sister site you own). Its pages become suggestion targets, so when you scan a post SmartLinker can also propose relevant links to that external content."
+msgstr ""
+
+#: templates/external_sites.php:14
+#, php-format
+msgid "Imported %d URLs from the sitemap."
+msgstr ""
+
+#: templates/external_sites.php:16
+msgid "Site removed."
+msgstr ""
+
+#: templates/external_sites.php:18
+msgid "Please enter a valid sitemap URL."
+msgstr ""
+
+#: templates/external_sites.php:22
+msgid "Add a sitemap"
+msgstr ""
+
+#: templates/external_sites.php:27
+msgid "Sitemap URL"
+msgstr ""
+
+#: templates/external_sites.php:31
+msgid "Site label"
+msgstr ""
+
+#: templates/external_sites.php:32
+msgid "e.g. My Other Blog"
+msgstr ""
+
+#: templates/external_sites.php:33
+msgid "Optional. Shown next to suggested external links. Defaults to the site’s domain."
+msgstr ""
+
+#: templates/external_sites.php:37
+msgid "Fetch & Import Sitemap"
+msgstr ""
+
+#: templates/external_sites.php:40
+msgid "Imported sites"
+msgstr ""
+
+#: templates/external_sites.php:44
+msgid "No external sites yet"
+msgstr ""
+
+#: templates/external_sites.php:45
+msgid "Import a sitemap above to suggest links to another site you own."
+msgstr ""
+
+#: templates/external_sites.php:51
+msgid "Site"
+msgstr ""
+
+#: templates/external_sites.php:52
+msgid "URLs"
+msgstr ""
+
+#: templates/external_sites.php:53
+msgid "Imported"
+msgstr ""
+
+#: templates/external_sites.php:65
+msgid "external site"
+msgstr ""
+
+#: templates/external_sites.php:71
+msgid "Remove this site and all its URLs?"
+msgstr ""
+
+#: templates/inbound.php:10
+msgid "Pick a post or page, and SmartLinker will find other content that could link to it. Insert a link with one click — it is added to the source post."
+msgstr ""
+
+#: templates/inbound.php:14
+msgid "Choose the content to build links to"
+msgstr ""
+
+#: templates/inbound.php:16
+msgid "Link to this content"
+msgstr ""
+
+#: templates/inbound.php:21
+#, php-format
+msgid "%d inbound"
+msgid_plural "%d inbound"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/inbound.php:28
+msgid "Posts marked ⚠ have no inbound internal links yet (orphaned)."
+msgstr ""
+
+#: templates/inbound.php:34
+msgid "Find inbound suggestions"
+msgstr ""
+
+#: templates/link_map.php:9
+msgid "Upload a CSV of keyword → destination URL, and SmartLinker will insert those links into matching content across your whole site in one pass. Links are written into your post content (the first matching phrase in each post), just like inserting a suggestion by hand."
+msgstr ""
+
+#: templates/link_map.php:14
+#, php-format
+msgid "Done — inserted %1$d links across %2$d posts from %3$d rules."
+msgstr ""
+
+#: templates/link_map.php:20
+msgid "Could not read that CSV. Use two columns: keyword, url."
+msgstr ""
+
+#: templates/link_map.php:27
+msgid "Link map CSV"
+msgstr ""
+
+#: templates/link_map.php:31
+msgid "Max posts to link per rule:"
+msgstr ""
+
+#: templates/link_map.php:31
+msgid "Caps how many posts each keyword row will edit, so one common word cannot add links to hundreds of posts at once. Start small and re-run if needed."
+msgstr ""
+
+#: templates/link_map.php:34
+msgid "CSV columns: keyword, url (a header row is optional). One link is added per matching post, skipping posts that already link to the URL."
+msgstr ""
+
+#: templates/link_map.php:36
+msgid "This will insert links into your post content across the site. Continue?"
+msgstr ""
+
+#: templates/link_map.php:37
+msgid "Run Link Map"
+msgstr ""
+
+#: templates/link_map.php:42
+msgid "Example CSV"
+msgstr ""
+
+#: templates/meta_box.php:9
+msgid "Scan this content for relevant internal links to your other posts and pages."
+msgstr ""
+
+#: templates/meta_box.php:14
+msgid "Find Link Suggestions"
+msgstr ""
+
+#: templates/meta_box.php:28
+msgid "Which of your posts should link to this one"
+msgstr ""
+
+#: templates/meta_box.php:30
+msgid "Links In"
+msgstr ""
+
+#: templates/meta_box.php:65
+msgid "Target keywords for this post"
+msgstr ""
+
+#: templates/meta_box.php:66
+msgid "The phrases this page should rank for. When another post mentions one of them, SmartLinker offers it as the anchor — this is the strongest signal it has."
+msgstr ""
+
+#: templates/meta_box.php:67
+msgid "A keyword marked SEO comes live from Rank Math, Yoast, AIOSEO or SEOPress and is managed there. Ones you add here are SmartLinker's own."
+msgstr ""
+
+#: templates/meta_box.php:75
+msgid "SEO"
+msgstr ""
+
+#: templates/meta_box.php:77
+msgid "Remove keyword"
+msgstr ""
+
+#: templates/meta_box.php:87
+msgid "Re-extract keywords for this post (1 OpenAI call)"
+msgstr ""
+
+#: templates/meta_box.php:95
+msgid "Tip: save the post first so suggestions reflect your latest content."
+msgstr ""
+
+#: templates/money_pages.php:10
+msgid "Mark your most important revenue pages. SmartLinker tracks how many inbound internal links each one has so you can spot — and fix — the gaps first. Weakest pages are listed at the top."
+msgstr ""
+
+#: templates/money_pages.php:14
+msgid "Money page added."
+msgstr ""
+
+#: templates/money_pages.php:16
+msgid "Money page removed."
+msgstr ""
+
+#: templates/money_pages.php:20
+msgid "Add a money page"
+msgstr ""
+
+#: templates/money_pages.php:24
+msgid "— Select a page —"
+msgstr ""
+
+#: templates/money_pages.php:29
+msgid "Mark as Money Page"
+msgstr ""
+
+#: templates/money_pages.php:33
+msgid "Your money pages"
+msgstr ""
+
+#: templates/money_pages.php:37
+msgid "No money pages yet"
+msgstr ""
+
+#: templates/money_pages.php:38
+msgid "Mark the pages that earn you money and SmartLinker will track how well they are linked."
+msgstr ""
+
+#: templates/money_pages.php:45
+#: templates/orphans.php:38
+#: templates/report.php:120
+#: templates/search_console.php:45
+msgid "Inbound"
+msgstr ""
+
+#: templates/money_pages.php:46
+msgid "Based on inbound internal links: 0 = Needs links, 1–2 = Under-linked, 3 or more = Healthy."
+msgstr ""
+
+#: templates/money_pages.php:55
+msgid "Needs links"
+msgstr ""
+
+#: templates/money_pages.php:58
+#: templates/search_console.php:71
+msgid "Under-linked"
+msgstr ""
+
+#: templates/money_pages.php:61
+#: templates/search_console.php:73
+msgid "Healthy"
+msgstr ""
+
+#: templates/money_pages.php:69
+#: templates/report.php:142
+msgid "Money page"
+msgstr ""
+
+#: templates/money_pages.php:75
+#: templates/search_console.php:69
+msgid "Add links"
+msgstr ""
+
+#: templates/money_pages.php:76
+msgid "Remove"
+msgstr ""
+
+#: templates/opportunities.php:29
+msgid "Every place on the site where one post already says something that names another post. Apply a link without opening the editor."
+msgstr ""
+
+#: templates/opportunities.php:34
+msgid "Standard"
+msgstr ""
+
+#: templates/opportunities.php:36
+msgid "AI"
+msgstr ""
+
+#: templates/opportunities.php:39
+msgid "One OpenAI call per post, billed to your account. Results are cached per post until you edit it."
+msgstr ""
+
+#: templates/opportunities.php:40
+msgid "Free. Matches keywords and titles, scored by meaning where the semantic index is built."
+msgstr ""
+
+#: templates/opportunities.php:55
+#: templates/target_keywords.php:173
+#: templates/trends.php:159
+msgid "Opportunities"
+msgstr ""
+
+#: templates/opportunities.php:59
+msgid "Posts to edit"
+msgstr ""
+
+#: templates/opportunities.php:63
+msgid "Pages that gain links"
+msgstr ""
+
+#: templates/opportunities.php:67
+msgid "Posts scanned"
+msgstr ""
+
+#: templates/opportunities.php:73
+#: templates/orphans.php:27
+msgid "Re-scan site"
+msgstr ""
+
+#: templates/opportunities.php:76
+#, php-format
+msgid "Last scan: %s"
+msgstr ""
+
+#: templates/opportunities.php:83
+msgid "No opportunities yet"
+msgstr ""
+
+#: templates/opportunities.php:85
+msgid "Every phrase that names another post is already linked. Add a focus keyword to a post to widen the net."
+msgstr ""
+
+#: templates/opportunities.php:86
+msgid "Run a scan to find them."
+msgstr ""
+
+#: templates/opportunities.php:92
+msgid "Minimum confidence"
+msgstr ""
+
+#: templates/opportunities.php:103
+msgid "Apply selected"
+msgstr ""
+
+#: templates/opportunities.php:104
+msgid "Stop"
+msgstr ""
+
+#: templates/opportunities.php:113
+msgid "Select every row below"
+msgstr ""
+
+#: templates/opportunities.php:115
+msgid "Add this link in…"
+msgstr ""
+
+#: templates/opportunities.php:117
+msgid "Pointing at"
+msgstr ""
+
+#: templates/opportunities.php:118
+msgid "Confidence"
+msgstr ""
+
+#. translators: 1: anchor text, 2: destination title
+#: templates/opportunities.php:136
+#, php-format
+msgid "Select: link “%1$s” to %2$s"
+msgstr ""
+
+#: templates/opportunities.php:156
+#: templates/report.php:100
+msgid "Apply"
+msgstr ""
+
+#: templates/orphans.php:14
+#, php-format
+msgid "%d orphaned posts found."
+msgstr ""
+
+#: templates/orphans.php:16
+msgid "No orphaned posts — every published item has at least one inbound internal link."
+msgstr ""
+
+#: templates/orphans.php:21
+msgid "These posts have zero inbound internal links, so search engines have to discover them on their own. Oldest first — fix the longest-abandoned content before anything else."
+msgstr ""
+
+#: templates/orphans.php:28
+#: templates/report.php:160
+msgid "Add inbound links"
+msgstr ""
+
+#: templates/orphans.php:35
+msgid "Post title"
+msgstr ""
+
+#: templates/orphans.php:36
+msgid "Published"
+msgstr ""
+
+#: templates/orphans.php:37
+#: templates/report.php:121
+msgid "Outbound"
+msgstr ""
+
+#: templates/orphans.php:81
+msgid "No orphaned posts"
+msgstr ""
+
+#: templates/orphans.php:82
+msgid "Every published item has at least one internal link pointing to it."
+msgstr ""
+
+#: templates/placement.php:13
+msgid "Links buried at the end"
+msgstr ""
+
+#: templates/placement.php:14
+msgid "Well placed"
+msgstr ""
+
+#: templates/placement.php:30
+msgid "Where your internal links sit inside each post. Every other report treats a link as a fact — it exists, it points somewhere, it works. None of them ask whether anyone reaches it. A link in the last paragraph of a long article is seen only by the few readers still there; one in the opening section is seen by nearly everyone."
+msgstr ""
+
+#: templates/placement.php:33
+msgid "Position is measured in visible text, not in the HTML, so a post that opens with a gallery or a table of contents is not reported as having links further down than a reader would experience."
+msgstr ""
+
+#: templates/placement.php:43
+msgid "Average depth into a post"
+msgstr ""
+
+#: templates/placement.php:47
+msgid "Posts with links buried"
+msgstr ""
+
+#: templates/placement.php:51
+msgid "Links in the first quarter"
+msgstr ""
+
+#: templates/placement.php:55
+msgid "Links in the last quarter"
+msgstr ""
+
+#. translators: 1: number of links, 2: number of posts, 3: date
+#: templates/placement.php:75
+#, php-format
+msgid "%1$s links across %2$s posts. Built %3$s."
+msgstr ""
+
+#. translators: %d: percentage threshold
+#: templates/placement.php:89
+#, php-format
+msgid "Posts whose internal links average past the %d%% mark. Moving one link up into the opening section is usually a single sentence of work, and it is the cheapest improvement in this whole plugin."
+msgstr ""
+
+#: templates/placement.php:96
+msgid "Posts already linking early. Shown so the standard is concrete rather than theoretical — these are what the buried ones should look like."
+msgstr ""
+
+#: templates/placement.php:106
+msgid "No published post contains an internal link yet."
+msgstr ""
+
+#: templates/placement.php:107
+msgid "Nothing matches this view."
+msgstr ""
+
+#: templates/placement.php:115
+msgid "Where the links sit"
+msgstr ""
+
+#: templates/placement.php:116
+msgid "Average"
+msgstr ""
+
+#: templates/placement.php:126
+msgid "buried"
+msgstr ""
+
+#: templates/placement.php:128
+msgid "early"
+msgstr ""
+
+#: templates/placement.php:133
+msgid "Left is the start of the post, right is the end. Each mark is one internal link."
+msgstr ""
+
+#: templates/placement.php:141
+msgid "start"
+msgstr ""
+
+#: templates/placement.php:141
+msgid "end"
+msgstr ""
+
+#. translators: %d: number of links
+#: templates/placement.php:153
+#, php-format
+msgid "%d in the last quarter"
+msgid_plural "%d in the last quarter"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/report.php:40
+msgid "All content"
+msgstr ""
+
+#: templates/report.php:41
+#: templates/report.php:70
+msgid "Orphaned"
+msgstr ""
+
+#: templates/report.php:42
+msgid "No outbound links"
+msgstr ""
+
+#: templates/report.php:43
+msgid "Money pages"
+msgstr ""
+
+#: templates/report.php:47
+msgid "Links Report"
+msgstr ""
+
+#: templates/report.php:51
+#, php-format
+msgid "Re-scanned %d posts."
+msgstr ""
+
+#: templates/report.php:57
+msgid "Published items"
+msgstr ""
+
+#: templates/report.php:65
+msgid "External links"
+msgstr ""
+
+#: templates/report.php:88
+msgid "Search titles…"
+msgstr ""
+
+#: templates/report.php:97
+#, php-format
+msgid "%d per page"
+msgstr ""
+
+#: templates/report.php:103
+msgid "Run a link scan"
+msgstr ""
+
+#: templates/report.php:109
+#, php-format
+msgid "%s item"
+msgid_plural "%s items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/report.php:111
+msgid "Clear filters"
+msgstr ""
+
+#: templates/report.php:119
+msgid "Title"
+msgstr ""
+
+#: templates/report.php:120
+msgid "Internal links from other posts pointing at this one."
+msgstr ""
+
+#: templates/report.php:121
+msgid "Internal links this post sends to other content."
+msgstr ""
+
+#: templates/report.php:122
+msgid "External"
+msgstr ""
+
+#: templates/report.php:122
+msgid "Links this post sends to other websites."
+msgstr ""
+
+#: templates/report.php:123
+#: templates/search_console.php:43
+msgid "Clicks"
+msgstr ""
+
+#: templates/report.php:123
+msgid "Tracked clicks on internal links pointing here."
+msgstr ""
+
+#: templates/report.php:130
+msgid "Nothing matches these filters."
+msgstr ""
+
+#: templates/report.php:137
+msgid "Show links"
+msgstr ""
+
+#: templates/report.php:159
+msgid "View"
+msgstr ""
+
+#: templates/report.php:164
+msgid "Loading…"
+msgstr ""
+
+#: templates/report.php:176
+msgid "Previous"
+msgstr ""
+
+#: templates/report.php:177
+#, php-format
+msgid "Page %1$s of %2$s"
+msgstr ""
+
+#: templates/report.php:178
+msgid "Next"
+msgstr ""
+
+#: templates/search_console.php:8
+msgid "Search Console — Link Priorities"
+msgstr ""
+
+#: templates/search_console.php:10
+msgid "Import your Google Search Console “Pages” export (Search results → Pages → Export → CSV). SmartLinker cross-references impressions with internal links to show which high-visibility pages are under-linked — your best internal-linking opportunities."
+msgstr ""
+
+#: templates/search_console.php:14
+#, php-format
+msgid "Imported %d pages from Search Console."
+msgstr ""
+
+#: templates/search_console.php:16
+msgid "Could not read that CSV. Export the Pages report from Search Console and upload the CSV."
+msgstr ""
+
+#: templates/search_console.php:20
+msgid "Import Search Console data"
+msgstr ""
+
+#: templates/search_console.php:25
+msgid "Import CSV"
+msgstr ""
+
+#: templates/search_console.php:28
+msgid "Expected columns: Top pages, Clicks, Impressions, CTR, Position."
+msgstr ""
+
+#: templates/search_console.php:34
+msgid "No Search Console data yet"
+msgstr ""
+
+#: templates/search_console.php:35
+msgid "Import your Pages export to see which high-impression pages need more internal links."
+msgstr ""
+
+#: templates/search_console.php:42
+msgid "Impressions"
+msgstr ""
+
+#: templates/search_console.php:44
+msgid "Avg. pos."
+msgstr ""
+
+#: templates/search_console.php:46
+msgid "Opportunity"
+msgstr ""
+
+#: templates/search_console.php:46
+msgid "Pages with 100+ impressions but fewer than 3 inbound internal links. Google already shows them — they just need more internal support."
+msgstr ""
+
+#: templates/settings.php:54
+msgid "Settings saved."
+msgstr ""
+
+#: templates/settings.php:60
+msgid "AI disconnected — your API key has been removed."
+msgstr ""
+
+#: templates/settings.php:62
+#, php-format
+msgid "Cleared cached AI results for %d posts."
+msgstr ""
+
+#: templates/settings.php:64
+msgid "Error log cleared."
+msgstr ""
+
+#: templates/settings.php:75
+msgid "Content"
+msgstr ""
+
+#: templates/settings.php:78
+msgid "Post types"
+msgstr ""
+
+#: templates/settings.php:79
+msgid "Which content SmartLinker analyzes and suggests links for."
+msgstr ""
+
+#: templates/settings.php:96
+msgid "Suggestions"
+msgstr ""
+
+#: templates/settings.php:98
+msgid "Suggestions per post"
+msgstr ""
+
+#: templates/settings.php:98
+msgid "Maximum number of suggestions shown in the editor."
+msgstr ""
+
+#: templates/settings.php:100
+msgid "Minimum keyword length"
+msgstr ""
+
+#: templates/settings.php:100
+msgid "Ignore phrases shorter than this many characters."
+msgstr ""
+
+#: templates/settings.php:103
+msgid "Stops very short words from becoming links. Raise it if you get noisy suggestions like \"the\" or \"SEO\"; lower it if you use short brand names."
+msgstr ""
+
+#: templates/settings.php:104
+msgid "Match word variants"
+msgstr ""
+
+#: templates/settings.php:104
+msgid "Match plurals and verb tenses (stemming) when finding suggestions."
+msgstr ""
+
+#: templates/settings.php:107
+msgid "Matches different forms of the same word when looking for linking opportunities."
+msgstr ""
+
+#: templates/settings.php:108
+msgid "With this on, a page titled \"Coffee Grinder\" is still suggested where your text says \"coffee grinders\", and \"running\" matches \"run\". Plurals and verb tenses are treated as the same word."
+msgstr ""
+
+#: templates/settings.php:109
+msgid "Switch it off if you only ever want exact wording to match. You will get noticeably fewer suggestions."
+msgstr ""
+
+#: templates/settings.php:111
+msgid "Link to taxonomy pages"
+msgstr ""
+
+#: templates/settings.php:111
+msgid "Also suggest links to category and tag archive pages."
+msgstr ""
+
+#: templates/settings.php:113
+msgid "Lets SmartLinker suggest links to category and tag archives, not just posts and pages. Useful for topic hubs; turn off if your archives are thin."
+msgstr ""
+
+#: templates/settings.php:116
+msgid "Inserted links"
+msgstr ""
+
+#: templates/settings.php:118
+msgid "Add target=\"_blank\" to links SmartLinker inserts."
+msgstr ""
+
+#: templates/settings.php:120
+msgid "Nofollow"
+msgstr ""
+
+#: templates/settings.php:120
+msgid "Add rel=\"nofollow\" to inserted links."
+msgstr ""
+
+#: templates/settings.php:122
+msgid "Tells search engines not to pass ranking value through these links. Normally leave this OFF for internal links — passing value between your own pages is the point."
+msgstr ""
+
+#: templates/settings.php:123
+msgid "Auto-linking"
+msgstr ""
+
+#: templates/settings.php:123
+msgid "Apply your auto-link keyword rules on the frontend."
+msgstr ""
+
+#: templates/settings.php:126
+msgid "Applies your keyword rules from the Auto-Linking page to your content."
+msgstr ""
+
+#: templates/settings.php:127
+msgid "Auto-links are added while a page is being displayed and are never written into your stored posts. That means switching this off removes every auto-link across the site instantly, with no cleanup needed."
+msgstr ""
+
+#: templates/settings.php:128
+msgid "This is different from suggestions, which insert a real link into the post content and stay there permanently once you accept them."
+msgstr ""
+
+#: templates/settings.php:130
+msgid "Track clicks"
+msgstr ""
+
+#: templates/settings.php:130
+msgid "Record clicks on internal links for the reports."
+msgstr ""
+
+#: templates/settings.php:132
+msgid "Records a row in your database each time a visitor clicks an internal link SmartLinker added. Powers the Link Clicks report. No personal data is stored."
+msgstr ""
+
+#: templates/settings.php:136
+msgid "Favour pages that need links"
+msgstr ""
+
+#: templates/settings.php:136
+msgid "Promote starved pages when two suggestions are equally good."
+msgstr ""
+
+#: templates/settings.php:140
+msgid "SmartLinker knows which of your pages barely any links point at (Reports → Link Equity). When two candidates are about equally relevant, this tips the order towards the one that actually needs the link."
+msgstr ""
+
+#: templates/settings.php:141
+msgid "It changes the ORDER only, never the confidence figure you see. Confidence answers \"is this the right link\" — that is a claim about correctness, and it stays honest. A neglected page is not a better match, it is a more useful one."
+msgstr ""
+
+#: templates/settings.php:142
+msgid "0.15 lets a starved page overtake a rival scoring up to 15% higher, which reorders near-equals without ever lifting a poor match above a good one. Set to 0 to switch off."
+msgstr ""
+
+#: templates/settings.php:146
+msgid "Learning from rejections"
+msgstr ""
+
+#: templates/settings.php:148
+msgid "When you reject a suggestion, SmartLinker remembers. Reject the same thing on enough different posts and it stops being offered anywhere, so you do not have to turn down the same bad anchor once per post forever."
+msgstr ""
+
+#: templates/settings.php:153
+msgid "See what is currently suppressed"
+msgstr ""
+
+#: templates/settings.php:158
+msgid "Retire an anchor + destination after"
+msgstr ""
+
+#: templates/settings.php:158
+msgid "Distinct posts that must reject the same pairing."
+msgstr ""
+
+#: templates/settings.php:160
+#: templates/settings.php:170
+msgid "posts"
+msgstr ""
+
+#: templates/settings.php:163
+msgid "The narrow rule: it only stops that exact anchor pointing at that exact page. The same words pointing somewhere else are unaffected."
+msgstr ""
+
+#: templates/settings.php:164
+msgid "Rejections are counted per post, not per click — turning the same suggestion down three times on one post is one opinion, not three."
+msgstr ""
+
+#: templates/settings.php:165
+msgid "Set to 0 to switch this off."
+msgstr ""
+
+#: templates/settings.php:168
+msgid "Retire an anchor everywhere after"
+msgstr ""
+
+#: templates/settings.php:168
+msgid "Distinct posts that must reject the same anchor, whatever it pointed at."
+msgstr ""
+
+#: templates/settings.php:173
+msgid "The broad rule: when you keep rejecting the same words no matter where they point, the words themselves are the problem, and the anchor is retired site-wide."
+msgstr ""
+
+#: templates/settings.php:174
+msgid "Raise it on a large site, where three rejections is a smaller share of your content and may not mean much. Lower it if you want the engine to take the hint faster."
+msgstr ""
+
+#: templates/settings.php:175
+msgid "Set to 0 to switch this off. Nothing already learned is lost — it simply stops being applied."
+msgstr ""
+
+#: templates/settings.php:179
+msgid "Removing the plugin"
+msgstr ""
+
+#: templates/settings.php:181
+msgid "Delete all data if the plugin is deleted"
+msgstr ""
+
+#: templates/settings.php:181
+msgid "Off by default. Deactivating never deletes anything either way."
+msgstr ""
+
+#: templates/settings.php:185
+msgid "Leave this OFF unless you are sure. People delete a plugin to reinstall it, to move hosts, or to test a conflict — and with this on, any of those wipes work you cannot get back."
+msgstr ""
+
+#: templates/settings.php:186
+msgid "What would be removed: the link index, auto-link rules, target keywords, the activity log and its undo history, click stats, URL-change history, Search Console data, imported external sites, every setting on this page, and the semantic index stored against each post."
+msgstr ""
+
+#: templates/settings.php:187
+msgid "What is never touched, whatever this is set to: your posts and pages, and any links already written into their content. Links SmartLinker inserted stay inserted — they are ordinary links in your content, not plugin data."
+msgstr ""
+
+#: templates/settings.php:188
+msgid "With this off, deleting the plugin leaves its database tables behind. They cost a little space and nothing else, and they are still there if you reinstall."
+msgstr ""
+
+#: templates/settings.php:192
+msgid "Activity log"
+msgstr ""
+
+#: templates/settings.php:194
+msgid "Changes to keep"
+msgstr ""
+
+#: templates/settings.php:194
+msgid "How many applied changes stay undoable on the Activity page."
+msgstr ""
+
+#: templates/settings.php:198
+msgid "There is no time limit on undo. An entry stays undoable until the post is next edited, or until this many newer changes have pushed it off the list."
+msgstr ""
+
+#: templates/settings.php:199
+msgid "Each entry stores a full copy of the post as it was before the change, so this is a disk trade rather than a clock. Raise it if you apply links in large batches and want a longer safety net; 300 covers roughly two weeks at twenty applies a day."
+msgstr ""
+
+#: templates/settings.php:200
+msgid "Set it to 0 to switch the log off entirely — nothing is recorded, and one-click applies from the reports can no longer be undone."
+msgstr ""
+
+#: templates/settings.php:206
+msgid "Exclusions"
+msgstr ""
+
+#: templates/settings.php:207
+msgid "Content excluded here is never suggested as a link target and is skipped by auto-linking."
+msgstr ""
+
+#: templates/settings.php:209
+msgid "Ignore words"
+msgstr ""
+
+#: templates/settings.php:209
+msgid "Comma-separated stop words excluded from suggestions."
+msgstr ""
+
+#: templates/settings.php:211
+msgid "Common filler words that should never become anchor text on their own. Add industry words that create noisy matches on your site."
+msgstr ""
+
+#: templates/settings.php:212
+msgid "Excluded post IDs"
+msgstr ""
+
+#: templates/settings.php:212
+msgid "Comma-separated post IDs never suggested as link targets."
+msgstr ""
+
+#: templates/settings.php:214
+msgid "Find a post ID by opening it in the editor and reading the post=123 number in the browser address bar. Example: 12, 48, 91"
+msgstr ""
+
+#: templates/settings.php:215
+msgid "Excluded categories / tags"
+msgstr ""
+
+#: templates/settings.php:215
+msgid "Comma-separated term IDs or slugs — useful for legal pages or products."
+msgstr ""
+
+#: templates/settings.php:217
+msgid "Every post in these categories or tags is skipped. Use the slug (the URL-friendly name, e.g. \"legal\") or the numeric term ID."
+msgstr ""
+
+#: templates/settings.php:225
+msgid "Sunday"
+msgstr ""
+
+#: templates/settings.php:225
+msgid "Monday"
+msgstr ""
+
+#: templates/settings.php:226
+msgid "Tuesday"
+msgstr ""
+
+#: templates/settings.php:226
+msgid "Wednesday"
+msgstr ""
+
+#: templates/settings.php:227
+msgid "Thursday"
+msgstr ""
+
+#: templates/settings.php:227
+msgid "Friday"
+msgstr ""
+
+#: templates/settings.php:228
+msgid "Saturday"
+msgstr ""
+
+#: templates/settings.php:232
+#: templates/settings.php:244
+msgid "Scheduled scans"
+msgstr ""
+
+#: templates/settings.php:234
+msgid "The reports are only as fresh as the last time you pressed Scan. Turn this on and SmartLinker re-checks your links on a schedule and emails you what changed — not the totals you have already seen, but the links that broke, the posts that lost their last inbound link, and the new opportunities worth acting on."
+msgstr ""
+
+#: templates/settings.php:238
+msgid "Scan run and a digest sent to the addresses below."
+msgstr ""
+
+#: templates/settings.php:240
+msgid "The scan ran, but WordPress could not send the email. That is usually the site's mail setup rather than SmartLinker — an SMTP plugin normally fixes it."
+msgstr ""
+
+#: templates/settings.php:244
+msgid "Re-scan on a schedule and email a summary."
+msgstr ""
+
+#: templates/settings.php:247
+msgid "Runs through WP-Cron, which WordPress triggers on ordinary page visits. On a quiet site the run can drift late; a real server cron job pointed at wp-cron.php makes it exact."
+msgstr ""
+
+#: templates/settings.php:248
+msgid "Nothing is changed on your site by a scheduled run. It only re-checks links and rebuilds the opportunity list — every fix stays a decision you make."
+msgstr ""
+
+#: templates/settings.php:251
+msgid "How often"
+msgstr ""
+
+#: templates/settings.php:251
+msgid "Daily suits a busy site; weekly is enough for most."
+msgstr ""
+
+#: templates/settings.php:253
+msgid "Daily"
+msgstr ""
+
+#: templates/settings.php:254
+msgid "Weekly"
+msgstr ""
+
+#: templates/settings.php:262
+msgid "Day of the week"
+msgstr ""
+
+#: templates/settings.php:262
+msgid "Used only when the frequency is weekly. Runs around 6am site time."
+msgstr ""
+
+#: templates/settings.php:264
+msgid "Send to"
+msgstr ""
+
+#: templates/settings.php:264
+msgid "Comma-separated. Leave blank to use the site admin address."
+msgstr ""
+
+#: templates/settings.php:267
+msgid "Anything that is not a valid email address is dropped when you save, rather than silently failing later."
+msgstr ""
+
+#: templates/settings.php:269
+msgid "Only email when something changed"
+msgstr ""
+
+#: templates/settings.php:269
+msgid "Stay quiet on weeks where nothing broke and nothing new turned up."
+msgstr ""
+
+#: templates/settings.php:271
+msgid "Recommended. A digest that arrives every week saying \"nothing to report\" stops being read, and then the one that matters gets missed too."
+msgstr ""
+
+#: templates/settings.php:273
+msgid "Re-check links"
+msgstr ""
+
+#: templates/settings.php:273
+msgid "Look for links that have started returning errors."
+msgstr ""
+
+#: templates/settings.php:276
+msgid "Rebuild link opportunities"
+msgstr ""
+
+#: templates/settings.php:276
+msgid "Refresh the site-wide worklist so new posts are included."
+msgstr ""
+
+#: templates/settings.php:284
+msgid "Next scheduled run"
+msgstr ""
+
+#: templates/settings.php:288
+msgid "from now"
+msgstr ""
+
+#: templates/settings.php:290
+msgid "not scheduled"
+msgstr ""
+
+#: templates/settings.php:295
+msgid "Last run"
+msgstr ""
+
+#: templates/settings.php:300
+msgid "never"
+msgstr ""
+
+#: templates/settings.php:305
+msgid "WP-Cron"
+msgstr ""
+
+#: templates/settings.php:308
+msgid "disabled in wp-config"
+msgstr ""
+
+#: templates/settings.php:309
+msgid "A server cron job must call wp-cron.php, or scheduled scans will never fire."
+msgstr ""
+
+#: templates/settings.php:311
+msgid "active"
+msgstr ""
+
+#: templates/settings.php:319
+msgid "Run a scan and send me the digest now"
+msgstr ""
+
+#: templates/settings.php:320
+msgid "Sends even if nothing changed, so you can confirm the email arrives."
+msgstr ""
+
+#: templates/settings.php:332
+msgid "Connection"
+msgstr ""
+
+#: templates/settings.php:336
+msgid "SmartLinker AI"
+msgstr ""
+
+#: templates/settings.php:337
+msgid "Connected to OpenAI with your own API key. Requests are billed to your OpenAI account."
+msgstr ""
+
+#: templates/settings.php:339
+msgid "Remove your API key and turn AI off?"
+msgstr ""
+
+#: templates/settings.php:340
+msgid "Disconnect"
+msgstr ""
+
+#: templates/settings.php:344
+msgid "•••••••• (saved — leave blank to keep)"
+msgstr ""
+
+#: templates/settings.php:346
+msgid "OpenAI API key"
+msgstr ""
+
+#: templates/settings.php:346
+msgid "Stored in your site database. Leave blank to keep the existing key."
+msgstr ""
+
+#: templates/settings.php:349
+msgid "SmartLinker uses your own OpenAI account rather than reselling credits, so you pay OpenAI's normal rates directly and there is no subscription on top."
+msgstr ""
+
+#: templates/settings.php:350
+msgid "Create a key at platform.openai.com under API keys, then paste it here. It is stored in your site's database and is never shown again — leave the field blank when saving to keep the existing key."
+msgstr ""
+
+#: templates/settings.php:351
+msgid "Requests go straight from your server to OpenAI, so your content is never routed through us or any third party."
+msgstr ""
+
+#: templates/settings.php:353
+msgid "Which OpenAI model analyses your content."
+msgstr ""
+
+#: templates/settings.php:361
+msgid "Which OpenAI model reads your content and decides which internal links belong in it."
+msgstr ""
+
+#: templates/settings.php:362
+msgid "GPT-4o Mini is fast and inexpensive and is the right default for almost every site — it handles ordinary blog and marketing content well."
+msgstr ""
+
+#: templates/settings.php:363
+msgid "The larger models understand nuance better but cost noticeably more per scan. They are worth considering only for highly technical or specialist writing where subtle topic differences matter."
+msgstr ""
+
+#: templates/settings.php:367
+msgid "Suggestion behaviour"
+msgstr ""
+
+#: templates/settings.php:369
+msgid "Use AI-powered suggestions"
+msgstr ""
+
+#: templates/settings.php:369
+msgid "Show the “AI Suggestions” button in the post editor."
+msgstr ""
+
+#: templates/settings.php:372
+msgid "This setting tells SmartLinker to use AI when generating link suggestions, instead of relying on keyword matching alone."
+msgstr ""
+
+#: templates/settings.php:373
+msgid "When active, the AI reads the meaning of your article and compares it against every other page on your site, so it can recommend links that share a topic even when the exact words never match."
+msgstr ""
+
+#: templates/settings.php:374
+msgid "Each scan makes one request to OpenAI and is billed to your own account. Results are cached, so re-opening the same post costs nothing until you edit it."
+msgstr ""
+
+#: templates/settings.php:376
+msgid "Prefer page title as anchor"
+msgstr ""
+
+#: templates/settings.php:376
+msgid "Use the target page’s title as the anchor when it appears in your text."
+msgstr ""
+
+#: templates/settings.php:379
+msgid "Controls the wording SmartLinker uses for the clickable text of an AI suggestion."
+msgstr ""
+
+#: templates/settings.php:380
+msgid "Left to itself the AI sometimes picks a long phrase such as \"dark roasts shine as espresso\". With this setting on, SmartLinker uses the target page's own name instead — \"Espresso\" — whenever that name actually appears in your text."
+msgstr ""
+
+#: templates/settings.php:381
+msgid "Shorter, more precise anchor text reads better and gives search engines a clearer signal about the page you are linking to. Recommended for most sites."
+msgstr ""
+
+#: templates/settings.php:383
+msgid "Only show top suggestions"
+msgstr ""
+
+#: templates/settings.php:383
+msgid "Cap the list to the highest-scoring suggestions only."
+msgstr ""
+
+#: templates/settings.php:385
+msgid "Shows only the best few matches instead of everything above the threshold. Useful if you prefer a handful of strong links per post rather than a long list to sift through."
+msgstr ""
+
+#: templates/settings.php:386
+msgid "How many top suggestions"
+msgstr ""
+
+#: templates/settings.php:386
+msgid "Used when “Only show top suggestions” is on."
+msgstr ""
+
+#: templates/settings.php:389
+msgid "Minimum match score"
+msgstr ""
+
+#: templates/settings.php:390
+msgid "Hide AI suggestions scoring below this relevance threshold."
+msgstr ""
+
+#: templates/settings.php:396
+msgid "Every AI suggestion is given a relevance score from 0 to 100, describing how closely the target page matches the surrounding text. Anything scoring below this threshold is hidden."
+msgstr ""
+
+#: templates/settings.php:397
+msgid "Around 50 is a sensible balance. Raise it towards 70–80 if suggestions feel loosely related and you only want obvious wins; lower it if you would rather see more options and judge them yourself."
+msgstr ""
+
+#: templates/settings.php:398
+msgid "This filter is applied to results SmartLinker has already saved, so moving the slider re-filters instantly and never triggers another billed API call."
+msgstr ""
+
+#: templates/settings.php:401
+msgid "Don’t process posts older than"
+msgstr ""
+
+#: templates/settings.php:401
+msgid "Skip older content when running AI analysis."
+msgstr ""
+
+#: templates/settings.php:403
+msgid "No limit"
+msgstr ""
+
+#: templates/settings.php:404
+msgid "6 months"
+msgstr ""
+
+#: templates/settings.php:405
+msgid "1 year"
+msgstr ""
+
+#: templates/settings.php:406
+msgid "2 years"
+msgstr ""
+
+#: templates/settings.php:408
+msgid "Skips older posts when running AI analysis, which keeps costs down on large archives. Posts older than this simply return no AI suggestions."
+msgstr ""
+
+#: templates/settings.php:411
+msgid "Performance & data"
+msgstr ""
+
+#: templates/settings.php:413
+msgid "Cache AI results"
+msgstr ""
+
+#: templates/settings.php:413
+msgid "Reuse results until a post’s content changes."
+msgstr ""
+
+#: templates/settings.php:416
+msgid "Saves the AI's analysis of each post and reuses it until that post's content changes."
+msgstr ""
+
+#: templates/settings.php:417
+msgid "With caching on, re-opening a post you have already analysed is instant and costs nothing. SmartLinker automatically discards the saved result the moment you edit the post, so you never see stale suggestions."
+msgstr ""
+
+#: templates/settings.php:418
+msgid "Turning this off means every single scan calls OpenAI again and is billed again. Strongly recommended to leave on."
+msgstr ""
+
+#: templates/settings.php:420
+msgid "Request timeout"
+msgstr ""
+
+#: templates/settings.php:420
+msgid "Seconds to wait for the OpenAI API before giving up."
+msgstr ""
+
+#: templates/settings.php:422
+msgid "Raise this if long posts fail with a timeout error. Lower it if you would rather fail fast than keep the editor waiting."
+msgstr ""
+
+#: templates/settings.php:423
+msgid "Clear cached AI data"
+msgstr ""
+
+#: templates/settings.php:423
+msgid "Delete every stored AI result so the next run re-analyses from scratch."
+msgstr ""
+
+#: templates/settings.php:425
+msgid "Clear all cached AI results?"
+msgstr ""
+
+#: templates/settings.php:425
+msgid "Clear data"
+msgstr ""
+
+#: templates/settings.php:427
+msgid "Deletes every saved AI result. Your settings and links are untouched — the next scan of each post simply calls the API again. Use this if you changed model and want fresh analysis."
+msgstr ""
+
+#: templates/settings.php:430
+msgid "Content processing status"
+msgstr ""
+
+#: templates/settings.php:433
+msgid "Processable posts"
+msgstr ""
+
+#: templates/settings.php:437
+msgid "Posts analysed"
+msgstr ""
+
+#: templates/settings.php:441
+msgid "Remaining"
+msgstr ""
+
+#: templates/settings.php:445
+msgid "Logged errors"
+msgstr ""
+
+#: templates/settings.php:450
+msgid "System error log"
+msgstr ""
+
+#: templates/settings.php:454
+msgid "Date / time"
+msgstr ""
+
+#: templates/settings.php:455
+msgid "Error message"
+msgstr ""
+
+#: templates/settings.php:456
+msgid "Error data"
+msgstr ""
+
+#: templates/settings.php:461
+msgid "No errors logged."
+msgstr ""
+
+#: templates/settings.php:472
+msgid "Clear error log"
+msgstr ""
+
+#: templates/settings.php:478
+msgid "Save Settings"
+msgstr ""
+
+#: templates/setup.php:18
+msgid "Getting started"
+msgstr ""
+
+#: templates/setup.php:20
+msgid "SmartLinker needs to look at your site before it can suggest anything. These take a couple of minutes and only need doing once."
+msgstr ""
+
+#. translators: 1: steps done, 2: steps total
+#: templates/setup.php:27
+#, php-format
+msgid "%1$d of %2$d done"
+msgstr ""
+
+#: templates/setup.php:47
+msgid "optional"
+msgstr ""
+
+#: templates/setup.php:58
+msgid "Done"
+msgstr ""
+
+#: templates/setup.php:66
+msgid "Hide this"
+msgstr ""
+
+#: templates/setup.php:67
+msgid "It disappears on its own once the required steps are done."
+msgstr ""
+
+#: templates/target_keywords.php:17
+msgid "Assign a focus keyword to a post, and SmartLinker will find every other post that mentions that keyword but does not yet link to it — so you can add a keyword-anchored internal link in one click."
+msgstr ""
+
+#: templates/target_keywords.php:21
+msgid "Target keyword added."
+msgstr ""
+
+#: templates/target_keywords.php:23
+msgid "Target keyword removed."
+msgstr ""
+
+#: templates/target_keywords.php:26
+#, php-format
+msgid "Imported %1$d keyword(s) from %2$s. %3$d already existed and were left alone."
+msgstr ""
+
+#: templates/target_keywords.php:35
+msgid "Import from your SEO plugin"
+msgstr ""
+
+#: templates/target_keywords.php:36
+msgid "SmartLinker found focus keywords already stored by another SEO plugin on this site."
+msgstr ""
+
+#: templates/target_keywords.php:37
+msgid "Only the primary focus keyword of each published post is imported. Yoast Premium, Rank Math and AIOSEO can store extra keyphrases per post, but Target Keywords drives link-building — importing five phrases per post buries the one that matters."
+msgstr ""
+
+#: templates/target_keywords.php:38
+msgid "Nothing is written until you confirm, and keywords you already have are never duplicated."
+msgstr ""
+
+#: templates/target_keywords.php:44
+msgid "Source"
+msgstr ""
+
+#: templates/target_keywords.php:45
+msgid "Found"
+msgstr ""
+
+#: templates/target_keywords.php:46
+msgid "New"
+msgstr ""
+
+#: templates/target_keywords.php:63
+msgid "Preview"
+msgstr ""
+
+#: templates/target_keywords.php:66
+msgid "all imported"
+msgstr ""
+
+#: templates/target_keywords.php:78
+#, php-format
+msgid "Preview — %s"
+msgstr ""
+
+#: templates/target_keywords.php:82
+#, php-format
+msgid "%1$d will be added, %2$d skipped as duplicates. Nothing has been saved yet."
+msgstr ""
+
+#: templates/target_keywords.php:106
+msgid "Already have it"
+msgstr ""
+
+#: templates/target_keywords.php:108
+msgid "Will add"
+msgstr ""
+
+#: templates/target_keywords.php:122
+#, php-format
+msgid "Import %d keyword"
+msgid_plural "Import %d keywords"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/target_keywords.php:126
+msgid "Cancel"
+msgstr ""
+
+#: templates/target_keywords.php:133
+msgid "Add a target keyword"
+msgstr ""
+
+#: templates/target_keywords.php:138
+msgid "Post / page"
+msgstr ""
+
+#: templates/target_keywords.php:141
+msgid "— Select content to rank —"
+msgstr ""
+
+#: templates/target_keywords.php:149
+msgid "Target keyword"
+msgstr ""
+
+#: templates/target_keywords.php:152
+msgid "The phrase you want this content to rank for and be linked with."
+msgstr ""
+
+#: templates/target_keywords.php:156
+msgid "Add Target Keyword"
+msgstr ""
+
+#: templates/target_keywords.php:160
+msgid "Your target keywords"
+msgstr ""
+
+#: templates/target_keywords.php:164
+msgid "No target keywords yet"
+msgstr ""
+
+#: templates/target_keywords.php:165
+msgid "Add a focus keyword above to find posts that mention it but don’t link to it."
+msgstr ""
+
+#: templates/target_keywords.php:172
+msgid "Target content"
+msgstr ""
+
+#: templates/target_keywords.php:186
+msgid "focus keyword"
+msgstr ""
+
+#: templates/target_keywords.php:197
+msgid "Find opportunities"
+msgstr ""
+
+#: templates/target_keywords.php:199
+msgid "Remove this target keyword?"
+msgstr ""
+
+#: templates/trends.php:10
+msgid "30 days"
+msgstr ""
+
+#: templates/trends.php:11
+msgid "90 days"
+msgstr ""
+
+#: templates/trends.php:12
+msgid "12 months"
+msgstr ""
+
+#: templates/trends.php:28
+msgid "Every other report here is a photograph of right now. This one is the only place that answers whether the linking is actually improving — orphans falling, internal links climbing, broken links cleared and staying cleared. SmartLinker records where the site stands once a day and after every scan, so the line builds itself while you work."
+msgstr ""
+
+#: templates/trends.php:32
+msgid "Snapshot recorded."
+msgstr ""
+
+#: templates/trends.php:45
+msgid "Not enough history yet"
+msgstr ""
+
+#: templates/trends.php:48
+msgid "One reading has been recorded. A second one — tomorrow, or after your next scan — is what turns it into a line."
+msgstr ""
+
+#: templates/trends.php:49
+msgid "Nothing has been recorded yet. The first snapshot is taken automatically overnight, or you can take one now."
+msgstr ""
+
+#: templates/trends.php:53
+#: templates/trends.php:138
+msgid "Record a snapshot now"
+msgstr ""
+
+#: templates/trends.php:59
+msgid "Today’s reading"
+msgstr ""
+
+#. translators: 1: metric name, 2: number of days
+#: templates/trends.php:117
+#, php-format
+msgid "%1$s has not moved in the last %2$d days. Steady is fine for broken links; for internal links it means nothing new is being connected."
+msgstr ""
+
+#. translators: 1: metric, 2: old value, 3: new value, 4: days, 5: verdict
+#: templates/trends.php:124
+#, php-format
+msgid "%1$s went from %2$s to %3$s over the last %4$d days — %5$s."
+msgstr ""
+
+#: templates/trends.php:130
+msgid "the right direction"
+msgstr ""
+
+#: templates/trends.php:131
+msgid "the wrong direction"
+msgstr ""
+
+#. translators: %s: number of readings
+#: templates/trends.php:144
+#, php-format
+msgid "%s reading recorded so far."
+msgid_plural "%s readings recorded so far."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/trends.php:151
+msgid "Every reading"
+msgstr ""
+
+#: templates/trends.php:155
+msgid "Date"
+msgstr ""
+
+#: templates/trends.php:158
+msgid "Broken"
+msgstr ""
+
+#: templates/url_changer.php:10
+msgid "Replace a URL everywhere it appears in your content in one operation — perfect for changed permalinks, moved pages, or updated affiliate links. Optionally leave a 301 redirect so old links keep working."
+msgstr ""
+
+#: templates/url_changer.php:16
+#, php-format
+msgid "Done — replaced %1$d occurrence(s) across %2$d post(s)."
+msgstr ""
+
+#: templates/url_changer.php:22
+msgid "Please enter two different, valid URLs."
+msgstr ""
+
+#: templates/url_changer.php:24
+msgid "Redirect removed."
+msgstr ""
+
+#: templates/url_changer.php:32
+#: templates/url_changer.php:67
+msgid "Old URL"
+msgstr ""
+
+#: templates/url_changer.php:35
+msgid "The exact URL currently used in your links."
+msgstr ""
+
+#: templates/url_changer.php:39
+#: templates/url_changer.php:68
+msgid "New URL"
+msgstr ""
+
+#: templates/url_changer.php:43
+#: templates/url_changer.php:71
+msgid "Redirect"
+msgstr ""
+
+#: templates/url_changer.php:46
+msgid "Add a 301 redirect from the old URL to the new one"
+msgstr ""
+
+#: templates/url_changer.php:47
+msgid "Recommended when the old URL was a page on this site, so existing bookmarks and search results keep working."
+msgstr ""
+
+#: templates/url_changer.php:54
+msgid "Preview changes"
+msgstr ""
+
+#: templates/url_changer.php:56
+msgid "This will update your post content across the site. Continue?"
+msgstr ""
+
+#: templates/url_changer.php:57
+msgid "Find &amp; Replace URL"
+msgstr ""
+
+#: templates/url_changer.php:63
+msgid "Change history"
+msgstr ""
+
+#: templates/url_changer.php:70
+msgid "Occurrences"
+msgstr ""
+
+#: templates/url_changer.php:77
+msgid "No URL changes yet."
+msgstr ""
+
+#: templates/url_changer.php:88
+msgid "301 active"
+msgstr ""
+
+#: templates/url_changer.php:89
+msgid "remove"
+msgstr ""

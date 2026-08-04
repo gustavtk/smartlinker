@@ -283,6 +283,42 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Translations, and a stale plugin header (v0.44.0)
+
+`load_plugin_textdomain()` had been pointing at a `languages/` directory that
+did not exist, so 995 translatable strings resolved to nothing. There is now a
+`languages/smartlinker.pot` holding all of them (23 with plural forms), plus a
+README covering regeneration and how to add a locale.
+
+**Verified end to end rather than assumed**: a real Afrikaans `.po` was written
+from the POT, compiled with `msgfmt`, and loaded — `Trends → Tendense`,
+`Broken Links → Gebroke Skakels`, `Export CSV → Voer CSV uit`. Generating a POT
+proves nothing on its own; a domain mismatch anywhere in the chain produces a
+file that looks correct and translates nothing.
+
+**The plugin header said `Version: 0.16.2` while `SLK_VERSION` was `0.43.0`.**
+27 versions of drift. WordPress reads the *header* for the Plugins list and for
+update checks; nothing in development reads it, so nothing complained.
+`SLK_VERSION` gets bumped on every visible change because it cache-busts CSS
+and JS — the header had no such forcing function. The header cannot be
+generated from the constant (WordPress parses it as text before any PHP runs),
+so `tests/PluginHeaderTest.php` asserts they match instead. **Confirmed to fail
+on drift**, not just assumed to.
+
+Also added while in there: `Domain Path`, `Requires at least: 5.8`,
+`Requires PHP: 7.4`. The code's true PHP floor is 7.1 (list destructuring,
+nullable types) — 7.4 is declared as a supportable floor with margin, not a
+tested one.
+
+**Known gap — JavaScript is not translated.** Around 78 user-facing strings in
+`js/admin.js` and `js/editor-sidebar.js` are bare literals, so `make-pot`
+cannot see them and they stay English in every locale. `wp_set_script_translations()`
+is now called for both handles, so the plumbing is ready; each string still
+needs wrapping in `wp.i18n.__()`, followed by `wp i18n make-json`. Deliberately
+left out of this change: 78 unverifiable edits across 116KB of working admin
+JavaScript is how a working UI gets broken, and it wants its own pass with
+browser verification.
+
 ## Memory ceiling — chunked content walks (`core/Slk/Post.php`, v0.43.0)
 
 Four places read the body of **every post on the site** in one query with no
@@ -907,7 +943,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && ./vendor/bin/phpunit --testdox
 ```
 
-193 tests, no database, no WordPress, runs in ~40ms.
+200 tests, no database, no WordPress, runs in ~50ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
 harness needs MySQL and a WP checkout, which makes the suite slow and
@@ -1014,8 +1050,8 @@ never by clicking the button (it deadlocks on its own self-request).
 ## Not built (deliberate or remaining)
 
 - **N/A by design:** AI credits, multi-site licensing, Shopify (user brings their own key; no licence gate)
-- **Remaining ideas:** live Google OAuth for Search Console, Visual Sitemap, white-label/agency
-  reports, Related Posts widget, Elementor/Divi adapters,
+- **Remaining ideas:** JavaScript i18n (see above), asset minification, live Google OAuth for
+  Search Console, Visual Sitemap, white-label/agency reports, Related Posts widget, Elementor/Divi adapters,
   Domain + Advanced settings tabs (only General / Content Ignoring / AI exist so far)
 
 ## Working style that worked

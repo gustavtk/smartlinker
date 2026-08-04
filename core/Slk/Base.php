@@ -247,6 +247,26 @@ class Slk_Base
                 'none'     => __('No suggestions found for this content yet.', 'smartlinker'),
             ],
         ]);
+
+        // Lets wp.i18n.__() in the JS resolve against the same text domain as
+        // the PHP. Without it those calls silently return their English
+        // argument, which looks like a working translation right up until
+        // someone reads the screen in another language.
+        self::set_script_translations('slk-admin');
+    }
+
+    /**
+     * Point a script's wp.i18n calls at the plugin's own translations.
+     *
+     * Guarded because the function arrived in WordPress 5.0 and the declared
+     * floor is 5.8 — cheap insurance against a fatal on an older install that
+     * ignores the header.
+     */
+    protected static function set_script_translations($handle)
+    {
+        if (function_exists('wp_set_script_translations')) {
+            wp_set_script_translations($handle, 'smartlinker', SLK_PLUGIN_DIR . 'languages');
+        }
     }
 
     /**
@@ -266,6 +286,7 @@ class Slk_Base
             SLK_VERSION,
             true
         );
+        self::set_script_translations('slk-editor-sidebar');
     }
 
     /**
