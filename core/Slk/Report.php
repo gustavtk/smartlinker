@@ -231,7 +231,7 @@ class Slk_Report
         wp_send_json_success([
             'inbound'  => $data['inbound'],
             'outbound' => $data['outbound'],
-            'edit'     => get_edit_post_link($post_id, 'raw'),
+            'edit'     => Slk_Admin::edit_url($post_id, 'raw'),
         ]);
     }
 

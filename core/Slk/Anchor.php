@@ -241,7 +241,7 @@ class Slk_Anchor
                 'link_id'      => (int) $r->id,
                 'post_id'      => (int) $r->post_id,
                 'post_title'   => get_the_title($r->post_id),
-                'edit_url'     => get_edit_post_link($r->post_id, ''),
+                'edit_url'     => Slk_Admin::edit_url($r->post_id, ''),
                 'anchor'       => $r->anchor,
                 'url'          => $r->url,
                 'target_id'    => (int) $r->target_post_id,

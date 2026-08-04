@@ -139,7 +139,7 @@ if ($min > 0 || $only_target > 0) {
                                )); ?>" />
                     </td>
                     <td>
-                        <a class="slk-title-link" href="<?php echo esc_url(get_edit_post_link($r['source_id'])); ?>">
+                        <a class="slk-title-link" href="<?php echo esc_url(Slk_Admin::edit_url($r['source_id'])); ?>">
                             <?php echo esc_html($r['source_title']); ?>
                         </a>
                         <?php if ($r['reason']) : ?>

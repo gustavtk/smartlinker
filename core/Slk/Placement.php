@@ -160,7 +160,7 @@ class Slk_Placement
                     'id'       => (int) $p->ID,
                     'title'    => trim(wp_strip_all_tags($p->post_title)) ?: __('(no title)', 'smartlinker'),
                     'url'      => get_permalink($p->ID),
-                    'edit_url' => get_edit_post_link($p->ID, ''),
+                    'edit_url' => Slk_Admin::edit_url($p->ID, ''),
                 ]);
             },
             ['post_title']

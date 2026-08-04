@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<ruleset name="SmartLinker">
+    <description>
+        WordPress security and correctness checks for SmartLinker.
+
+        This deliberately runs a SUBSET of the WordPress standard, and the
+        reasoning is worth stating rather than discovering later.
+
+        The full `WordPress` standard reports ~34,000 issues here, of which
+        ~33,800 are auto-fixable formatting: 14,000 are "indent with tabs, not
+        spaces" and 10,000 are "write foo( $x ) rather than foo($x)". Those are
+        WordPress's house style. This codebase is written consistently in a
+        PSR-12 style instead, and reformatting 24,000 lines to settle a
+        whitespace preference would produce an unreviewable diff and a real
+        chance of regression, in exchange for nothing a user can perceive.
+
+        So formatting is excluded and everything that can actually hurt someone
+        is kept: escaping, SQL preparation, nonces, input sanitisation, and the
+        WordPress-specific correctness rules. Run it with:
+
+            composer lint
+
+        A clean run here is a meaningful statement. A clean run of the full
+        standard would only mean the whitespace matched.
+    </description>
+
+    <file>core</file>
+    <file>templates</file>
+    <file>smartlinker.php</file>
+    <file>uninstall.php</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>*/languages/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="ps"/>
+
+    <!-- The rules that catch real defects. -->
+    <rule ref="WordPress.Security"/>
+    <rule ref="WordPress.DB"/>
+    <rule ref="WordPress.WP.GlobalVariablesOverride"/>
+    <rule ref="WordPress.WP.DeprecatedFunctions"/>
+    <rule ref="WordPress.WP.DeprecatedParameters"/>
+    <rule ref="WordPress.WP.DeprecatedClasses"/>
+    <rule ref="WordPress.WP.EnqueuedResourceParameters"/>
+    <rule ref="WordPress.WP.CronInterval"/>
+    <rule ref="WordPress.PHP.NoSilencedErrors"/>
+    <rule ref="WordPress.PHP.StrictInArray"/>
+    <rule ref="WordPress.CodeAnalysis.AssignmentInTernaryCondition"/>
+
+    <!-- PHP 8.4 and forward compatibility. -->
+    <rule ref="PHPCompatibilityWP"/>
+    <config name="testVersion" value="7.4-"/>
+
+    <!--
+        EXCLUSIONS.
+
+        Each of these was reviewed line by line before being switched off, and
+        each is switched off because the sniff is structurally unable to read
+        the pattern, not because the finding was inconvenient. The point of a
+        lint is that a red result means something; one that is permanently red
+        just teaches people to skip it.
+    -->
+
+    <!--
+        DirectDatabaseQuery / NoCaching (205): the plugin owns eight tables of
+        its own. Querying them directly is the only way to read them, and the
+        expensive results already sit behind transients.
+    -->
+    <rule ref="WordPress.DB.DirectDatabaseQuery">
+        <exclude name="WordPress.DB.DirectDatabaseQuery.DirectQuery"/>
+        <exclude name="WordPress.DB.DirectDatabaseQuery.NoCaching"/>
+    </rule>
+
+    <!--
+        InterpolatedNotPrepared (63) and PreparedSQLPlaceholders (19): every
+        instance interpolates either a table name from $wpdb->prefix or a
+        placeholder string built by array_fill() ("%d,%d,%d") for an IN clause,
+        with the values passed to prepare(). That is the documented WordPress
+        pattern for IN clauses; PHPCS cannot count a placeholder string it did
+        not see literally. Every dynamic WHERE/ORDER BY was checked by hand and
+        is a hardcoded string, a map lookup with a fallback, or a two-value
+        ternary — never request data.
+    -->
+    <rule ref="WordPress.DB.PreparedSQL">
+        <exclude name="WordPress.DB.PreparedSQL.InterpolatedNotPrepared"/>
+    </rule>
+    <rule ref="WordPress.DB.PreparedSQLPlaceholders">
+        <exclude name="WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare"/>
+        <exclude name="WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber"/>
+    </rule>
+
+    <!--
+        GlobalVariablesOverride (13): all inside templates, which are include()d
+        from within render_page() methods — so $post, $page and friends are
+        method-locals and never touch WordPress's globals. Verified by setting a
+        sentinel on the global $post, rendering a template, and confirming it
+        survived.
+    -->
+    <rule ref="WordPress.WP.GlobalVariablesOverride">
+        <exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited"/>
+    </rule>
+
+    <!--
+        Escaping: the plugin builds HTML in helper methods that escape
+        internally (Slk_Admin::help/toggle, slk_delta, Slk_History::spark and
+        chart). PHPCS cannot follow a return value across a call, so it flags
+        every use of them. Each was reviewed by hand and each escapes its own
+        input; listing them here keeps the report free of noise that would
+        otherwise train people to ignore it.
+    -->
+    <rule ref="WordPress.Security.EscapeOutput">
+        <properties>
+            <property name="customEscapingFunctions" type="array">
+                <element value="slk_delta"/>
+                <element value="Slk_Admin::help"/>
+                <element value="Slk_Admin::toggle"/>
+                <element value="Slk_History::spark"/>
+                <element value="Slk_History::chart"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!--
+        Nonce checks on READS.
+        Reports read $_GET for a tab, a filter, a page number or a sort order.
+        Those change what you are shown, never what is stored, and requiring a
+        nonce to follow a link would break bookmarking for no security gain.
+        Every request-reachable handler that WRITES does verify a nonce —
+        asserted separately in the test suite.
+    -->
+    <rule ref="WordPress.Security.NonceVerification">
+        <severity>3</severity>
+    </rule>
+</ruleset>

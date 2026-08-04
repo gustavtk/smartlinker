@@ -55,7 +55,7 @@ if (!defined('ABSPATH')) {
                 <tr class="slk-tr<?php echo $priority ? ' slk-tr-warn' : ''; ?>">
                     <td class="slk-detail-sub">
                         <?php if ($r->post_id) : ?>
-                            <a class="slk-title-link" href="<?php echo esc_url(get_edit_post_link($r->post_id)); ?>"><?php echo esc_html($r->url); ?></a>
+                            <a class="slk-title-link" href="<?php echo esc_url(Slk_Admin::edit_url($r->post_id)); ?>"><?php echo esc_html($r->url); ?></a>
                         <?php else : ?>
                             <?php echo esc_html($r->url); ?>
                         <?php endif; ?>

@@ -99,7 +99,7 @@ $posts = get_posts([
                     <?php foreach ($preview_rows as $row) : ?>
                         <tr class="slk-tr">
                             <td>
-                                <a href="<?php echo esc_url(get_edit_post_link($row['post_id'])); ?>">
+                                <a href="<?php echo esc_url(Slk_Admin::edit_url($row['post_id'])); ?>">
                                     <?php echo esc_html($row['title'] !== '' ? $row['title'] : '(no title)'); ?>
                                 </a>
                             </td>
@@ -191,7 +191,7 @@ $posts = get_posts([
                     </div>
                 </td>
                 <td>
-                    <a class="slk-title-link" href="<?php echo esc_url(get_edit_post_link($kw->post_id)); ?>"><?php echo esc_html(get_the_title($kw->post_id) ?: '(missing post)'); ?></a>
+                    <a class="slk-title-link" href="<?php echo esc_url(Slk_Admin::edit_url($kw->post_id)); ?>"><?php echo esc_html(get_the_title($kw->post_id) ?: '(missing post)'); ?></a>
                 </td>
                 <td>
                     <span class="slk-metric <?php echo $count > 0 ? 'slk-metric-good' : ''; ?>"><?php echo (int) $count; ?></span>

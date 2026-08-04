@@ -65,7 +65,7 @@ if (!defined('ABSPATH')) {
             <tr class="slk-tr<?php echo $inbound === 0 ? ' slk-tr-warn' : ''; ?>">
                 <td>
                     <div class="slk-title-wrap">
-                        <a class="slk-title-link" href="<?php echo esc_url(get_edit_post_link($row->ID)); ?>"><?php echo esc_html(get_the_title($row->ID) ?: '(no title)'); ?></a>
+                        <a class="slk-title-link" href="<?php echo esc_url(Slk_Admin::edit_url($row->ID)); ?>"><?php echo esc_html(get_the_title($row->ID) ?: '(no title)'); ?></a>
                         <div class="slk-title-meta"><span class="slk-chip slk-chip-money">★ <?php esc_html_e('Money page', 'smartlinker'); ?></span></div>
                     </div>
                 </td>

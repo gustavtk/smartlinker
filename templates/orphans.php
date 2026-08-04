@@ -44,7 +44,7 @@ $count = count($rows);
             <tr class="slk-tr slk-tr-warn">
                 <td>
                     <div class="slk-title-wrap">
-                        <a class="slk-title-link" href="<?php echo esc_url(get_edit_post_link($row->ID)); ?>"><?php echo esc_html($row->post_title ?: '(no title)'); ?></a>
+                        <a class="slk-title-link" href="<?php echo esc_url(Slk_Admin::edit_url($row->ID)); ?>"><?php echo esc_html($row->post_title ?: '(no title)'); ?></a>
                         <div class="slk-title-meta"><span class="slk-chip"><?php echo esc_html($row->post_type); ?></span></div>
                     </div>
                 </td>
@@ -55,7 +55,7 @@ $count = count($rows);
                     <button type="button" class="button button-small button-primary slk-fix-orphan"
                         data-target="<?php echo esc_attr($row->ID); ?>"
                         aria-expanded="false"><?php esc_html_e('Fix', 'smartlinker'); ?></button>
-                    <a class="slk-icon-btn" title="<?php esc_attr_e('Edit', 'smartlinker'); ?>" href="<?php echo esc_url(get_edit_post_link($row->ID)); ?>"><span class="dashicons dashicons-edit"></span></a>
+                    <a class="slk-icon-btn" title="<?php esc_attr_e('Edit', 'smartlinker'); ?>" href="<?php echo esc_url(Slk_Admin::edit_url($row->ID)); ?>"><span class="dashicons dashicons-edit"></span></a>
                 </td>
             </tr>
             <?php

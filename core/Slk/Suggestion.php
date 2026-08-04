@@ -1068,7 +1068,7 @@ class Slk_Suggestion
                 'context'      => Slk_Post::sentence_containing($src_plain, $anchor[0]),
                 'source_id'    => $sid,
                 'source_title' => trim(wp_strip_all_tags($src->post_title)),
-                'source_edit'  => get_edit_post_link($sid, 'raw'),
+                'source_edit'  => Slk_Admin::edit_url($sid, 'raw'),
                 'target_title' => $title,
                 'url'          => $target_url,
                 'path'         => wp_make_link_relative($target_url),

@@ -91,7 +91,7 @@ $tabs = [
             $code_label = $code > 0 ? $code : strtoupper($row->broken_type);
             ?>
             <tr class="slk-tr<?php echo $row->broken_type === 'redirect' ? '' : ' slk-tr-warn'; ?>">
-                <td><a class="slk-title-link" href="<?php echo esc_url(get_edit_post_link($row->post_id)); ?>"><?php echo esc_html($row->post_title ?: '(no title)'); ?></a></td>
+                <td><a class="slk-title-link" href="<?php echo esc_url(Slk_Admin::edit_url($row->post_id)); ?>"><?php echo esc_html($row->post_title ?: '(no title)'); ?></a></td>
                 <td><?php echo esc_html($row->anchor ?: '—'); ?></td>
                 <td class="slk-detail-sub"><a href="<?php echo esc_url($row->url); ?>" target="_blank" rel="noopener nofollow"><?php echo esc_html($row->url); ?></a></td>
                 <td><span class="slk-badge <?php echo esc_attr($cls); ?>"><?php echo esc_html($code_label); ?></span></td>

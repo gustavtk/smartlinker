@@ -273,7 +273,7 @@ class Slk_Equity
                 'id'       => $id,
                 'title'    => trim(wp_strip_all_tags($title)) ?: __('(no title)', 'smartlinker'),
                 'url'      => get_permalink($id),
-                'edit_url' => get_edit_post_link($id, ''),
+                'edit_url' => Slk_Admin::edit_url($id, ''),
                 'equity'   => isset($rank[$id]) ? $rank[$id] : 0.0,
                 // Relative to an evenly-shared site, so 1.00 means "an average
                 // page here" and 0.20 means "a fifth of its fair share". A raw
