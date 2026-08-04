@@ -72,15 +72,6 @@ class Slk_Keyword
             return $counts;
         }
 
-        global $wpdb;
-        $ph = implode(',', array_fill(0, count($types), '%s'));
-        // phpcs:ignore WordPress.DB.PreparedSQL
-        $posts = $wpdb->get_results($wpdb->prepare(
-            "SELECT ID, post_content FROM {$wpdb->posts}
-             WHERE post_status = 'publish' AND post_type IN ($ph)",
-            $types
-        ));
-
         // Rules are not independent: whichever runs first turns the text into
         // an anchor, and every later rule skips it. Counting each rule against
         // the untouched post would let two overlapping rules both claim the
@@ -93,20 +84,27 @@ class Slk_Keyword
             return empty($r->active);
         });
 
-        foreach ($posts as $post) {
-            $content = $post->post_content;
+        // In slices: this reads every published post's body, and only a tally
+        // of integers survives each one. Holding the whole corpus to produce
+        // a handful of counts is the difference between a slow page and a
+        // fatal error on a large site.
+        Slk_Post::walk_content(
+            Slk_Post::ids_for_walk(['publish']),
+            function ($post) use ($active, $paused, &$counts) {
+                $content = $post->post_content;
 
-            foreach ($active as $rule) {
-                $content = self::tally($rule, $post->ID, $content, $counts);
-            }
+                foreach ($active as $rule) {
+                    $content = self::tally($rule, $post->ID, $content, $counts);
+                }
 
-            // A paused rule is measured against the content the active rules
-            // have already claimed, so its number answers the real question:
-            // what would switching this on actually add?
-            foreach ($paused as $rule) {
-                self::tally($rule, $post->ID, $content, $counts);
+                // A paused rule is measured against the content the active
+                // rules have already claimed, so its number answers the real
+                // question: what would switching this on actually add?
+                foreach ($paused as $rule) {
+                    self::tally($rule, $post->ID, $content, $counts);
+                }
             }
-        }
+        );
 
         set_transient(self::COUNT_TRANSIENT, $counts, 15 * MINUTE_IN_SECONDS);
         return $counts;

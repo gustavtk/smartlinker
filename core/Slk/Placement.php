@@ -136,36 +136,35 @@ class Slk_Placement
 
     public static function build()
     {
-        global $wpdb;
-
         $types = Slk_Settings::enabled_post_types();
         if (empty($types)) {
             return ['rows' => [], 'stats' => self::empty_stats(), 'generated' => current_time('mysql')];
         }
-        $ph = implode(',', array_fill(0, count($types), '%s'));
-
-        // phpcs:ignore WordPress.DB.PreparedSQL
-        $posts = $wpdb->get_results($wpdb->prepare(
-            "SELECT ID, post_title, post_content FROM {$wpdb->posts}
-             WHERE post_status = 'publish' AND post_type IN ($ph)",
-            $types
-        ));
 
         $home = home_url();
         $rows = [];
-        foreach ($posts as $p) {
-            $positions = self::positions($p->post_content, $home);
-            if (empty($positions)) {
-                continue;   // no internal links is an orphan/outbound question
-            }
-            $s = self::summarise($positions);
-            $rows[] = array_merge($s, [
-                'id'       => (int) $p->ID,
-                'title'    => trim(wp_strip_all_tags($p->post_title)) ?: __('(no title)', 'smartlinker'),
-                'url'      => get_permalink($p->ID),
-                'edit_url' => get_edit_post_link($p->ID, ''),
-            ]);
-        }
+
+        // Walked in slices rather than selected in one query: this reads the
+        // body of every published post, and holding them all at once is a
+        // fatal memory error on a large site. What is kept is the summary —
+        // a handful of numbers per post — not the content it came from.
+        Slk_Post::walk_content(
+            Slk_Post::ids_for_walk(['publish']),
+            function ($p) use ($home, &$rows) {
+                $positions = self::positions($p->post_content, $home);
+                if (empty($positions)) {
+                    return;   // no internal links is an orphan/outbound question
+                }
+                $s = self::summarise($positions);
+                $rows[] = array_merge($s, [
+                    'id'       => (int) $p->ID,
+                    'title'    => trim(wp_strip_all_tags($p->post_title)) ?: __('(no title)', 'smartlinker'),
+                    'url'      => get_permalink($p->ID),
+                    'edit_url' => get_edit_post_link($p->ID, ''),
+                ]);
+            },
+            ['post_title']
+        );
 
         usort($rows, function ($a, $b) {
             return $b['avg'] <=> $a['avg'];
