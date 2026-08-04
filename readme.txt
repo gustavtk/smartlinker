@@ -4,7 +4,7 @@ Tags: internal links, seo, linking, anchor text, broken links
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.53.1
+Stable tag: 0.54.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,10 @@ The reports that read every post do so in slices rather than loading the whole s
 Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/smartlinker.pot` is included.
 
 == Changelog ==
+
+= 0.54.0 =
+* The plugin now costs zero database queries on a front-end page view when auto-linking and redirects are not in use. Previously it ran one query per request plus one per post displayed.
+* Fixed auto-link rules imported from CSV not taking effect until the cache expired.
 
 = 0.53.0 =
 * Link Opportunities are now ranked by likely impact rather than anchor relevance alone, and each row explains why it sits where it does.

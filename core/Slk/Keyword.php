@@ -13,6 +13,19 @@ class Slk_Keyword
     /** Cache for the per-rule link counts — recomputed when rules change. */
     const COUNT_TRANSIENT = 'slk_autolink_counts';
 
+    /** Active rules, cached for the front end. See active_rules(). */
+    const RULES_TRANSIENT = 'slk_autolink_rules';
+
+    /**
+     * Per-request copy of the rules.
+     *
+     * A class property rather than a function static so flush() can actually
+     * clear it. As a `static` inside the method it was unreachable, and
+     * deleting a rule then re-rendering in the SAME request kept applying it —
+     * the transient was gone and the stale copy in memory won.
+     */
+    protected static $memo = null;
+
     public function register()
     {
         add_action('admin_init', [__CLASS__, 'handle_actions']);
@@ -25,6 +38,54 @@ class Slk_Keyword
             // Late priority so other content filters run first.
             add_filter('the_content', [__CLASS__, 'apply_to_content'], 25);
         }
+    }
+
+    /**
+     * The active rules, cached — this is the front-end path.
+     *
+     * apply_to_content() runs on every post rendered, so an uncached query
+     * here costs one query PER POST: eleven on a ten-post archive, on a site
+     * that may have no rules at all. The static cache collapses that to one
+     * per request, and the transient to roughly one per hour.
+     *
+     * An empty result is cached too, stored as a sentinel because
+     * get_transient() cannot tell an empty array from a cache miss. Sites with
+     * no auto-linking are the common case and the ones that benefit most.
+     */
+    public static function active_rules()
+    {
+        if (self::$memo !== null) {
+            return self::$memo;
+        }
+
+        $cached = get_transient(self::RULES_TRANSIENT);
+        if ($cached !== false) {
+            self::$memo = ($cached === 'none') ? [] : $cached;
+            return self::$memo;
+        }
+
+        $rules = self::all(true);
+        set_transient(self::RULES_TRANSIENT, $rules ?: 'none', HOUR_IN_SECONDS);
+        self::$memo = $rules;
+        return self::$memo;
+    }
+
+    /**
+     * Clear every cache derived from the rules.
+     *
+     * Deliberately one method rather than two. The counts cache was already
+     * being cleared at four call sites and missed at a fifth — the CSV import
+     * wrote rules and invalidated nothing, so imported rules showed stale
+     * counts for fifteen minutes. Adding a second cache with its own
+     * invalidation list would have made that failure worse: imported rules
+     * would not have applied on the front end either. One entry point means
+     * one thing to remember.
+     */
+    public static function flush()
+    {
+        self::$memo = null;
+        delete_transient(self::COUNT_TRANSIENT);
+        delete_transient(self::RULES_TRANSIENT);
     }
 
     /**
@@ -189,7 +250,7 @@ class Slk_Keyword
                     'created'        => current_time('mysql'),
                 ]);
             }
-            delete_transient(self::COUNT_TRANSIENT);
+            self::flush();
             wp_safe_redirect(admin_url('admin.php?page=smartlinker_autolinks&added=1'));
             exit;
         }
@@ -197,7 +258,7 @@ class Slk_Keyword
         // Delete rule.
         if (!empty($_GET['slk_delete']) && check_admin_referer('slk_delete_rule')) {
             $wpdb->delete($table, ['id' => (int) $_GET['slk_delete']], ['%d']);
-            delete_transient(self::COUNT_TRANSIENT);
+            self::flush();
             wp_safe_redirect(admin_url('admin.php?page=smartlinker_autolinks&deleted=1'));
             exit;
         }
@@ -207,7 +268,7 @@ class Slk_Keyword
             $id = (int) $_GET['slk_toggle'];
             // phpcs:ignore WordPress.DB.PreparedSQL
             $wpdb->query($wpdb->prepare("UPDATE {$table} SET active = 1 - active WHERE id = %d", $id));
-            delete_transient(self::COUNT_TRANSIENT);
+            self::flush();
             wp_safe_redirect(admin_url('admin.php?page=smartlinker_autolinks&toggled=1'));
             exit;
         }
@@ -222,7 +283,7 @@ class Slk_Keyword
             return $content;
         }
 
-        $rules = self::all(true);
+        $rules = self::active_rules();
         if (empty($rules)) {
             return $content;
         }
@@ -292,6 +353,11 @@ class Slk_Keyword
     }
 
     /** Drop the cached counts so the next page view recomputes them. */
+    /**
+     * Only the counts. Fired on save_post, where the RULES cannot have
+     * changed — dropping them there would re-query on every post edit for no
+     * reason, which is the cost this change exists to remove.
+     */
     public static function flush_counts()
     {
         delete_transient(self::COUNT_TRANSIENT);
