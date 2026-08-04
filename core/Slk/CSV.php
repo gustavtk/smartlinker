@@ -474,6 +474,12 @@ class Slk_CSV
         }
         fclose($handle);
 
+        // Importing rules changes both the rules themselves and every count
+        // derived from them. This was missing entirely: imported rules showed
+        // stale counts, and once the rules were cached they would not have
+        // applied on the front end either.
+        Slk_Keyword::flush();
+
         wp_safe_redirect($redirect . '&imported=' . $imported . '&skipped=' . $skipped);
         exit;
     }

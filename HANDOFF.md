@@ -283,6 +283,47 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Front-end cost reduced to zero (v0.54.0)
+
+Prompted by the right question — *does any of this affect the front page?* It
+did, more than it needed to.
+
+Three front-end touchpoints, and only three: `the_content` (auto-linking),
+`wp_enqueue_scripts` (the inline click beacon, ~700 bytes, no HTTP request),
+and `template_redirect` (only when redirects exist). **No CSS, no JS files, no
+external requests.**
+
+Two costs that were paid whether or not the features were used:
+
+- `Slk_URLChanger::register()` ran a `COUNT(*)` on **every request**, front end
+  included, purely to decide whether to hook the redirect handler. Now an
+  autoloaded option, which WordPress has already fetched — **0 extra queries**.
+- `apply_to_content()` fetched the rules per post rendered: **10 queries on a
+  ten-post archive**, on a site with no rules. Now a static + transient — **0
+  in steady state**.
+
+Also fixed a pre-existing bug found on the way: **the CSV import wrote
+auto-link rules and invalidated nothing**, so imported rules showed stale
+counts. Caching the rules would have made it worse — imported rules would not
+have applied at all. Invalidation is now one `flush()` called from all five
+mutation points.
+
+### Two bugs I introduced and caught here
+
+**Infinite recursion.** Adding `flush()` meant replacing every
+`delete_transient(self::COUNT_TRANSIENT);` with `self::flush();` — and the
+replacement rewrote that line *inside `flush()` itself*. It passed `php -l`,
+passed all 242 tests, and would have been a stack overflow on **every
+front-end page view of a live site**. It surfaced only because a performance
+measurement hung. The same shape of mistake destroyed seven methods earlier in
+this project. `test_no_method_immediately_calls_itself()` now guards it.
+
+**A stale cache `flush()` could not clear.** The per-request copy was a
+function `static`, unreachable from outside, so deleting a rule and
+re-rendering in the same request kept applying it. Now a class property that
+`flush()` resets. Verified by adding a rule, seeing the link, deleting it, and
+confirming the link went.
+
 ## Impact ranking, striking distance, bulk redirect repointing (v0.53.0)
 
 Three features, all built on data the plugin already had and was throwing away.
@@ -1427,7 +1468,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && bin/test.sh
 ```
 
-**242 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+**243 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
 no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin

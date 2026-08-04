@@ -66,6 +66,9 @@ class Slk_URLChanger
             'created'       => current_time('mysql'),
         ], ['%s', '%s', '%s', '%d', '%d', '%d', '%s']);
 
+        // Keep the autoloaded flag in step with the table.
+        self::refresh_flag();
+
         wp_safe_redirect(admin_url(sprintf(
             'admin.php?page=smartlinker_url_changer&done=1&posts=%d&occ=%d',
             $stats['posts'],
@@ -304,12 +307,46 @@ class Slk_URLChanger
         return $rows;
     }
 
+    /** Autoloaded flag mirroring "are there any redirects at all". */
+    const FLAG = 'slk_has_redirects';
+
+    /**
+     * Are there redirects to serve?
+     *
+     * Read from an AUTOLOADED option, not a COUNT.
+     *
+     * register() runs on every request, front end included, purely to decide
+     * whether to hook the redirect handler. A COUNT there is one database
+     * query on every page view of the site, forever, and on a site with no
+     * redirects it always returned zero. An autoloaded option costs nothing
+     * extra: WordPress has already fetched it as part of the single query it
+     * makes for all autoloaded options.
+     *
+     * The flag is written whenever a redirect is created or removed. If it is
+     * missing — an upgrade from a version before this existed — it is computed
+     * once and stored, so the COUNT happens at most one more time ever.
+     */
     public static function has_redirects()
+    {
+        $flag = get_option(self::FLAG, null);
+        if ($flag === null) {
+            return self::refresh_flag();
+        }
+        return (bool) $flag;
+    }
+
+    /**
+     * Recompute the flag from the table. Called after any change, and once on
+     * upgrade.
+     */
+    public static function refresh_flag()
     {
         global $wpdb;
         $table = Slk_Query::url_changes_table();
         // phpcs:ignore WordPress.DB.PreparedSQL
-        return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE redirect = 1") > 0;
+        $has = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE redirect = 1") > 0;
+        update_option(self::FLAG, $has ? 1 : 0);
+        return $has;
     }
 
     public static function delete_redirect($id)
@@ -317,6 +354,7 @@ class Slk_URLChanger
         global $wpdb;
         // Remove the redirect but keep the change record.
         $wpdb->update(Slk_Query::url_changes_table(), ['redirect' => 0], ['id' => (int) $id], ['%d'], ['%d']);
+        self::refresh_flag();
     }
 
     /**

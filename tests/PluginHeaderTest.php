@@ -87,6 +87,55 @@ class PluginHeaderTest extends TestCase
     }
 
     /**
+     * No method may call itself as its first statement.
+     *
+     * This is not hypothetical. Adding Slk_Keyword::flush() meant replacing
+     * every `delete_transient(self::COUNT_TRANSIENT);` with `self::flush();`
+     * — and the replacement also rewrote that line INSIDE flush() itself,
+     * making it infinitely recursive. It passed `php -l`, passed every unit
+     * test, and would have been a stack overflow on every front-end page view
+     * of a live site. It was caught only because a performance measurement
+     * hung.
+     *
+     * The same shape of mistake destroyed seven methods earlier in this
+     * project. Bulk find-and-replace does not know which line it is standing
+     * on; this test does.
+     */
+    public function test_no_method_immediately_calls_itself()
+    {
+        $offenders = [];
+        foreach (glob(SLK_PLUGIN_DIR . 'core/Slk/*.php') as $file) {
+            $src = file_get_contents($file);
+            preg_match_all(
+                '/(?:public|protected|private) static function (\w+)\s*\([^)]*\)\s*\{(.*?)\n    \}/s',
+                $src,
+                $m,
+                PREG_SET_ORDER
+            );
+            foreach ($m as $hit) {
+                $name = $hit[1];
+                // First executable line of the body.
+                $lines = array_values(array_filter(array_map('trim', explode("\n", $hit[2])), function ($l) {
+                    return $l !== '' && strpos($l, '//') !== 0 && strpos($l, '*') !== 0 && strpos($l, '/*') !== 0;
+                }));
+                if (empty($lines)) {
+                    continue;
+                }
+                if (preg_match('/^(?:return\s+)?self::' . preg_quote($name, '/') . '\s*\(/', $lines[0])) {
+                    $offenders[] = basename($file) . '::' . $name . '()';
+                }
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $offenders,
+            "These call themselves as their first statement — infinite recursion:\n  "
+            . implode("\n  ", $offenders)
+        );
+    }
+
+    /**
      * No asset may be loaded from a third party.
      *
      * WordPress.org requires plugins to serve their own CSS, JS and fonts; a
