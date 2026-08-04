@@ -39,7 +39,7 @@ licence from the paid plugin; this is a clean-room build.
 
 - **Shell:** in-page sidebar (15 sections) + dark header + panel. Native WP submenu hidden
   via `admin_head` CSS — **not** `remove_submenu_page` (that breaks access authorisation).
-- **SPA:** the only full page load is opening the plugin. `js/admin.js` intercepts nav +
+- **SPA:** the only full page load is opening the plugin. `js/admin-ui.js` intercepts nav +
   form submits, swaps `.slk-main`, uses `history.pushState`. Saves don't scroll — they show
   a bottom-right toast.
 - **Brand:** violet→blue gradient. All colour lives in `:root` tokens at the top of
@@ -204,7 +204,7 @@ Pulls focus keywords out of Yoast, Rank Math, AIOSEO and SEOPress into Target Ke
     That is the "hole" the page is for — posts sitting together without referencing each other.
 - `internal_edges()` is keyed **target => sources**, not source => targets. Every caller asks
   "who links to this?", and the other direction turns the health calc into O(posts x links).
-- The treemap is a **squarified** layout (`squarify()` in `js/admin.js`). Slice-and-dice
+- The treemap is a **squarified** layout (`squarify()` in `js/admin-ui.js`). Slice-and-dice
   produces unreadable slivers as soon as one cluster dwarfs the rest, which is the normal case.
 - **The renderer must run on `slk:loaded` as well as ready** — `swap()` sets `innerHTML`, so
   inline scripts in a swapped page never execute. Any future canvas/chart page needs the same.
@@ -229,7 +229,7 @@ are reachable without opening the collapsed meta-box drawer.
 - Same Apply Link / Reject / Load More behaviour as the meta box; Reject persists via the
   same `slk_reject_suggestion` endpoint.
 - **Insertion is not duplicated.** `window.SlkBridge.insert()` (exported from the bottom
-  of `js/admin.js`) owns anchor-building and boundary-safe replacement; the sidebar calls
+  of `js/admin-ui.js`) owns anchor-building and boundary-safe replacement; the sidebar calls
   it. Never reimplement that logic — a naive replace corrupts URLs and nests anchors.
 - AI lock copy comes from `Slk_AI::availability()` via `SLK.ai`, the same source the meta
   box uses, so the two surfaces cannot drift.
@@ -283,6 +283,50 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## JavaScript i18n — and two silent failures (v0.46.0)
+
+The ~78 bare English literals in the admin JavaScript are now wrapped, so the
+POT covers **1,108 strings** (was 995) across PHP *and* JS. Anything carrying a
+value goes through `sprintf`: a sentence assembled from concatenated fragments
+cannot be translated, because other languages do not order the number, the noun
+and the verb the way English does. Counts use `_n()`.
+
+Verified end to end in the live editor, not asserted: with a test Afrikaans
+locale the sidebar rendered **“Voorgestelde skakels (1 van 1)”**, **“Vertroue:
+74%”**, **“Anker:”** and **“Voeg by daardie plasing”** — proving positional
+`%1$d`/`%2$d`, `%%` escaping and plain lookups all survive the round trip.
+
+Two things silently produced a POT that looked correct and translated nothing.
+Both are worth knowing because neither errors:
+
+**1. The text domain must be a literal at every call site.** The first pass
+used a `DOMAIN` constant — `__('Anchor:', DOMAIN)`. `wp i18n make-pot` resolves
+the domain *statically*; given a variable it cannot tell which domain the call
+belongs to and skips the string. 139 call sites, all correct-looking, extracted
+**zero**. The domain is now written out in full every time.
+
+**2. Never name a JavaScript file `*admin.js`.** WordPress finds a script's
+translations by hashing its path, stripping a `.min.js` suffix first. Core
+checks that suffix **strictly** (`str_ends_with($relative, '.min.js')`, dot
+included). `wp i18n make-json` checks it **loosely**, on the letters `min.js`.
+So for `admin.js` it strips seven characters from `...dmin.js` and writes the
+JSON under the hash for `js/a.js`; core looks up the hash for `js/admin.js`,
+finds nothing, and the whole file stays English. Confirmed by reading both
+implementations and reproducing it minimally. **`js/admin.js` is therefore now
+`js/admin-ui.js`** — any name ending in the letters `min.js` hits this.
+`languages/README.md` carries a one-liner to verify the hashes after
+generating.
+
+`wp_set_script_translations()` is called for both handles; `slk-admin` gained
+`wp-i18n` as a dependency. Both files keep small fallbacks for `__`/`_n`/
+`sprintf` so a missing `wp.i18n` yields an untranslated screen rather than a
+dead one.
+
+**Still missing translator comments:** 46 PHP strings with placeholders have no
+`/* translators: */` comment (all pre-existing; `make-pot` warns about each).
+The JS ones are all commented. Note that a comment must sit on the line
+directly above the call — across a ternary the extractor will not associate it.
+
 ## Translations, and a stale plugin header (v0.44.0)
 
 `load_plugin_textdomain()` had been pointing at a `languages/` directory that
@@ -310,14 +354,7 @@ Also added while in there: `Domain Path`, `Requires at least: 5.8`,
 nullable types) — 7.4 is declared as a supportable floor with margin, not a
 tested one.
 
-**Known gap — JavaScript is not translated.** Around 78 user-facing strings in
-`js/admin.js` and `js/editor-sidebar.js` are bare literals, so `make-pot`
-cannot see them and they stay English in every locale. `wp_set_script_translations()`
-is now called for both handles, so the plumbing is ready; each string still
-needs wrapping in `wp.i18n.__()`, followed by `wp i18n make-json`. Deliberately
-left out of this change: 78 unverifiable edits across 116KB of working admin
-JavaScript is how a working UI gets broken, and it wants its own pass with
-browser verification.
+**JavaScript was left untranslated in this release** — done in v0.46.0 above.
 
 ## Memory ceiling — chunked content walks (`core/Slk/Post.php`, v0.43.0)
 
@@ -582,7 +619,7 @@ Verified unreferenced before deletion, not guessed at:
 - `Slk_ClickTracker::clicks_for_target()`, `Slk_Error::is_broken()` (a
   back-compat wrapper with nothing left calling it), `Slk_Error::count_broken()`,
   `Slk_Rejection::forget()`, `Slk_Sitemap::has_sites()` — zero references each.
-- `markContext()` in `admin.js` and the `.slk-context` CSS rules — the card
+- `markContext()` in `admin-ui.js` and the `.slk-context` CSS rules — the card
   redesign stopped emitting that markup; nothing produced it any more.
 
 **Detection notes for next time.** A naive `grep 'Class::method'` gives false
@@ -703,7 +740,7 @@ Measured on the demo, so nobody re-litigates this from a hunch:
 3.19MB; WordPress's own `options-general.php` loads **77 scripts / 3.67MB** on
 the same install, including the whole block-editor stack (`block-editor.min.js`
 1MB, `components.min.js` 787KB) that core pulls in for the command palette.
-SmartLinker's own share is `admin.css` 77KB + `admin.js` 81KB. Assets are
+SmartLinker's own share is `admin.css` 77KB + `admin-ui.js` 81KB. Assets are
 correctly gated to our pages and `post.php`/`post-new.php` only.
 
 **The spinner is delayed 250ms on purpose** (`LOADING_DELAY` in the SPA block).
@@ -1050,7 +1087,7 @@ never by clicking the button (it deadlocks on its own self-request).
 ## Not built (deliberate or remaining)
 
 - **N/A by design:** AI credits, multi-site licensing, Shopify (user brings their own key; no licence gate)
-- **Remaining ideas:** JavaScript i18n (see above), asset minification, live Google OAuth for
+- **Remaining ideas:** asset minification, translator comments for the 46 PHP strings that lack them, live Google OAuth for
   Search Console, Visual Sitemap, white-label/agency reports, Related Posts widget, Elementor/Divi adapters,
   Domain + Advanced settings tabs (only General / Content Ignoring / AI exist so far)
 

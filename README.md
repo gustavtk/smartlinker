@@ -64,7 +64,7 @@ A WordPress internal-linking plugin — original code, no license gating. Built 
 
 SmartLinker uses a self-contained, single-page admin UI (inspired by Perfmatters): an in-page sidebar lists every section, a dark header bar shows the section title + version, and boolean settings are real toggle switches. The native WordPress submenu under "SmartLinker" is hidden — navigation lives in the in-page sidebar (`Slk_Admin` renders the shell around each page; all pages stay registered and URL-reachable). Typography is Inter with deep-styled tables, form fields, and buttons.
 
-**Single-page behavior:** the only full page load is opening the plugin from the WordPress sidebar. After that, a lightweight SPA layer (in `js/admin.js`) intercepts sidebar navigation, in-panel action links, and form submissions, fetching and swapping just the content column via `fetch` + `history.pushState` — so you can click through sections, add/delete items, and save settings with no page refresh. It degrades gracefully to normal navigation if anything fails.
+**Single-page behavior:** the only full page load is opening the plugin from the WordPress sidebar. After that, a lightweight SPA layer (in `js/admin-ui.js`) intercepts sidebar navigation, in-panel action links, and form submissions, fetching and swapping just the content column via `fetch` + `history.pushState` — so you can click through sections, add/delete items, and save settings with no page refresh. It degrades gracefully to normal navigation if anything fails.
 
 ## Phase 11 (implemented) — feature-page parity
 

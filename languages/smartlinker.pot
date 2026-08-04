@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SmartLinker 0.43.0\n"
+"Project-Id-Version: SmartLinker 0.45.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smartlinker\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-04T10:57:15+00:00\n"
+"POT-Creation-Date: 2026-08-04T11:39:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: smartlinker\n"
@@ -184,7 +184,7 @@ msgstr ""
 
 #: core/Slk/Admin.php:37
 #: core/Slk/Base.php:129
-#: core/Slk/Base.php:277
+#: core/Slk/Base.php:311
 #: templates/settings.php:33
 msgid "Settings"
 msgstr ""
@@ -325,20 +325,20 @@ msgstr ""
 msgid "SmartLinker — Internal Link Suggestions"
 msgstr ""
 
-#: core/Slk/Base.php:244
+#: core/Slk/Base.php:257
 msgid "Finding suggestions…"
 msgstr ""
 
-#: core/Slk/Base.php:245
+#: core/Slk/Base.php:258
 #: core/Slk/Suggestion.php:943
 msgid "Link inserted."
 msgstr ""
 
-#: core/Slk/Base.php:246
+#: core/Slk/Base.php:259
 msgid "Something went wrong."
 msgstr ""
 
-#: core/Slk/Base.php:247
+#: core/Slk/Base.php:260
 msgid "No suggestions found for this content yet."
 msgstr ""
 
@@ -672,6 +672,7 @@ msgstr ""
 
 #: core/Slk/Equity.php:274
 #: core/Slk/Placement.php:161
+#: js/admin-ui.js:1108
 msgid "(no title)"
 msgstr ""
 
@@ -1480,8 +1481,10 @@ msgid "pointing at"
 msgstr ""
 
 #. translators: %d: number of posts
+#. translators: %d: number of posts in this cluster
 #: templates/anchors.php:133
-#, php-format
+#: js/admin-ui.js:1752
+#, php-format,js-format
 msgid "%d post"
 msgid_plural "%d posts"
 msgstr[0] ""
@@ -1564,6 +1567,7 @@ msgid "The identical anchor pointing at one page %d times or more. Natural writi
 msgstr ""
 
 #: templates/anchors.php:256
+#: js/admin-ui.js:1977
 msgid "Anchor text"
 msgstr ""
 
@@ -1612,6 +1616,7 @@ msgid "…and %d more"
 msgstr ""
 
 #: templates/anchors.php:317
+#: js/admin-ui.js:627
 msgid "Where?"
 msgstr ""
 
@@ -1852,6 +1857,8 @@ msgstr ""
 
 #: templates/broken.php:100
 #: templates/orphans.php:57
+#: js/admin-ui.js:1995
+#: js/admin-ui.js:2139
 msgid "Fix"
 msgstr ""
 
@@ -2456,6 +2463,7 @@ msgid "This is the first scheduled scan, so there is nothing to compare against 
 msgstr ""
 
 #: templates/email_digest.php:50
+#: js/admin-ui.js:1116
 msgid "broken"
 msgstr ""
 
@@ -2841,10 +2849,12 @@ msgid "A keyword marked SEO comes live from Rank Math, Yoast, AIOSEO or SEOPress
 msgstr ""
 
 #: templates/meta_box.php:75
+#: js/admin-ui.js:245
 msgid "SEO"
 msgstr ""
 
 #: templates/meta_box.php:77
+#: js/admin-ui.js:246
 msgid "Remove keyword"
 msgstr ""
 
@@ -2936,10 +2946,15 @@ msgid "Every place on the site where one post already says something that names 
 msgstr ""
 
 #: templates/opportunities.php:34
+#: js/admin-ui.js:2073
+#: js/editor-sidebar.js:361
 msgid "Standard"
 msgstr ""
 
 #: templates/opportunities.php:36
+#: js/admin-ui.js:2076
+#: js/editor-sidebar.js:306
+#: js/editor-sidebar.js:370
 msgid "AI"
 msgstr ""
 
@@ -3000,6 +3015,7 @@ msgid "Apply selected"
 msgstr ""
 
 #: templates/opportunities.php:104
+#: js/admin-ui.js:551
 msgid "Stop"
 msgstr ""
 
@@ -3016,6 +3032,7 @@ msgid "Pointing at"
 msgstr ""
 
 #: templates/opportunities.php:118
+#: js/admin-ui.js:681
 msgid "Confidence"
 msgstr ""
 
@@ -4401,3 +4418,564 @@ msgstr ""
 #: templates/url_changer.php:89
 msgid "remove"
 msgstr ""
+
+#. translators: 1: suggestions added, 2: suggestions in this batch
+#: js/admin-ui.js:71
+#, js-format
+msgid "%1$d of %2$d added"
+msgstr ""
+
+#: js/admin-ui.js:76
+msgid "Every suggestion in this batch is linked. Remember to update the post."
+msgstr ""
+
+#. translators: %d: match confidence as a percentage
+#: js/admin-ui.js:131
+#: js/editor-sidebar.js:161
+#, js-format
+msgid "Confidence: %d%%"
+msgstr ""
+
+#: js/admin-ui.js:133
+#: js/editor-sidebar.js:153
+msgid "Anchor:"
+msgstr ""
+
+#: js/admin-ui.js:146
+#: js/editor-sidebar.js:172
+msgid "Apply Link"
+msgstr ""
+
+#: js/admin-ui.js:147
+msgid "Reject"
+msgstr ""
+
+#. translators: 1: suggestions shown, 2: suggestions found
+#: js/admin-ui.js:160
+#: js/editor-sidebar.js:382
+#, js-format
+msgid "Suggested links (%1$d of %2$d)"
+msgstr ""
+
+#: js/admin-ui.js:164
+#: js/editor-sidebar.js:407
+msgid "Load More"
+msgstr ""
+
+#: js/admin-ui.js:292
+#: js/admin-ui.js:919
+#: js/admin-ui.js:1258
+msgid "Asking the AI…"
+msgstr ""
+
+#. translators: %d: number of keywords added
+#: js/admin-ui.js:303
+#, js-format
+msgid "Added %d."
+msgstr ""
+
+#: js/admin-ui.js:306
+msgid "Nothing new to add."
+msgstr ""
+
+#: js/admin-ui.js:406
+#: js/editor-sidebar.js:375
+msgid "These posts should link here. Adding one edits and saves that post straight away — it is not part of this post’s next save. Undo it under SmartLinker → Activity."
+msgstr ""
+
+#: js/admin-ui.js:432
+#: js/admin-ui.js:1254
+msgid "Select a post first."
+msgstr ""
+
+#: js/admin-ui.js:459
+#: js/admin-ui.js:991
+msgid "Anchor text and URL are both required."
+msgstr ""
+
+#: js/admin-ui.js:473
+#: js/admin-ui.js:592
+msgid "Inserted"
+msgstr ""
+
+#: js/admin-ui.js:475
+#: js/admin-ui.js:479
+#: js/admin-ui.js:901
+msgid "Insert link"
+msgstr ""
+
+#. translators: %d: number of rows ticked
+#: js/admin-ui.js:509
+#, js-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: js/admin-ui.js:536
+msgid "Stopping…"
+msgstr ""
+
+#. translators: %d: number of links successfully added
+#: js/admin-ui.js:557
+#, js-format
+msgid "%d link added"
+msgid_plural "%d links added"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of rows that could not be applied
+#: js/admin-ui.js:559
+#, js-format
+msgid "%d skipped"
+msgid_plural "%d skipped"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: rows done, 2: rows selected
+#: js/admin-ui.js:562
+#, js-format
+msgid "stopped at %1$d of %2$d"
+msgstr ""
+
+#. translators: 1: current row, 2: rows selected
+#: js/admin-ui.js:577
+#, js-format
+msgid "Applying %1$d of %2$d…"
+msgstr ""
+
+#: js/admin-ui.js:627
+#: js/admin-ui.js:653
+msgid "Hide"
+msgstr ""
+
+#: js/admin-ui.js:639
+#: js/admin-ui.js:655
+msgid "Error"
+msgstr ""
+
+#: js/admin-ui.js:667
+msgid "Anchor found"
+msgstr ""
+
+#: js/admin-ui.js:668
+msgid "Target focus keyword"
+msgstr ""
+
+#: js/admin-ui.js:670
+msgid "Similarity"
+msgstr ""
+
+#. translators: 1: similarity score, 2: the minimum it had to beat
+#: js/admin-ui.js:672
+#, js-format
+msgid "%1$s (floor %2$s)"
+msgstr ""
+
+#: js/admin-ui.js:673
+msgid " — by meaning"
+msgstr ""
+
+#: js/admin-ui.js:673
+msgid " — by shared vocabulary"
+msgstr ""
+
+#: js/admin-ui.js:675
+msgid "Keyword overlap"
+msgstr ""
+
+#: js/admin-ui.js:676
+msgid "Topic cluster"
+msgstr ""
+
+#: js/admin-ui.js:677
+msgid "Anchor appears in"
+msgstr ""
+
+#. translators: %d: percentage of posts containing the anchor
+#: js/admin-ui.js:679
+#, js-format
+msgid "%d%% of posts"
+msgstr ""
+
+#. translators: 1: confidence score, 2: the minimum required
+#: js/admin-ui.js:683
+#, js-format
+msgid "%1$s (minimum %2$s)"
+msgstr ""
+
+#: js/admin-ui.js:699
+msgid "Pick both a post and a destination."
+msgstr ""
+
+#: js/admin-ui.js:704
+msgid "Replaying the pipeline…"
+msgstr ""
+
+#: js/admin-ui.js:729
+msgid "Details"
+msgstr ""
+
+#: js/admin-ui.js:729
+msgid "What would change it"
+msgstr ""
+
+#. translators: 1: items scanned, 2: items total, 3: percentage complete
+#: js/admin-ui.js:805
+#, js-format
+msgid "%1$d of %2$d · %3$d%%"
+msgstr ""
+
+#: js/admin-ui.js:809
+msgid "nothing to scan"
+msgstr ""
+
+#. translators: %d: number of results found so far
+#: js/admin-ui.js:820
+#, js-format
+msgid "%d found so far"
+msgid_plural "%d found so far"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: estimated seconds remaining
+#: js/admin-ui.js:822
+#, js-format
+msgid " · about %ds left"
+msgstr ""
+
+#. translators: %d: estimated seconds remaining
+#: js/admin-ui.js:824
+#, js-format
+msgid "about %ds left"
+msgstr ""
+
+#: js/admin-ui.js:829
+msgid "working…"
+msgstr ""
+
+#. translators: %d: number of results the scan found
+#: js/admin-ui.js:839
+#, js-format
+msgid "Finished — %d found. Reloading…"
+msgid_plural "Finished — %d found. Reloading…"
+msgstr[0] ""
+msgstr[1] ""
+
+#: js/admin-ui.js:855
+msgid "Starting…"
+msgstr ""
+
+#: js/admin-ui.js:857
+msgid "Counting what needs doing…"
+msgstr ""
+
+#: js/admin-ui.js:889
+msgid "No opportunities right now — every mention already links here."
+msgstr ""
+
+#. translators: %s: the post the mention appears in
+#: js/admin-ui.js:899
+#, js-format
+msgid "in: %s"
+msgstr ""
+
+#: js/admin-ui.js:1004
+msgid "That exact text isn't in the post — adjust the anchor and try again."
+msgstr ""
+
+#: js/admin-ui.js:1011
+#: js/admin-ui.js:1032
+msgid "Added"
+msgstr ""
+
+#: js/admin-ui.js:1012
+msgid "Remember to Update the post to save."
+msgstr ""
+
+#: js/admin-ui.js:1034
+msgid "(reload the editor to see it in the content)"
+msgstr ""
+
+#: js/admin-ui.js:1036
+msgid "Add Link"
+msgstr ""
+
+#: js/admin-ui.js:1040
+msgid "Insert"
+msgstr ""
+
+#. translators: %s: the post an inbound link comes from
+#: js/admin-ui.js:1108
+#, js-format
+msgid "from: %s"
+msgstr ""
+
+#: js/admin-ui.js:1110
+msgid "No inbound internal links yet."
+msgstr ""
+
+#: js/admin-ui.js:1118
+msgid "external"
+msgstr ""
+
+#: js/admin-ui.js:1123
+msgid "This post has no links."
+msgstr ""
+
+#: js/admin-ui.js:1127
+msgid "Inbound internal links"
+msgstr ""
+
+#: js/admin-ui.js:1128
+msgid "Links in this post"
+msgstr ""
+
+#. translators: %d: number of suggestions ticked
+#: js/admin-ui.js:1199
+#, js-format
+msgid "Add selected (%d)"
+msgstr ""
+
+#: js/admin-ui.js:1201
+msgid "Add selected"
+msgstr ""
+
+#: js/admin-ui.js:1286
+msgid "Enter the old URL first."
+msgstr ""
+
+#: js/admin-ui.js:1290
+msgid "Checking…"
+msgstr ""
+
+#: js/admin-ui.js:1301
+msgid "No links found for that URL."
+msgstr ""
+
+#. translators: 1: number of links, 2: number of posts
+#: js/admin-ui.js:1306
+#, js-format
+msgid "This will update %1$d internal link across %2$d post."
+msgid_plural "This will update %1$d internal links across %2$d posts."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: cluster name, 2: post count, 3: percentage linked
+#: js/admin-ui.js:1741
+#, js-format
+msgid "%1$s — %2$d post, %3$d%% linked up"
+msgid_plural "%1$s — %2$d posts, %3$d%% linked up"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of orphaned posts in this cluster
+#: js/admin-ui.js:1744
+#, js-format
+msgid "%d orphan"
+msgid_plural "%d orphans"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: the cluster's pillar post
+#: js/admin-ui.js:1746
+#, js-format
+msgid " · pillar: %s"
+msgstr ""
+
+#. translators: %d: percentage of the cluster that is linked
+#: js/admin-ui.js:1754
+#, js-format
+msgid " · %d%% linked"
+msgstr ""
+
+#: js/admin-ui.js:1803
+msgid "Search…"
+msgstr ""
+
+#. translators: %s: what was typed into the search box
+#: js/admin-ui.js:1842
+#, js-format
+msgid "Nothing matches “%s”"
+msgstr ""
+
+#: js/admin-ui.js:1923
+msgid "Clear selection"
+msgstr ""
+
+#. translators: 1: the link's anchor text, 2: the post it sits in
+#: js/admin-ui.js:1962
+#, js-format
+msgid "“%1$s” in %2$s"
+msgstr ""
+
+#: js/admin-ui.js:1962
+msgid "(no text)"
+msgstr ""
+
+#: js/admin-ui.js:1965
+msgid "Suggested replacements"
+msgstr ""
+
+#: js/admin-ui.js:1968
+msgid "The AI found no page on this site that fits — enter a URL below, or remove the link."
+msgstr ""
+
+#: js/admin-ui.js:1969
+msgid "No confident replacement found — enter one below, or remove the link."
+msgstr ""
+
+#: js/admin-ui.js:1971
+msgid "Point it at"
+msgstr ""
+
+#: js/admin-ui.js:1974
+msgid "Replace URL"
+msgstr ""
+
+#: js/admin-ui.js:1980
+msgid "Update text"
+msgstr ""
+
+#: js/admin-ui.js:1981
+msgid "Remove link, keep text"
+msgstr ""
+
+#: js/admin-ui.js:1982
+msgid "Open in editor"
+msgstr ""
+
+#: js/admin-ui.js:1999
+#: js/admin-ui.js:2143
+msgid "Close"
+msgstr ""
+
+#: js/admin-ui.js:2035
+msgid "Remove this link? The words stay, the link goes."
+msgstr ""
+
+#: js/admin-ui.js:2038
+msgid "Working…"
+msgstr ""
+
+#: js/admin-ui.js:2048
+msgid "Fixed"
+msgstr ""
+
+#: js/admin-ui.js:2077
+msgid "Add an API key to use AI"
+msgstr ""
+
+#: js/admin-ui.js:2106
+msgid "The AI found nothing on this site worth linking here."
+msgstr ""
+
+#: js/admin-ui.js:2107
+msgid "Nothing on the site mentions this page yet. Add a sentence to a related post that names it, then try again."
+msgstr ""
+
+#. translators: %s: the post other pages could link to
+#: js/admin-ui.js:2113
+#, js-format
+msgid "Posts that could link to “%s”"
+msgstr ""
+
+#: js/admin-ui.js:2175
+msgid "That exact text isn’t in the post — adjust the anchor and try again."
+msgstr ""
+
+#: js/editor-sidebar.js:61
+msgid "just now"
+msgstr ""
+
+#. translators: %d: number of minutes since the last scan
+#: js/editor-sidebar.js:65
+#, js-format
+msgid "%d min ago"
+msgid_plural "%d mins ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of hours since the last scan
+#: js/editor-sidebar.js:69
+#, js-format
+msgid "%dh ago"
+msgid_plural "%dh ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: js/editor-sidebar.js:168
+msgid "✓ Added there"
+msgstr ""
+
+#: js/editor-sidebar.js:168
+msgid "✓ Added"
+msgstr ""
+
+#: js/editor-sidebar.js:172
+msgid "Add to that post"
+msgstr ""
+
+#: js/editor-sidebar.js:294
+msgid "Find link suggestions"
+msgstr ""
+
+#: js/editor-sidebar.js:296
+msgid "Link"
+msgstr ""
+
+#: js/editor-sidebar.js:303
+msgid "AI suggestions"
+msgstr ""
+
+#: js/editor-sidebar.js:304
+msgid "AI suggestions need an OpenAI API key"
+msgstr ""
+
+#: js/editor-sidebar.js:312
+msgid "Which of your posts should link TO this one"
+msgstr ""
+
+#: js/editor-sidebar.js:314
+msgid "Links in"
+msgstr ""
+
+#: js/editor-sidebar.js:324
+msgid "Open AI settings"
+msgstr ""
+
+#. translators: %d: number of suggestions the AI returned
+#: js/editor-sidebar.js:344
+#, js-format
+msgid "AI found %d relevant suggestion for this post"
+msgid_plural "AI found %d relevant suggestions for this post"
+msgstr[0] ""
+msgstr[1] ""
+
+#: js/editor-sidebar.js:367
+msgid "Ask AI which posts should link here"
+msgstr ""
+
+#: js/editor-sidebar.js:368
+msgid "AI needs an OpenAI API key"
+msgstr ""
+
+#: js/editor-sidebar.js:387
+msgid "These are the results of the last scan. Change a setting and they will not update until you scan again."
+msgstr ""
+
+#. translators: %d: number of links added to other posts
+#: js/editor-sidebar.js:417
+#, js-format
+msgid "%d link added to that post and saved. Undo under SmartLinker → Activity."
+msgid_plural "%d links added to those posts and saved. Undo under SmartLinker → Activity."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of links added to this post
+#: js/editor-sidebar.js:423
+#, js-format
+msgid "%d link added. Remember to update the post to save."
+msgid_plural "%d links added. Remember to update the post to save."
+msgstr[0] ""
+msgstr[1] ""
