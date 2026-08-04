@@ -97,32 +97,58 @@ class Slk_URLChanger
      */
     public static function preview($old)
     {
-        global $wpdb;
         $types = Slk_Settings::enabled_post_types();
         if (empty($types) || $old === '') {
             return ['posts' => 0, 'occurrences' => 0];
         }
-        $type_ph = implode(',', array_fill(0, count($types), '%s'));
-        $like = '%' . $wpdb->esc_like($old) . '%';
-        $args = array_merge($types, [$like]);
-        // phpcs:ignore WordPress.DB.PreparedSQL
-        $rows = $wpdb->get_results($wpdb->prepare(
-            "SELECT ID, post_content FROM {$wpdb->posts}
-             WHERE post_status IN ('publish','draft','pending','private','future')
-               AND post_type IN ($type_ph) AND post_content LIKE %s",
-            $args
-        ));
         $pattern = self::match_pattern($old);
         $posts = 0;
         $occurrences = 0;
-        foreach ($rows as $row) {
-            $n = preg_match_all($pattern, $row->post_content);
-            if ($n > 0) {
-                $posts++;
-                $occurrences += $n;
+
+        // The LIKE narrows this to posts that mention the URL, which on most
+        // edits is a handful. It is not a bound: replacing a bare domain, or
+        // http with https, matches nearly every post on the site — exactly
+        // the case someone reaches for this tool to do.
+        Slk_Post::walk_content(
+            self::ids_containing($old),
+            function ($row) use ($pattern, &$posts, &$occurrences) {
+                $n = preg_match_all($pattern, $row->post_content);
+                if ($n > 0) {
+                    $posts++;
+                    $occurrences += $n;
+                }
             }
-        }
+        );
+
         return ['posts' => $posts, 'occurrences' => $occurrences];
+    }
+
+    /**
+     * Ids of posts whose content mentions $needle, across every status the
+     * rewriter touches — drafts and scheduled posts included, because a URL
+     * left stale in a draft is published broken later.
+     */
+    protected static function ids_containing($needle)
+    {
+        global $wpdb;
+
+        $types = Slk_Settings::enabled_post_types();
+        if (empty($types) || $needle === '') {
+            return [];
+        }
+
+        $type_ph = implode(',', array_fill(0, count($types), '%s'));
+        $args = array_merge($types, ['%' . $wpdb->esc_like($needle) . '%']);
+
+        // phpcs:ignore WordPress.DB.PreparedSQL
+        return array_map('intval', $wpdb->get_col($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts}
+             WHERE post_status IN ('publish','draft','pending','private','future')
+               AND post_type IN ($type_ph)
+               AND post_content LIKE %s
+             ORDER BY ID ASC",
+            $args
+        )));
     }
 
     public static function ajax_preview()
@@ -142,38 +168,33 @@ class Slk_URLChanger
      */
     public static function replace_sitewide($old, $new)
     {
-        global $wpdb;
         $types = Slk_Settings::enabled_post_types();
         if (empty($types)) {
             return ['posts' => 0, 'occurrences' => 0];
         }
 
-        $type_ph = implode(',', array_fill(0, count($types), '%s'));
-        $like = '%' . $wpdb->esc_like($old) . '%';
-        $args = array_merge($types, [$like]);
-
-        // phpcs:ignore WordPress.DB.PreparedSQL
-        $rows = $wpdb->get_results($wpdb->prepare(
-            "SELECT ID, post_content FROM {$wpdb->posts}
-             WHERE post_status IN ('publish','draft','pending','private','future')
-               AND post_type IN ($type_ph)
-               AND post_content LIKE %s",
-            $args
-        ));
-
         $pattern = self::match_pattern($old);
         $posts = 0;
         $occurrences = 0;
-        foreach ($rows as $row) {
-            $count = 0;
-            $updated = preg_replace($pattern, str_replace('$', '\\$', $new), $row->post_content, -1, $count);
-            if ($count > 0 && $updated !== null && $updated !== $row->post_content) {
-                wp_update_post(['ID' => $row->ID, 'post_content' => $updated]);
-                Slk_Link::index_post($row->ID);
-                $posts++;
-                $occurrences += $count;
+
+        // The ids are resolved up front, before any post is rewritten. That
+        // matters here in a way it does not for the read-only walks: each
+        // update changes the very content the LIKE matches on, so a query run
+        // slice-by-slice against live data would shift underneath itself and
+        // skip posts. A fixed id list is walked exactly once.
+        Slk_Post::walk_content(
+            self::ids_containing($old),
+            function ($row) use ($pattern, $new, &$posts, &$occurrences) {
+                $count = 0;
+                $updated = preg_replace($pattern, str_replace('$', '\\$', $new), $row->post_content, -1, $count);
+                if ($count > 0 && $updated !== null && $updated !== $row->post_content) {
+                    wp_update_post(['ID' => $row->ID, 'post_content' => $updated]);
+                    Slk_Link::index_post($row->ID);
+                    $posts++;
+                    $occurrences += $count;
+                }
             }
-        }
+        );
 
         return ['posts' => $posts, 'occurrences' => $occurrences];
     }

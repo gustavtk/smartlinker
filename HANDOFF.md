@@ -283,6 +283,52 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Memory ceiling — chunked content walks (`core/Slk/Post.php`, v0.43.0)
+
+Four places read the body of **every post on the site** in one query with no
+LIMIT: `Slk_Placement::build()`, `Slk_Keyword::link_counts()`, and both
+`Slk_URLChanger::preview()` and `replace_sitewide()`. On a small site that is
+invisible. At a few thousand posts it is a fatal memory error, and the person
+hitting it does not experience "the placement report is heavy" — they
+experience the plugin being broken, on a page that gives no clue why.
+
+`Slk_Post::walk_content($ids, $callback, $columns, $chunk)` replaces all four.
+Ids are collected first and held for the whole walk (100,000 ids is a few
+hundred KB of integers — it is the CONTENT that has to be bounded); content is
+then fetched one slice at a time and released before the next.
+
+**The object cache was the larger half of the fix.** Chunking the query alone
+did NOT work. A callback calling `get_permalink()` or `get_edit_post_link()` —
+which the placement report does for every row — makes WordPress load that post
+into its in-memory object cache, content and all, and that cache is never
+trimmed inside a request. So the slicing bounded the query while the object
+cache quietly re-accumulated the whole corpus behind it. Measured at 1,200
+posts: chunking alone brought the walk to +14MB and the object cache put +82MB
+straight back. `walk_content()` now evicts the ids it touched after each
+slice, using `wp_cache_delete()` rather than `clean_post_cache()` — the latter
+fires actions other plugins listen to, and a cache eviction is not a post edit.
+
+**Measured, on a 1,200-post / 76MB corpus:**
+
+| | peak memory |
+|---|---|
+| old, one unbounded query | **+80 MB** |
+| new, chunk 200 | **+28 MB** |
+| new, chunk 25 | +2 MB (content only) |
+| new, chunk 1500 (> corpus) | +82 MB — reproduces the old bug |
+
+Peak tracks the slice size, not the corpus size. That is the property: at
+chunk 200 the content cost is the same whether the site has 1,200 posts or
+120,000. Output was byte-identical before and after on the demo.
+
+`replace_sitewide()` resolves its ids up front for a second reason: each
+update changes the very content its `LIKE` matches on, so a query re-run
+per slice against live data would shift underneath itself and skip posts.
+
+`walk_columns()` is split out and unit-tested. Column names cannot be
+`prepare()` placeholders — they are interpolated into the SQL — so anything
+off the allow-list is dropped rather than escaped.
+
 ## CSV export for every report (`core/Slk/CSV.php`, v0.42.0)
 
 Export covered three datasets (auto-link rules, broken links, the links
@@ -861,7 +907,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && ./vendor/bin/phpunit --testdox
 ```
 
-186 tests, no database, no WordPress, runs in ~60ms.
+193 tests, no database, no WordPress, runs in ~40ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
 harness needs MySQL and a WP checkout, which makes the suite slow and

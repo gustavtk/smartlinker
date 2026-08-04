@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit; // No direct access.
 }
 
-define('SLK_VERSION', '0.42.0');
+define('SLK_VERSION', '0.43.0');
 define('SLK_PLUGIN_FILE', __FILE__);
 define('SLK_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('SLK_PLUGIN_DIR', plugin_dir_path(__FILE__));
