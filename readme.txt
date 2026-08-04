@@ -4,7 +4,7 @@ Tags: internal links, seo, linking, anchor text, broken links
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.52.0
+Stable tag: 0.53.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,11 @@ Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/
 
 == Changelog ==
 
+= 0.53.0 =
+* Link Opportunities are now ranked by likely impact rather than anchor relevance alone, and each row explains why it sits where it does.
+* Search Console data now feeds the ranking. Pages sitting on page two of Google with real impressions are surfaced first, because those are where an internal link actually moves something.
+* Redirecting links can be repointed at their destination in bulk, undoable in one click. Only permanent (301/308) redirects are followed.
+
 = 0.52.0 =
 * Bulk changes can now be undone. The Link Map and the site-wide URL Changer record every post they rewrite, and the Activity page can reverse a whole operation in one click.
 
@@ -137,6 +142,9 @@ Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/
 * Added a sortable Links column to the Posts list.
 
 == Upgrade Notice ==
+
+= 0.53.0 =
+Link Opportunities are re-ordered by impact. If you have imported Search Console data, near-ranking pages now come first.
 
 = 0.52.0 =
 Adds undo for bulk operations. Previously the Link Map and URL Changer could not be reversed.

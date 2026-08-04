@@ -94,9 +94,17 @@ class Slk_Opportunity
             }
         }
 
-        usort($rows, function ($a, $b) {
-            return $b['match'] <=> $a['match'];
-        });
+        /*
+         * Ranked by impact, not by relevance alone.
+         *
+         * Sorting on 'match' put a perfectly-worded link to an already
+         * well-linked page above a decent link to a starved page sitting one
+         * position off page one. Relevance is a precondition for a good
+         * suggestion; it is not a priority. Slk_Impact folds in how starved
+         * the target is and — where Search Console data exists — whether it is
+         * close enough to ranking for a link to matter.
+         */
+        $rows = Slk_Impact::rank($rows);
 
         $scanned = min($total, $offset + self::BATCH);
         $out = [

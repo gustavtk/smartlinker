@@ -17,6 +17,46 @@ $tabs = [
 <div class="wrap slk-wrap">
     <h1><?php esc_html_e('Broken Links', 'smartlinker'); ?></h1>
 
+    <?php if (isset($_GET['repointed'])) : ?>
+        <div class="notice notice-success is-dismissible"><p>
+            <?php
+            $n = (int) $_GET['repointed'];
+            $skipped = isset($_GET['rp_skip']) ? (int) $_GET['rp_skip'] : 0;
+            printf(
+                /* translators: 1: links repointed, 2: posts changed */
+                esc_html(_n(
+                    'Repointed %1$s link across %2$s post.',
+                    'Repointed %1$s links across %2$s posts.',
+                    $n,
+                    'smartlinker'
+                )),
+                esc_html(number_format_i18n($n)),
+                esc_html(number_format_i18n(isset($_GET['rp_posts']) ? (int) $_GET['rp_posts'] : 0))
+            );
+            if ($skipped) {
+                echo ' ';
+                printf(
+                    /* translators: %s: number of links left alone */
+                    esc_html(_n(
+                        '%s was left alone because the post has changed since the scan.',
+                        '%s were left alone because their posts have changed since the scan.',
+                        $skipped,
+                        'smartlinker'
+                    )),
+                    esc_html(number_format_i18n($skipped))
+                );
+            }
+            echo ' ';
+            printf(
+                /* translators: %s: link to the Activity page */
+                esc_html__('You can undo the whole change from %s.', 'smartlinker'),
+                '<a href="' . esc_url(admin_url('admin.php?page=smartlinker_activity')) . '">'
+                    . esc_html__('Activity', 'smartlinker') . '</a>'
+            );
+            ?>
+        </p></div>
+    <?php endif; ?>
+
     <?php if (!empty($_GET['scanned'])) : ?>
         <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Scan complete.', 'smartlinker'); ?></p></div>
     <?php endif; ?>
@@ -49,6 +89,30 @@ $tabs = [
 
     <p class="slk-toolbar">
         <a href="<?php echo esc_url($scan); ?>" data-slk-scan="broken" data-slk-label="Checking links" class="button button-primary"><?php esc_html_e('Scan for broken links', 'smartlinker'); ?></a>
+        <?php if (!empty($repointable)) : ?>
+            <?php
+            /*
+             * Redirecting links are not broken — they work. They just cost a
+             * hop for every crawler and reader, and after a permalink change
+             * there can be dozens. Fixing them one at a time is the sort of
+             * chore nobody finishes, which is why they pile up.
+             */
+            ?>
+            <a class="button" href="<?php echo esc_url(wp_nonce_url(
+                Slk_Reports::url('broken', ['slk_repoint' => 1]),
+                'slk_repoint'
+            )); ?>" onclick="return confirm(<?php echo esc_attr(wp_json_encode(
+                __('Repoint every redirecting link straight at its destination? This edits your posts, and can be undone in one click from the Activity page.', 'smartlinker')
+            )); ?>);">
+                <?php
+                printf(
+                    /* translators: %s: number of links that redirect */
+                    esc_html(_n('Repoint %s redirecting link', 'Repoint %s redirecting links', $repointable, 'smartlinker')),
+                    esc_html(number_format_i18n($repointable))
+                );
+                ?>
+            </a>
+        <?php endif; ?>
         <?php if (!empty($rows)) : ?>
             <a href="<?php echo esc_url(Slk_CSV::export_url('broken')); ?>" class="button"><?php esc_html_e('Export CSV', 'smartlinker'); ?></a>
         <?php endif; ?>

@@ -28,6 +28,21 @@ class Slk_Error
         if (!Slk_Reports::on_tab('broken')) {
             return;
         }
+
+        // Bulk repoint of redirecting links.
+        if (!empty($_GET['slk_repoint']) && check_admin_referer('slk_repoint')) {
+            if (!current_user_can('edit_posts')) {
+                return;
+            }
+            $r = self::repoint_redirects();
+            wp_safe_redirect(Slk_Reports::url('broken', [
+                'repointed' => $r['fixed'],
+                'rp_posts'  => $r['posts'],
+                'rp_skip'   => $r['skipped'],
+            ]));
+            exit;
+        }
+
         if (empty($_GET['slk_scan']) || !check_admin_referer('slk_broken_scan')) {
             return;
         }
@@ -84,10 +99,13 @@ class Slk_Error
             }
 
             $wpdb->update($table, [
-                'broken'      => $result['broken'] ? 1 : 0,
-                'status_code' => (int) $result['code'],
-                'broken_type' => (string) $result['type'],
-            ], ['id' => $link->id], ['%d', '%d', '%s'], ['%d']);
+                'broken'       => $result['broken'] ? 1 : 0,
+                'status_code'  => (int) $result['code'],
+                'broken_type'  => (string) $result['type'],
+                // Cleared on every check, so a link that stops redirecting
+                // does not keep a stale destination attached to it.
+                'redirects_to' => isset($result['to']) ? (string) $result['to'] : '',
+            ], ['id' => $link->id], ['%d', '%d', '%s', '%s'], ['%d']);
 
             if ($result['broken']) {
                 $broken++;
@@ -139,6 +157,35 @@ class Slk_Error
      * Records the status code and classifies the failure. Redirects are
      * reported (they cost crawl budget) but are not counted as broken.
      */
+    /**
+     * Resolve a Location header against the URL it came from.
+     *
+     * The header is allowed to be relative ("/new-page/"), and storing it that
+     * way would produce a link to the wrong host the moment it is applied.
+     */
+    protected static function absolute_url($location, $from)
+    {
+        $location = trim($location);
+        if ($location === '') {
+            return '';
+        }
+        if (preg_match('#^https?://#i', $location)) {
+            return $location;
+        }
+        $parts = wp_parse_url($from);
+        if (empty($parts['scheme']) || empty($parts['host'])) {
+            return '';
+        }
+        $base = $parts['scheme'] . '://' . $parts['host']
+              . (empty($parts['port']) ? '' : ':' . $parts['port']);
+
+        if (strpos($location, '/') === 0) {
+            return $base . $location;
+        }
+        $dir = isset($parts['path']) ? rtrim(dirname($parts['path']), '/') : '';
+        return $base . $dir . '/' . $location;
+    }
+
     protected static function http_check($url)
     {
         $args = [
@@ -166,8 +213,25 @@ class Slk_Error
         }
 
         if ($code >= 300 && $code < 400) {
-            // A working link, but it costs a hop — surface it separately.
-            return ['broken' => false, 'code' => $code, 'type' => 'redirect'];
+            /*
+             * A working link, but it costs a hop — surfaced separately, and
+             * the destination is kept so the link can be repointed at it.
+             *
+             * Without capturing Location here the only way to fix a redirect
+             * later is to re-request the URL, which turns a bulk fix into
+             * hundreds of extra HTTP calls at exactly the moment someone is
+             * waiting.
+             */
+            $to = wp_remote_retrieve_header($response, 'location');
+            if (is_array($to)) {
+                $to = reset($to);
+            }
+            return [
+                'broken' => false,
+                'code'   => $code,
+                'type'   => 'redirect',
+                'to'     => self::absolute_url((string) $to, $url),
+            ];
         }
         if ($code === 404 || $code === 410) {
             return ['broken' => true, 'code' => $code, 'type' => '404'];
@@ -422,6 +486,116 @@ class Slk_Error
         ]);
     }
 
+    /**
+     * Every link that currently 301s somewhere, with its destination.
+     *
+     * @return array of row objects
+     */
+    /**
+     * Status codes safe to repoint at their destination.
+     *
+     * PERMANENT ONLY. A 302 or 307 means "use the original URL, this is
+     * temporary" — a login wall, a country splash, an A/B test, maintenance.
+     * Rewriting a link to follow one bakes today's temporary answer into the
+     * content permanently, and the first thing found while testing this was a
+     * link to /wp-admin/ that 302s to a login URL carrying a reauth token.
+     * Following that would have been actively wrong.
+     */
+    const PERMANENT = [301, 308];
+
+    public static function redirect_rows($limit = 500)
+    {
+        global $wpdb;
+        $table = Slk_Query::links_table();
+        $codes = implode(',', array_map('intval', self::PERMANENT));
+
+        // phpcs:ignore WordPress.DB.PreparedSQL
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT l.id, l.post_id, l.url, l.anchor, l.status_code, l.redirects_to, p.post_title
+             FROM {$table} l
+             LEFT JOIN {$wpdb->posts} p ON p.ID = l.post_id
+             WHERE l.broken_type = 'redirect'
+               AND l.status_code IN ($codes)
+               AND l.redirects_to <> ''
+               AND l.redirects_to <> l.url
+             ORDER BY l.post_id ASC, l.id ASC
+             LIMIT %d",
+            (int) $limit
+        ));
+    }
+
+    /**
+     * Repoint every redirecting link straight at its destination.
+     *
+     * A link that 301s is not broken — it works. It just costs a hop for every
+     * crawler and every reader, and after a permalink change a site can have
+     * dozens. Fixing them one at a time is the sort of chore nobody finishes,
+     * which is why they accumulate.
+     *
+     * The whole run is one undo batch, so a bulk rewrite of live content can be
+     * reversed in a single click if the result is not what you expected.
+     *
+     * @return array{fixed:int,skipped:int,posts:int,batch:string}
+     */
+    public static function repoint_redirects()
+    {
+        $rows = self::redirect_rows();
+        $fixed = 0;
+        $skipped = 0;
+        $posts = [];
+        $batch = Slk_Activity::new_batch();
+
+        foreach ($rows as $link) {
+            if (!current_user_can('edit_post', $link->post_id)) {
+                $skipped++;
+                continue;
+            }
+            $post = get_post($link->post_id);
+            if (!$post) {
+                $skipped++;
+                continue;
+            }
+
+            $to = esc_url_raw((string) $link->redirects_to);
+            if ($to === '' || $to === $link->url) {
+                $skipped++;
+                continue;
+            }
+
+            $result = self::rewrite_anchor($post->post_content, $link->url, (string) $link->anchor, 'replace', $to);
+            if ($result['changed'] === 0) {
+                // The post has moved on since the scan; leave it rather than
+                // guess, and let the next scan pick it up.
+                $skipped++;
+                continue;
+            }
+
+            // Snapshot before the write, so a failure part-way through still
+            // leaves every completed post restorable.
+            Slk_Activity::record(
+                $link->post_id,
+                'replace',
+                sprintf(
+                    /* translators: 1: the old URL, 2: the URL it redirected to */
+                    __('Repointed a redirecting link from %1$s to %2$s', 'smartlinker'),
+                    $link->url,
+                    $to
+                ),
+                $post->post_content,
+                $result['content'],
+                $to,
+                $batch
+            );
+
+            wp_update_post(['ID' => $link->post_id, 'post_content' => $result['content']]);
+            Slk_Link::index_post($link->post_id);
+            $posts[$link->post_id] = true;
+            $fixed++;
+        }
+
+        return ['fixed' => $fixed, 'skipped' => $skipped, 'posts' => count($posts), 'batch' => $batch];
+    }
+
     public static function ajax_apply_fix()
     {
         check_ajax_referer('slk_ajax', 'nonce');
@@ -517,6 +691,8 @@ class Slk_Error
         $counts = self::issue_counts();
         $rows = self::broken_rows(500, $filter);
         $last_scan = get_option('slk_broken_last_scan', '');
+        // How many redirecting links could be repointed in one go.
+        $repointable = count(self::redirect_rows());
         include SLK_PLUGIN_DIR . 'templates/broken.php';
     }
 }

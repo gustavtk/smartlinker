@@ -283,6 +283,59 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Impact ranking, striking distance, bulk redirect repointing (v0.53.0)
+
+Three features, all built on data the plugin already had and was throwing away.
+`SLK_DB_VERSION` 9 → 10 for a `redirects_to` column.
+
+### `Slk_Impact` — which link to add first
+
+Link Opportunities sorted on `match` alone, so a perfectly-worded link to a
+page with forty inbound links outranked a decent link to a starved page one
+position off page one. Relevance is a precondition, not a priority.
+
+Three signals, weighted 0.60 / 0.25 / 0.15: **relevance** (already computed),
+**need** (`Slk_Equity::need_map()`, already computed), and **demand** — new,
+from the Search Console table that was previously read by exactly one
+`has_data()` call and otherwise unused.
+
+Demand peaks in striking distance and falls away either side: a page at
+position 3 has little to gain, a page at 47 will not be rescued by a link.
+Weighted by impressions on a log scale so a page seen twice at position 12
+does not outrank one seen ten thousand times at 14.
+
+**Demand is a bonus, never a penalty.** With no search data the demand weight
+is *redistributed* across the other two rather than counted as zero —
+otherwise importing a partial export would silently bury every page the export
+omitted, making the plugin worse the more you told it. A test pins this.
+
+Measured on the demo: position 12.4 / 2,400 impressions → 0.847; position 3.1
+→ 0.239; position 47 → 0.057. In a three-row list the #12 page moved from
+**last to first**.
+
+**Every row explains itself** — "Ranks 12.4 with 2,400 impressions — one page
+off the first, fewer inbound links than average, a strong anchor match." A
+ranked list nobody can interrogate is one nobody acts on.
+
+`is_striking()` is deliberately separate from "has demand data": the first
+version badged a page ranking at 3.1 as "near page 1", which is the opposite
+of true.
+
+### Bulk repointing of redirected links
+
+A link that 301s is not broken — it works, it just costs a hop, and after a
+permalink change there can be dozens. `Slk_Error::http_check()` now captures
+the `Location` header (absolutised, since it may be relative) and stores it.
+
+**Only 301 and 308.** A 302 or 307 means "keep using the original URL" —
+login walls, splash pages, maintenance. The very first redirect found while
+testing was a link to `/wp-admin/` that 302s to a login URL with a reauth
+token; following that would have been actively wrong.
+
+The whole run is one undo batch. Verified end to end: renamed a slug so
+WordPress genuinely 301'd, scanned, repointed, confirmed the anchor text
+survived, then undid it and got byte-identical content back.
+
 ## Undo for bulk operations (v0.52.0)
 
 Found by auditing undo coverage before calling the plugin production-ready:
@@ -1374,7 +1427,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && bin/test.sh
 ```
 
-**232 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+**242 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
 no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin

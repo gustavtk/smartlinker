@@ -2369,3 +2369,11 @@ tr.slk-suggestion {
 .slk-trend-verdict { font-size: 13.5px; color: #4b5563; margin: 12px 0 0; }
 .slk-trend-inline { font-size: 11.5px; font-weight: 600; margin-left: 4px; }
 .slk-block-link { font-size: 13px; text-decoration: none; white-space: nowrap; }
+
+/* Impact ranking: why a suggestion sits where it does. */
+.slk-why { font-size: 12px; color: #6b7280; margin-top: 3px; line-height: 1.45; max-width: 46ch; }
+.slk-striking {
+    display: inline-block; margin-top: 4px; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .04em; color: #15803d;
+    background: #dcfce7; border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+}
