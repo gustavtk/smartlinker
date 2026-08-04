@@ -86,6 +86,7 @@ function slk_uninstall_site()
     // --- scheduled events -------------------------------------------------
     wp_clear_scheduled_hook('slk_scheduled_scan');
     wp_clear_scheduled_hook('slk_daily_snapshot');
+    wp_clear_scheduled_hook('slk_prune_clicks');
 }
 
 /**

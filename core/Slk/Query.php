@@ -163,7 +163,8 @@ class Slk_Query
             clicked_at DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
             PRIMARY KEY  (id),
             KEY post_id (post_id),
-            KEY target_post_id (target_post_id)
+            KEY target_post_id (target_post_id),
+            KEY clicked_at (clicked_at)
         ) {$charset_collate};";
 
         // URL changes + redirects.
