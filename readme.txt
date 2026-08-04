@@ -4,7 +4,7 @@ Tags: internal links, seo, linking, anchor text, broken links
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.50.0
+Stable tag: 0.51.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,9 +42,11 @@ Focus keywords are read live from Rank Math, Yoast, All in One SEO or SEOPress i
 
 == External services ==
 
-**Google Fonts.** The admin screens load the Work Sans typeface from `fonts.googleapis.com` and `fonts.gstatic.com`. This happens on SmartLinker's own admin pages only, never on the front end, and never for your visitors — but it does mean the browser of a logged-in administrator viewing those pages contacts Google, which will see its IP address. Google's terms: https://policies.google.com/terms — privacy policy: https://policies.google.com/privacy
+SmartLinker contacts exactly one third-party service, and only if you switch it on.
 
 **OpenAI — optional, and off by default.** The AI features are disabled until you enter your own OpenAI API key. Nothing is sent anywhere until you do, and the plugin works fully without them. When enabled, post titles and content are sent to `api.openai.com` to generate embeddings and suggestions, billed to your own account. Terms: https://openai.com/policies/terms-of-use — privacy policy: https://openai.com/policies/privacy-policy
+
+Everything else the plugin loads — stylesheets, scripts and the Work Sans typeface — is served from the plugin itself. Nothing is fetched from a CDN, so no third party sees your administrators' IP addresses.
 
 No data is sent to the plugin author, and there is no telemetry of any kind.
 
@@ -86,6 +88,9 @@ Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/
 
 == Changelog ==
 
+= 0.51.0 =
+* The Work Sans typeface is now bundled with the plugin instead of loaded from Google Fonts. No administrator's IP address is sent to a third party, and the plugin no longer loads any external asset.
+
 = 0.50.0 =
 * Added readme.txt and a changelog. Guards added so the version and the declared support floors cannot drift between the plugin header and the readme.
 
@@ -124,6 +129,9 @@ Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/
 * Added a sortable Links column to the Posts list.
 
 == Upgrade Notice ==
+
+= 0.51.0 =
+Removes the last third-party asset. The admin font is now served locally rather than from Google.
 
 = 0.43.0 =
 Fixes a potential memory exhaustion on sites with more than a few thousand posts. Worth taking if your site is large.

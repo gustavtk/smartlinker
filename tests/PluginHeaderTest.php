@@ -87,6 +87,58 @@ class PluginHeaderTest extends TestCase
     }
 
     /**
+     * No asset may be loaded from a third party.
+     *
+     * WordPress.org requires plugins to serve their own CSS, JS and fonts; a
+     * remote one is rejected at review. It is also a privacy cost — the admin
+     * font used to come from Google, which meant every administrator viewing a
+     * SmartLinker screen handed Google their IP for nothing.
+     *
+     * api.openai.com is exempt: it is a service the user opts into with their
+     * own key, not an asset, and it is disclosed in the readme.
+     */
+    public function test_no_asset_is_loaded_from_a_third_party()
+    {
+        $allowed = ['api.openai.com'];
+
+        $files = array_merge(
+            glob(SLK_PLUGIN_DIR . 'core/Slk/*.php'),
+            glob(SLK_PLUGIN_DIR . 'templates/*.php'),
+            glob(SLK_PLUGIN_DIR . 'css/*.css'),
+            glob(SLK_PLUGIN_DIR . 'js/*.js')
+        );
+
+        // Asserted so the test cannot pass by scanning nothing — a silent
+        // zero-assertion pass is how a guard stops guarding.
+        $this->assertGreaterThan(50, count($files), 'far fewer files than expected — has the layout changed?');
+
+        $offenders = [];
+        foreach ($files as $file) {
+            $src = file_get_contents($file);
+            // Only flag hosts in a position that actually fetches something.
+            if (!preg_match_all(
+                '#(?:src|href|url\(|wp_enqueue_(?:style|script)\()[^\n]{0,80}?https://([a-z0-9.-]+\.[a-z]{2,})#i',
+                $src,
+                $m
+            )) {
+                continue;
+            }
+            foreach (array_unique($m[1]) as $host) {
+                if (!in_array($host, $allowed, true)) {
+                    $offenders[] = basename($file) . ' → ' . $host;
+                }
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $offenders,
+            "These load assets from a third party. Plugins must serve their own assets — "
+            . "bundle them and reference them relatively:\n  " . implode("\n  ", $offenders)
+        );
+    }
+
+    /**
      * WordPress.org requires any third-party service a plugin contacts to be
      * disclosed. This plugin talks to two — Google Fonts on its admin screens,
      * and OpenAI when the user opts in with their own key.
