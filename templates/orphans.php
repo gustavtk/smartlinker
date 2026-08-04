@@ -11,7 +11,7 @@ $count = count($rows);
     <div class="slk-callout<?php echo $count ? ' slk-callout-bad' : ' slk-callout-good'; ?>">
         <strong>
             <?php if ($count) : ?>
-                <?php printf(esc_html__('%d orphaned posts found.', 'smartlinker'), $count); ?>
+                <?php /* translators: %d: number of orphaned posts */ printf(esc_html__('%d orphaned posts found.', 'smartlinker'), $count); ?>
             <?php else : ?>
                 <?php esc_html_e('No orphaned posts — every published item has at least one inbound internal link.', 'smartlinker'); ?>
             <?php endif; ?>

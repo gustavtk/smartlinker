@@ -63,7 +63,7 @@ if ($view === 'starved') {
         </div>
         <div class="slk-tile">
             <span class="slk-tile-num<?php echo $stats['deep'] ? ' slk-metric-warn' : ''; ?>"><?php echo esc_html(number_format_i18n($stats['deep'])); ?></span>
-            <span class="slk-tile-label"><?php printf(esc_html__('More than %d clicks', 'smartlinker'), (int) Slk_Equity::DEEP); ?></span>
+            <span class="slk-tile-label"><?php /* translators: %d: click-depth threshold */ printf(esc_html__('More than %d clicks', 'smartlinker'), (int) Slk_Equity::DEEP); ?></span>
         </div>
         <div class="slk-tile">
             <span class="slk-tile-num<?php echo $stats['unreachable'] ? ' slk-metric-warn' : ''; ?>"><?php echo esc_html(number_format_i18n($stats['unreachable'])); ?></span>
@@ -183,7 +183,7 @@ if ($view === 'starved') {
             </tbody>
         </table>
         <?php if (count($rows) > 300) : ?>
-            <p class="description"><?php printf(esc_html__('Showing the first 300 of %s.', 'smartlinker'), esc_html(number_format_i18n(count($rows)))); ?></p>
+            <p class="description"><?php /* translators: %s: total number of rows */ printf(esc_html__('Showing the first 300 of %s.', 'smartlinker'), esc_html(number_format_i18n(count($rows)))); ?></p>
         <?php endif; ?>
     <?php endif; ?>
 </div>

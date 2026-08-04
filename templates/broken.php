@@ -7,6 +7,7 @@ $scan = wp_nonce_url(Slk_Reports::url('broken', ['slk_scan' => 1, 'offset' => 0]
 $base = Slk_Reports::url('broken');
 
 $tabs = [
+    /* translators: %d: total number of links */
     'all'      => sprintf(__('All (%d)', 'smartlinker'), $counts['total']),
     '404'      => __('404 Only', 'smartlinker'),
     'redirect' => __('Redirects', 'smartlinker'),
@@ -23,7 +24,7 @@ $tabs = [
     <p class="slk-intro">
         <?php esc_html_e('Every broken link is a dead end for users and wastes crawl budget. SmartLinker checks each link and reports the exact response.', 'smartlinker'); ?>
         <?php if ($last_scan) : ?>
-            <br><?php printf(esc_html__('Last scan: %s.', 'smartlinker'), esc_html($last_scan)); ?>
+            <br><?php /* translators: %s: date and time of the last scan */ printf(esc_html__('Last scan: %s.', 'smartlinker'), esc_html($last_scan)); ?>
         <?php endif; ?>
     </p>
 

@@ -139,6 +139,7 @@ $tabs = [
                                 $names = array_filter(array_map('get_the_title', array_slice($sup['posts'], 0, 3)));
                                 echo esc_html(implode(', ', $names));
                                 if (count($sup['posts']) > 3) {
+                                    /* translators: %d: number of further posts not listed */
                                     echo esc_html(sprintf(__(' +%d more', 'smartlinker'), count($sup['posts']) - 3));
                                 }
                                 ?>

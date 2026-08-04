@@ -11,6 +11,7 @@ if (!defined('ABSPATH')) {
 
     <?php if (isset($_GET['lm_added'])) : ?>
         <div class="notice notice-success is-dismissible"><p><?php printf(
+            /* translators: 1: links inserted, 2: posts changed, 3: rules applied */
             esc_html__('Done — inserted %1$d links across %2$d posts from %3$d rules.', 'smartlinker'),
             (int) $_GET['lm_added'],
             (int) ($_GET['lm_posts'] ?? 0),

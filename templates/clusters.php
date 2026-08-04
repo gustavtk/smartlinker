@@ -17,6 +17,7 @@ $ai = Slk_AI::availability();
 
     <?php if (isset($_GET['themed'])) : ?>
         <div class="notice notice-success is-dismissible"><p><?php printf(
+            /* translators: 1: number of themes, 2: seconds taken */
             esc_html__('AI grouped your content into %1$d themes in %2$ds.', 'smartlinker'),
             (int) $_GET['themed'],
             (int) ($_GET['secs'] ?? 0)
@@ -151,6 +152,7 @@ $ai = Slk_AI::availability();
                         <?php if ($c['pillar_id']) : ?>
                             <a href="<?php echo esc_url(get_edit_post_link($c['pillar_id'])); ?>"><?php echo esc_html($c['pillar']); ?></a>
                             <div class="slk-title-meta"><?php printf(
+                                /* translators: %d: number of inbound internal links */
                                 esc_html(_n('%d inbound link', '%d inbound links', (int) $c['inbound'], 'smartlinker')),
                                 (int) $c['inbound']
                             ); ?></div>

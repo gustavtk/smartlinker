@@ -23,6 +23,7 @@ $posts = get_posts([
         <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Target keyword removed.', 'smartlinker'); ?></p></div>
     <?php elseif (isset($_GET['kw_imported'])) : ?>
         <div class="notice notice-success is-dismissible"><p><?php printf(
+            /* translators: 1: keywords imported, 2: source name, 3: duplicates skipped */
             esc_html__('Imported %1$d keyword(s) from %2$s. %3$d already existed and were left alone.', 'smartlinker'),
             (int) $_GET['kw_imported'],
             esc_html(Slk_KeywordImport::label(sanitize_key(wp_unslash($_GET['kw_source'] ?? '')))),
@@ -75,10 +76,12 @@ $posts = get_posts([
                 $new_rows = array_values(array_filter($preview_rows, function ($r) { return !$r['dupe']; }));
                 ?>
                 <h3 style="margin-top:22px;"><?php printf(
+                    /* translators: %s: name of the file or source being previewed */
                     esc_html__('Preview — %s', 'smartlinker'),
                     esc_html(Slk_KeywordImport::label($preview_source))
                 ); ?></h3>
                 <p class="description"><?php printf(
+                    /* translators: 1: keywords to add, 2: duplicates skipped */
                     esc_html__('%1$d will be added, %2$d skipped as duplicates. Nothing has been saved yet.', 'smartlinker'),
                     count($new_rows),
                     count($preview_rows) - count($new_rows)
@@ -119,6 +122,7 @@ $posts = get_posts([
                     <button type="submit" name="slk_import_keywords" value="1" class="button button-primary"
                         <?php disabled(empty($new_rows)); ?>>
                         <?php printf(
+                            /* translators: %d: number of keywords to import */
                             esc_html(_n('Import %d keyword', 'Import %d keywords', count($new_rows), 'smartlinker')),
                             count($new_rows)
                         ); ?>

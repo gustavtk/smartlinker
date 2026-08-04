@@ -70,6 +70,7 @@ class Slk_Setup
                         /* translators: 1: number of posts, 2: detected SEO plugins */
                         __('%1$s posts have a focus keyword%2$s.', 'smartlinker'),
                         number_format_i18n(count($keywords)),
+                        /* translators: %s: name of the SEO plugin keywords are read from */
                         $seo_names !== '' ? ' — ' . sprintf(__('read live from %s', 'smartlinker'), $seo_names) : ''
                     )
                     : ($seo_names !== ''

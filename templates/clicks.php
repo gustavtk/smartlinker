@@ -55,10 +55,10 @@ foreach ($rows as $r) {
                         <div class="slk-rank-sub">
                             <?php esc_html_e('anchor:', 'smartlinker'); ?> <em><?php echo esc_html($row->anchor ?: '—'); ?></em>
                             &nbsp;·&nbsp;
-                            <?php printf(esc_html(_n('from %d post', 'from %d posts', (int) $row->sources, 'smartlinker')), (int) $row->sources); ?>
+                            <?php /* translators: %d: number of posts the link appears in */ printf(esc_html(_n('from %d post', 'from %d posts', (int) $row->sources, 'smartlinker')), (int) $row->sources); ?>
                         </div>
                     </div>
-                    <span class="slk-rank-metric"><?php printf(esc_html(_n('%s click', '%s clicks', (int) $row->clicks, 'smartlinker')), number_format_i18n($row->clicks)); ?></span>
+                    <span class="slk-rank-metric"><?php /* translators: %s: number of clicks, already formatted */ printf(esc_html(_n('%s click', '%s clicks', (int) $row->clicks, 'smartlinker')), number_format_i18n($row->clicks)); ?></span>
                 </div>
             <?php endforeach; ?>
         </div>

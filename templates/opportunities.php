@@ -73,7 +73,7 @@ if ($min > 0 || $only_target > 0) {
             <?php echo $data['scanned'] ? esc_html__('Re-scan site', 'smartlinker') : esc_html__('Scan the site', 'smartlinker'); ?>
         </a>
         <?php if ($data['generated']) : ?>
-            <span class="description"><?php printf(esc_html__('Last scan: %s', 'smartlinker'), esc_html($data['generated'])); ?></span>
+            <span class="description"><?php /* translators: %s: date and time of the last scan */ printf(esc_html__('Last scan: %s', 'smartlinker'), esc_html($data['generated'])); ?></span>
         <?php endif; ?>
     </p>
 

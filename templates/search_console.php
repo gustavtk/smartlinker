@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     </p>
 
     <?php if (isset($_GET['gsc_imported'])) : ?>
-        <div class="notice notice-success is-dismissible"><p><?php printf(esc_html__('Imported %d pages from Search Console.', 'smartlinker'), (int) $_GET['gsc_imported']); ?></p></div>
+        <div class="notice notice-success is-dismissible"><p><?php /* translators: %d: number of pages imported */ printf(esc_html__('Imported %d pages from Search Console.', 'smartlinker'), (int) $_GET['gsc_imported']); ?></p></div>
     <?php elseif (!empty($_GET['gsc_err'])) : ?>
         <div class="notice notice-error is-dismissible"><p><?php esc_html_e('Could not read that CSV. Export the Pages report from Search Console and upload the CSV.', 'smartlinker'); ?></p></div>
     <?php endif; ?>
