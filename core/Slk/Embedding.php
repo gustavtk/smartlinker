@@ -137,6 +137,45 @@ class Slk_Embedding
         delete_post_meta((int) $post_id, self::META_HASH);
     }
 
+    /**
+     * Delete every stored embedding.
+     *
+     * The post ids are collected FIRST so their meta cache can be cleared
+     * afterwards. This is the whole bug: the delete went straight to the
+     * postmeta table with $wpdb->delete(), which does not touch WordPress's
+     * object cache, while status() reads the hashes back with
+     * get_post_meta(), which does. The rows really were gone and the screen
+     * still counted them, so clearing the index reported "Up to date"
+     * immediately afterwards.
+     *
+     * On a site with no persistent object cache it corrected itself on the
+     * next request. On any host running Redis or Memcached — which is most
+     * managed WordPress hosting — it would have stayed wrong until the cache
+     * expired.
+     *
+     * @return int number of posts whose embedding was removed
+     */
+    public static function clear()
+    {
+        global $wpdb;
+
+        // phpcs:ignore WordPress.DB.PreparedSQL
+        $ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT DISTINCT post_id FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s)",
+            self::META,
+            self::META_HASH
+        ));
+
+        $wpdb->delete($wpdb->postmeta, ['meta_key' => self::META]);
+        $wpdb->delete($wpdb->postmeta, ['meta_key' => self::META_HASH]);
+
+        foreach ($ids as $id) {
+            wp_cache_delete((int) $id, 'post_meta');
+        }
+
+        return count($ids);
+    }
+
     /* ---------------------------------------------------------------------
      * Storage
      * ------------------------------------------------------------------- */
@@ -368,10 +407,8 @@ class Slk_Embedding
         }
 
         if (!empty($_GET['slk_embed_clear']) && check_admin_referer('slk_embed_clear')) {
-            global $wpdb;
-            $wpdb->delete($wpdb->postmeta, ['meta_key' => self::META]);
-            $wpdb->delete($wpdb->postmeta, ['meta_key' => self::META_HASH]);
-            wp_safe_redirect(admin_url('admin.php?page=smartlinker_ai&embed_cleared=1'));
+            $removed = self::clear();
+            wp_safe_redirect(admin_url('admin.php?page=smartlinker_ai&embed_cleared=' . (int) $removed));
             exit;
         }
     }

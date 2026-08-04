@@ -4,7 +4,7 @@ Tags: internal links, seo, linking, anchor text, broken links
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.55.0
+Stable tag: 0.55.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ The reports that read every post do so in slices rather than loading the whole s
 Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/smartlinker.pot` is included.
 
 == Changelog ==
+
+= 0.55.1 =
+* Fixed clearing the semantic index appearing to do nothing — every row was deleted but the screen still reported "Up to date", because the page read a cached copy of the deleted values. It now reports how many posts were removed.
 
 = 0.55.0 =
 * The semantic index now keeps itself up to date. Editing a post re-embeds it automatically on the next daily run, so there is no need to clear and rebuild by hand.
