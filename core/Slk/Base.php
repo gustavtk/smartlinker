@@ -209,30 +209,18 @@ class Slk_Base
             return;
         }
 
-        // The font is fetched from a third party, which costs a DNS lookup and
-        // a TLS handshake before the first byte — on a cold visit that is
-        // usually more than the download itself. These hints start both while
-        // the HTML is still parsing.
-        add_filter('wp_resource_hints', function ($urls, $relation) {
-            if ($relation === 'preconnect') {
-                $urls[] = ['href' => 'https://fonts.googleapis.com'];
-                $urls[] = ['href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous'];
-            }
-            return $urls;
-        }, 10, 2);
-
-        // Work Sans throughout — plugin pages and editor panels alike. Inter
-        // was dropped rather than left loading: it is no longer referenced by
-        // any rule, so requesting it would cost a download for nothing.
-        wp_enqueue_style(
-            'slk-font',
-            'https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap',
-            [],
-            // No version on purpose: this is Google's URL, not ours, and
-            // appending ?ver= to it would only break their cache key.
-            // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-            null
-        );
+        /*
+         * Work Sans is declared inside admin.css via @font-face and served
+         * from this plugin's own fonts/ directory — there is no separate
+         * stylesheet to enqueue for it.
+         *
+         * It used to come from fonts.googleapis.com. That is a WordPress.org
+         * guideline violation (plugins must serve their own assets) and it
+         * sent the IP of every administrator viewing a SmartLinker screen to
+         * Google for nothing. The font is a variable one, so all four weights
+         * this admin uses arrive in a single file, and unicode-range means a
+         * browser only fetches the subset the page actually needs.
+         */
         wp_enqueue_style('slk-admin', SLK_PLUGIN_URL . self::asset('css/admin.css'), [], SLK_VERSION);
         /*
          * admin-ui.js, NOT admin.js — the name matters.

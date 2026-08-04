@@ -283,6 +283,44 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Work Sans bundled locally (v0.51.0)
+
+The admin font came from `fonts.googleapis.com`. That was the last thing
+blocking a WordPress.org submission — plugins must serve their own assets —
+and it sent the IP of every administrator viewing a SmartLinker screen to
+Google for nothing.
+
+Six `.woff2` files now ship under `fonts/`, with `OFL.txt` (SIL Open Font
+License 1.1, which bundling requires).
+
+**Work Sans is a VARIABLE font**, so one file covers weights 400–700 rather
+than one file per weight — the four weights this admin uses cost a single
+download. Only 6 files total: latin / latin-ext / vietnamese × normal /
+italic.
+
+**The `unicode-range` values are Google's own**, which is what keeps it cheap.
+A browser only fetches a subset when the page contains a character from it.
+Measured on the dashboard: **6 faces registered, exactly 1 downloaded** —
+50KB of `latin-normal`, from localhost, with **zero requests to Google**.
+132KB in the repo, 50KB over the wire for an English admin.
+
+Also removed the `wp_resource_hints` preconnect to `fonts.googleapis.com` and
+`fonts.gstatic.com`. Those existed only to speed up the remote font; left
+behind they would have kept contacting Google to no purpose — the easiest
+half of this change to forget.
+
+Verified the minifier kept all six `@font-face` blocks and their relative
+`../fonts/` URLs intact (`grep -c` counts lines, and minified CSS is one line
+— counting occurrences instead is what showed nothing had been merged away).
+
+A new test asserts **no shipped file loads an asset from a third party**,
+with `api.openai.com` exempt as an opt-in service rather than an asset. It
+asserts the file count first, so it cannot pass by silently scanning nothing —
+its first version made zero assertions and PHPUnit correctly called it risky.
+
+`readme.txt` now states that the only third party is OpenAI, and only on
+opt-in.
+
 ## readme.txt and distribution readiness (v0.50.0)
 
 `readme.txt` in WordPress.org's format: headers, description, installation,
@@ -1258,7 +1296,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && bin/test.sh
 ```
 
-**221 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+**222 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
 no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
