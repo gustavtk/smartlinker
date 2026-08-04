@@ -287,10 +287,42 @@ class Slk_CSV
      * ------------------------------------------------------------------- */
 
     /**
+     * The $escape argument fputcsv() takes.
+     *
+     * Empty string means "no escape character", which is what RFC 4180 CSV
+     * actually is — a quote inside a field is doubled, and nothing else is
+     * special. PHP's historical default was a backslash, a non-standard
+     * extension that surprises every other CSV reader.
+     *
+     * It has to be passed EXPLICITLY. PHP 8.4 deprecates calling fputcsv()
+     * without it, because the default changes in PHP 9 — and the deprecation
+     * notice was being written straight into the download, corrupting every
+     * file the plugin exported. See stream() for why that is so easy to miss.
+     */
+    const CSV_ESCAPE = '';
+
+    /**
      * Stream an array of rows to the browser as a CSV download.
      */
     protected static function stream($filename, $header, $rows)
     {
+        /*
+         * Throw away anything already buffered, and stop PHP writing errors
+         * into the response.
+         *
+         * A CSV download is one of the few places where a stray notice does
+         * not merely look untidy — it lands inside the file, before the header
+         * row, and the spreadsheet opens as gibberish. That is exactly what a
+         * PHP 8.4 deprecation did here, and it went unnoticed for a while
+         * because a browser downloads the file rather than showing it, and the
+         * admin pages it was tested alongside all rendered perfectly.
+         */
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        // phpcs:ignore WordPress.PHP.IniSet.display_errors_Disallowed
+        @ini_set('display_errors', '0');
+
         nocache_headers();
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -298,12 +330,18 @@ class Slk_CSV
         $out = fopen('php://output', 'w');
         // UTF-8 BOM so Excel reads accents correctly.
         fwrite($out, "\xEF\xBB\xBF");
-        fputcsv($out, array_map([__CLASS__, 'defuse'], $header));
+        self::put($out, $header);
         foreach ($rows as $row) {
-            fputcsv($out, array_map([__CLASS__, 'defuse'], $row));
+            self::put($out, $row);
         }
         fclose($out);
         exit;
+    }
+
+    /** One CSV row, defused and written with an explicit escape character. */
+    protected static function put($handle, array $row)
+    {
+        fputcsv($handle, array_map([__CLASS__, 'defuse'], $row), ',', '"', self::CSV_ESCAPE);
     }
 
     /**
@@ -369,7 +407,10 @@ class Slk_CSV
         $row_num = 0;
         $col = null; // header -> index map
 
-        while (($cells = fgetcsv($handle)) !== false) {
+        // Escape passed explicitly: PHP 8.4 deprecates omitting it, and the
+        // default changes in PHP 9. '' is RFC 4180 CSV — quotes doubled,
+        // nothing else special — which is what other tools produce.
+        while (($cells = fgetcsv($handle, null, ',', '"', '')) !== false) {
             if ($row_num++ > self::MAX_IMPORT_ROWS) {
                 break;
             }

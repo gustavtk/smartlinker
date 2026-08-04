@@ -283,6 +283,43 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## CSV exports corrupted on PHP 8.4 (v0.51.1)
+
+Found during a full-code audit, and it had shipped.
+
+PHP 8.4 deprecates calling `fputcsv()` / `fgetcsv()` without an explicit
+`$escape`, because the default changes in PHP 9. With `display_errors` on, the
+notice was written **into the download**, ahead of the header row:
+
+```
+<br /><b>Deprecated</b>: fputcsv(): the $escape parameter must be provided…
+post_id,title,url,pagerank,…
+```
+
+Every exported file opened as gibberish.
+
+**Why the earlier PHP 8.4 audit missed it.** That sweep rendered admin *pages*.
+The export endpoints are not pages — they stream and `exit`, so nothing in the
+sweep ever called them. And the failure is invisible in a browser, which saves
+a CSV rather than displaying it. Two blind spots lining up.
+
+All five call sites now pass `''` — RFC 4180 CSV, quotes doubled and nothing
+else special, which is what every other tool produces and where PHP 9 is
+heading. `stream()` also discards any buffered output and disables
+`display_errors` before sending headers, so a stray notice from *any* plugin
+can no longer corrupt a download. That turns a class of failure off rather
+than fixing one instance.
+
+**Two guards, and both needed fixing before they worked:**
+- The comma counter was fooled by nested calls — it counted the commas inside
+  `array_map([...], $row)` and read a two-argument call as five, so it passed
+  on exactly the code it was written to catch. It now counts at depth zero.
+- It then flagged `fputcsv()` mentioned in the docblock *explaining the rule*.
+  Comments are now stripped with `token_get_all()` first. A guard that reports
+  its own documentation is one people switch off.
+
+Both verified by reverting a call and watching them fail.
+
 ## Work Sans bundled locally (v0.51.0)
 
 The admin font came from `fonts.googleapis.com`. That was the last thing
@@ -1296,7 +1333,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && bin/test.sh
 ```
 
-**222 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+**224 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
 no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
