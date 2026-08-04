@@ -1,0 +1,144 @@
+name: CI
+
+# Everything this project relies on — 210 PHP tests, 22 JavaScript tests, the
+# version-drift guard, the asset-staleness guard and the security lint — used
+# to run only when somebody remembered to type a command. Those guards have
+# already caught real problems (a stale minified build, a DELETE ... LIMIT that
+# fails silently on SQLite, seven PHP 8.4 deprecations); they were simply not
+# wired to anything. This wires them up.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # A newer push makes an in-flight run on the same branch pointless.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false   # one old version failing should not hide the others
+      matrix:
+        # The plugin header claims "Requires PHP: 7.4". Until now that was
+        # declared rather than tested. This is what makes it true — and 8.4 is
+        # here because that is what people are actually upgrading to.
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ matrix.php }}-${{ hashFiles('composer.json') }}
+          restore-keys: composer-${{ matrix.php }}-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Lint every PHP file
+        # Catches parse errors on versions the developer is not running.
+        run: |
+          find core templates -name '*.php' -print0 \
+            | xargs -0 -n1 php -l > /dev/null
+          php -l smartlinker.php > /dev/null
+          php -l uninstall.php > /dev/null
+
+      - name: PHPUnit
+        # Includes the guards worth having in CI: the plugin header matching
+        # SLK_VERSION, and the committed .min assets matching their sources.
+        run: ./vendor/bin/phpunit
+
+  javascript:
+    name: JavaScript (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # node:test needs 18+. 22 is current; 18 is the floor still in use.
+        node: ['18', '22']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Run the JS suite
+        # Loads the real js/admin-ui.js in a sandbox, so this fails if the
+        # shipped file breaks — not a copy of it.
+        run: node --test "tests/js/*.test.mjs"
+
+  standards:
+    name: WordPress standards (advisory)
+    runs-on: ubuntu-latest
+    # Advisory on purpose. Every remaining finding was reviewed by hand and is
+    # a pattern PHPCS cannot follow (helpers that escape internally, IN-clause
+    # placeholder strings, COUNT(*) on the plugin's own tables). Failing the
+    # build on those would make a red result meaningless. What is worth
+    # noticing is the count CHANGING — so it runs, and it reports.
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+
+      - run: composer install --no-interaction --no-progress
+
+      - name: PHPCS — security and PHP compatibility
+        run: ./vendor/bin/phpcs --report=summary --report-file=/dev/stdout
+
+  assets:
+    name: Minified assets are current
+    runs-on: ubuntu-latest
+    # A second, independent check on the thing most likely to be forgotten.
+    # PHPUnit already asserts this; doing it here too means the failure names
+    # itself clearly in the CI summary rather than hiding inside a test run.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Compare each source against the hash recorded at build time
+        run: |
+          php -r '
+            $manifest = json_decode(file_get_contents("assets.json"), true);
+            $stale = [];
+            foreach ($manifest as $file => $hash) {
+                if (hash_file("sha256", $file) !== $hash) { $stale[] = $file; }
+            }
+            if ($stale) {
+                fwrite(STDERR, "Stale minified build for:\n  " . implode("\n  ", $stale)
+                    . "\n\nRun bin/build-assets.sh and commit the result, or the plugin\n"
+                    . "will serve the old file and your change will appear to do nothing.\n");
+                exit(1);
+            }
+            echo "All minified assets match their sources.\n";
+          '
