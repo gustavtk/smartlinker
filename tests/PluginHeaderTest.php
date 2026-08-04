@@ -46,6 +46,76 @@ class PluginHeaderTest extends TestCase
         );
     }
 
+    /**
+     * The version now lives in THREE places: the plugin header, SLK_VERSION,
+     * and readme.txt's Stable tag. WordPress.org reads the Stable tag to
+     * decide which version to serve, so a stale one there does not look like
+     * a mistake — it silently ships the wrong release.
+     */
+    public function test_readme_stable_tag_matches_the_version()
+    {
+        $readme = SLK_PLUGIN_DIR . 'readme.txt';
+        $this->assertFileExists($readme);
+
+        preg_match('/^Stable tag:\s*(.+)$/mi', file_get_contents($readme), $m);
+        $this->assertNotEmpty($m, 'readme.txt has no Stable tag');
+
+        $this->assertSame(
+            self::field('Version'),
+            trim($m[1]),
+            'readme.txt Stable tag and the plugin header have drifted. WordPress.org '
+            . 'serves whatever the Stable tag names, so this must be bumped with the rest.'
+        );
+    }
+
+    /**
+     * The support floors are stated in two places and read by different
+     * things: WordPress reads the header, wordpress.org reads the readme.
+     */
+    public function test_readme_support_floors_match_the_header()
+    {
+        $readme = file_get_contents(SLK_PLUGIN_DIR . 'readme.txt');
+        foreach (['Requires at least', 'Requires PHP'] as $field) {
+            preg_match('/^' . preg_quote($field, '/') . ':\s*(.+)$/mi', $readme, $m);
+            $this->assertNotEmpty($m, "readme.txt has no {$field}");
+            $this->assertSame(
+                self::field($field),
+                trim($m[1]),
+                "{$field} differs between readme.txt and the plugin header"
+            );
+        }
+    }
+
+    /**
+     * WordPress.org requires any third-party service a plugin contacts to be
+     * disclosed. This plugin talks to two — Google Fonts on its admin screens,
+     * and OpenAI when the user opts in with their own key.
+     */
+    public function test_readme_discloses_every_external_service()
+    {
+        $readme = file_get_contents(SLK_PLUGIN_DIR . 'readme.txt');
+
+        $hosts = [];
+        foreach (glob(SLK_PLUGIN_DIR . 'core/Slk/*.php') as $file) {
+            if (preg_match_all('#https://([a-z0-9.-]+\.[a-z]{2,})#', file_get_contents($file), $m)) {
+                $hosts = array_merge($hosts, $m[1]);
+            }
+        }
+        // Policy/terms URLs in the readme itself are not services we call.
+        $hosts = array_unique(array_filter($hosts, function ($h) {
+            return !in_array($h, ['www.gnu.org', 'policies.google.com', 'openai.com', 'wordpress.org', 'example.com'], true);
+        }));
+
+        $this->assertNotEmpty($hosts, 'no external hosts parsed — has the check stopped working?');
+        foreach ($hosts as $host) {
+            $this->assertStringContainsString(
+                $host,
+                $readme,
+                "{$host} is contacted by the plugin but not disclosed in readme.txt"
+            );
+        }
+    }
+
     public function test_version_is_a_sane_number()
     {
         $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', self::field('Version'));
