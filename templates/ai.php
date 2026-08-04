@@ -53,8 +53,23 @@ if (!defined('ABSPATH')) {
 
             <?php if (!empty($_GET['embedded'])) : ?>
                 <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Semantic index is up to date.', 'smartlinker'); ?></p></div>
-            <?php elseif (!empty($_GET['embed_cleared'])) : ?>
-                <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Semantic index cleared.', 'smartlinker'); ?></p></div>
+            <?php elseif (isset($_GET['embed_cleared'])) : ?>
+                <?php // Reports the number actually removed, so "cleared" is a
+                      // fact rather than a claim — the previous version said
+                      // this while the page still showed "Up to date". ?>
+                <div class="notice notice-success is-dismissible"><p><?php
+                    $n = (int) $_GET['embed_cleared'];
+                    printf(
+                        /* translators: %s: number of posts whose embedding was removed */
+                        esc_html(_n(
+                            'Semantic index cleared — %s post removed.',
+                            'Semantic index cleared — %s posts removed.',
+                            $n,
+                            'smartlinker'
+                        )),
+                        esc_html(number_format_i18n($n))
+                    );
+                ?></p></div>
             <?php elseif (!empty($_GET['embed_err'])) : ?>
                 <div class="notice notice-error is-dismissible"><p><?php echo esc_html(wp_unslash($_GET['embed_err'])); ?></p></div>
             <?php endif; ?>
@@ -99,8 +114,8 @@ if (!defined('ABSPATH')) {
                 <?php endif; ?>
                 <?php if ($emb['done']) : ?>
                     <a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=smartlinker_ai&slk_embed_clear=1'), 'slk_embed_clear')); ?>"
-                       onclick="return confirm('<?php echo esc_js(__('Delete every stored embedding? The index keeps itself up to date, so this is only worth doing if you want to rebuild from scratch — and it costs a full round of API calls against your own account.', 'smartlinker')); ?>');">
-                        <?php esc_html_e('Rebuild from scratch', 'smartlinker'); ?>
+                       onclick="return confirm('<?php echo esc_js(__('Delete every stored embedding? You can rebuild them, at the cost of another round of API calls.', 'smartlinker')); ?>');">
+                        <?php esc_html_e('Clear index', 'smartlinker'); ?>
                     </a>
                 <?php endif; ?>
             </p>

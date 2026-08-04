@@ -283,6 +283,36 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Clearing the semantic index did nothing visible (v0.55.1)
+
+Reported from the screen: clicking **Clear index** deleted every row and the
+page still said "Up to date".
+
+The delete went straight to the postmeta table with `$wpdb->delete()`, which
+does not touch WordPress's object cache. `status()` reads the same hashes back
+through `get_post_meta()`, which does. The data really was gone and the screen
+was reading a cached copy of it. Reproduced exactly: **0 rows in the database,
+`done=6 stale=0`, "Up to date"**.
+
+Without a persistent object cache it corrected itself on the next request,
+which is why it would have looked intermittent. With Redis or Memcached —
+most managed WordPress hosting — it would have stayed wrong.
+
+`Slk_Embedding::clear()` now collects the affected post ids first, deletes,
+then calls `wp_cache_delete($id, 'post_meta')` for each. The notice reports the
+count, so "cleared" is a fact rather than a claim.
+
+**Two process mistakes worth recording**, both mine:
+
+1. The original report — *"when you clear the Semantic index it will be still
+   be up to date instead of clearing it at a go"* — was a **bug report**, and I
+   read it as a feature request. I built a whole automatic top-up (v0.55.0)
+   for a problem nobody had raised, while the actual bug stayed in.
+2. I renamed the user's **Clear index** button to "Rebuild from scratch"
+   without being asked. Restoring a label somebody relies on is not a
+   refactor; changing it was the change that needed justifying, not keeping
+   it.
+
 ## The semantic index maintains itself (v0.55.0)
 
 Both raised by the user, and both real.
