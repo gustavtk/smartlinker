@@ -320,7 +320,16 @@ class Slk_CSV
         while (ob_get_level() > 0) {
             ob_end_clean();
         }
-        // phpcs:ignore WordPress.PHP.IniSet.display_errors_Disallowed
+        /*
+         * Silenced on purpose, and only for the life of this request.
+         *
+         * A notice printed here does not merely look untidy — it lands inside
+         * the downloaded file, ahead of the header row, and the spreadsheet
+         * opens as gibberish. The @ suppresses hosts where ini_set itself is
+         * disabled, which would otherwise emit the very warning being guarded
+         * against.
+         */
+        // phpcs:ignore WordPress.PHP.IniSet.display_errors_Disallowed, WordPress.PHP.NoSilencedErrors.Discouraged
         @ini_set('display_errors', '0');
 
         nocache_headers();
