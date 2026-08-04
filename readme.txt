@@ -4,7 +4,7 @@ Tags: internal links, seo, linking, anchor text, broken links
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.55.2
+Stable tag: 0.55.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ The reports that read every post do so in slices rather than loading the whole s
 Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/smartlinker.pot` is included.
 
 == Changelog ==
+
+= 0.55.3 =
+* Fixed "clear cached AI results" having the same problem as the semantic index — on sites with a persistent object cache (LiteSpeed, Redis, Memcached) it appeared to do nothing and stale AI suggestions kept being served.
 
 = 0.55.2 =
 * Completed the fix for clearing the semantic index. If a previous clear had already emptied it, the screen kept reporting posts as indexed and clearing again did not help.
