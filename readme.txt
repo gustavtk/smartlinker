@@ -4,7 +4,7 @@ Tags: internal links, seo, linking, anchor text, broken links
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.51.0
+Stable tag: 0.51.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ The reports that read every post do so in slices rather than loading the whole s
 Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/smartlinker.pot` is included.
 
 == Changelog ==
+
+= 0.51.1 =
+* Fixed CSV exports being corrupted on PHP 8.4. A deprecation notice was being written into the downloaded file ahead of the header row.
 
 = 0.51.0 =
 * The Work Sans typeface is now bundled with the plugin instead of loaded from Google Fonts. No administrator's IP address is sent to a third party, and the plugin no longer loads any external asset.

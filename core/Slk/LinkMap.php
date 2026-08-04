@@ -99,7 +99,10 @@ class Slk_LinkMap
         $out = [];
         $col = null;
         $rows = 0;
-        while (($cells = fgetcsv($handle)) !== false) {
+        // Escape passed explicitly: PHP 8.4 deprecates omitting it, and the
+        // default changes in PHP 9. '' is RFC 4180 CSV — quotes doubled,
+        // nothing else special — which is what other tools produce.
+        while (($cells = fgetcsv($handle, null, ',', '"', '')) !== false) {
             if ($rows++ > self::MAX_ROWS) {
                 break;
             }

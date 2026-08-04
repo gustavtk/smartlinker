@@ -79,6 +79,116 @@ class CsvTest extends TestCase
     }
 
     /* ---------------------------------------------------------------------
+     * PHP 8.4 forward compatibility
+     * ------------------------------------------------------------------ */
+
+    /**
+     * fputcsv() and fgetcsv() must be called with an explicit $escape.
+     *
+     * PHP 8.4 deprecates omitting it because the default changes in PHP 9.
+     * That matters more here than a normal deprecation: with display_errors
+     * on, the notice is written INTO the download, before the header row, and
+     * the spreadsheet opens as gibberish. It shipped that way for a while
+     * precisely because a browser saves a CSV rather than showing it, so the
+     * corruption is invisible unless you open the file.
+     */
+    public function test_csv_functions_pass_an_explicit_escape()
+    {
+        $files = array_merge(
+            glob(SLK_PLUGIN_DIR . 'core/Slk/*.php'),
+            [SLK_PLUGIN_DIR . 'uninstall.php']
+        );
+
+        $this->assertGreaterThan(10, count($files), 'file list looks wrong');
+
+        $bare = [];
+        foreach ($files as $file) {
+            /*
+             * Comments are stripped with PHP's own tokenizer before scanning.
+             * The docblock above CSV_ESCAPE explains the rule and names
+             * fputcsv() while doing so — a plain text search reported those
+             * sentences as violations. A guard that flags its own
+             * documentation is one people switch off.
+             */
+            $src = '';
+            foreach (token_get_all(file_get_contents($file)) as $token) {
+                if (is_array($token)) {
+                    if ($token[0] === T_COMMENT || $token[0] === T_DOC_COMMENT) {
+                        continue;
+                    }
+                    $src .= $token[1];
+                } else {
+                    $src .= $token;
+                }
+            }
+
+            $offset = 0;
+            while (preg_match('/\bf(?:put|get)csv\s*\(/', $src, $m, PREG_OFFSET_CAPTURE, $offset)) {
+                $open = $m[0][1] + strlen($m[0][0]);
+                $offset = $open;
+
+                /*
+                 * Walk the argument list counting commas at DEPTH ZERO only.
+                 * A naive comma count is fooled by nested calls — the first
+                 * version of this test counted the commas inside
+                 * array_map([...], $row) and concluded a two-argument call had
+                 * five, so it passed on exactly the code it was written to
+                 * catch. Verified since by reverting the call and watching it
+                 * fail.
+                 */
+                $depth = 1;
+                $args = 1;
+                $len = strlen($src);
+                for ($i = $open; $i < $len && $depth > 0; $i++) {
+                    $c = $src[$i];
+                    if ($c === '(' || $c === '[') {
+                        $depth++;
+                    } elseif ($c === ')' || $c === ']') {
+                        $depth--;
+                    } elseif ($c === ',' && $depth === 1) {
+                        $args++;
+                    }
+                }
+
+                if ($args < 5) {
+                    $call = trim(preg_replace('/\s+/', ' ', substr($src, $m[0][1], min(90, $i - $m[0][1]))));
+                    $bare[] = basename($file) . ': ' . $call;
+                }
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $bare,
+            "These call a CSV function without an explicit \$escape. On PHP 8.4 that emits a "
+            . "deprecation, and for exports the notice lands inside the downloaded file:\n  "
+            . implode("\n  ", $bare)
+        );
+    }
+
+    /**
+     * The export must discard buffered output before it streams.
+     *
+     * Fixing the deprecation above removes today's cause, but any future
+     * notice from any plugin would corrupt a download the same way. Clearing
+     * the buffer makes that class of failure impossible rather than fixed
+     * once.
+     */
+    public function test_stream_clears_output_before_sending_the_file()
+    {
+        $src = file_get_contents(SLK_PLUGIN_DIR . 'core/Slk/CSV.php');
+        $stream = substr($src, strpos($src, 'protected static function stream('));
+        $stream = substr($stream, 0, strpos($stream, "\n    }"));
+
+        $this->assertStringContainsString('ob_end_clean', $stream, 'stream() must discard buffered output');
+        $this->assertLessThan(
+            strpos($stream, "header('Content-Type: text/csv"),
+            strpos($stream, 'ob_end_clean'),
+            'the buffer must be cleared BEFORE the headers are sent'
+        );
+    }
+
+    /* ---------------------------------------------------------------------
      * The registry
      * ------------------------------------------------------------------ */
 
