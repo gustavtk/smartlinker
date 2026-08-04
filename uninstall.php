@@ -6,7 +6,7 @@
  *
  * Nothing is removed unless you asked for it. The setting that turns this on is
  * off by default and always will be, because the asymmetry is stark: leaving
- * eight tables behind costs a few megabytes and some tidiness, while deleting
+ * nine tables behind costs a few megabytes and some tidiness, while deleting
  * them by surprise destroys a link index, a rejection history and an undo log
  * that took real work to build. People delete plugins to reinstall them, to
  * move hosts, to test a conflict. Those must all be safe.

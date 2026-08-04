@@ -283,6 +283,40 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Uninstall-coverage guards (`tests/UninstallCoverageTest.php`, v0.49.2)
+
+The failure mode this protects against is invisible. Add a table, a cron
+event or a meta key, forget to extend the cleanup, and **nothing breaks** —
+the plugin works perfectly. The only symptom shows up months later in someone
+else's database as rows nobody can account for. No error, no screen, nothing
+to notice.
+
+It had already happened once: `uninstall.php` hardcodes its table list, a
+ninth table (`slk_history`) was added, and the list was only updated because
+it was caught by hand.
+
+Eight tests now assert that:
+- every table `Slk_Query` declares is in the drop list — and nothing stale is
+- every cron event constant is cleared in **both** `Slk_Base::deactivate()`
+  and `uninstall.php`
+- every option/transient constant starts with `slk_`, and every post-meta
+  constant with `_slk_` — because those are removed by prefix match, so a
+  differently-named key survives deletion silently
+- cleanup stays opt-in, capability-checked, multisite-aware, and defaults off
+
+The table list stays **hand-written, not generated**. Dropping a table cannot
+be undone, so the one destructive step in the plugin keeps a list a human
+wrote; the test only says when that list has fallen behind.
+
+**Verified by breaking it three ways** — a 10th table, an uncleaned cron
+event, and a meta key renamed to drop its prefix. Each produced a failure
+naming the file and the fix.
+
+Audited while writing these: every persisted key is already consistent —
+meta (`_slk_money_page`, `_slk_rejected`, `_slk_ai_cache`, `_slk_embedding`,
+`_slk_embedding_hash`), options, transients and all three cron events. So the
+tests pin correct behaviour rather than papering over a gap.
+
 ## CI (`.github/workflows/ci.yml`)
 
 Everything the project relies on used to run only when somebody remembered a
@@ -1190,7 +1224,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && bin/test.sh
 ```
 
-**210 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+**218 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
 no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
