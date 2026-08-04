@@ -283,6 +283,41 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## The semantic index maintains itself (v0.55.0)
+
+Both raised by the user, and both real.
+
+**The index never topped itself up.** Every piece was already there —
+`save_post` cleared a post's hash to mark it stale, and `generate_batch()`
+skipped anything unchanged — but `generate_batch()` was only ever called by
+the manual button. So the index knew exactly what was out of date and then
+waited for someone to remember to visit AI Suggestions and press "Build".
+Edit ten posts and semantic matching silently used ten stale vectors.
+
+A daily `slk_embed_topup` event now tops up what changed. Because every
+embedding is a billed call against the owner's own account, it is capped:
+`TOPUP_MAX = 200` posts, so at most **4 API calls a day**. It does nothing
+unless embeddings are enabled AND a key is configured — a background job that
+starts spending the moment a key is pasted in would be a nasty surprise. On a
+WP_Error it stops and waits for tomorrow rather than hammering the API.
+
+"Clear index" is now "**Rebuild from scratch**", with copy saying the index
+maintains itself, so the destructive button reads as the rare reset it is.
+
+**The setup checklist's "Set up AI" button went to the wrong page.** It always
+pointed at Settings → AI. That is right when there is no key, but once the key
+is set the blocker is that nothing has been embedded — and the index is built
+from the **AI Suggestions** page, which has no equivalent on Settings. So the
+button sent people to a screen they had already filled in, with nothing on it
+to press. Now conditional on `Slk_AI::is_configured()`, label and detail line
+included.
+
+**A mistake worth recording:** while testing the two branches I cleared the
+demo's OpenAI key and could not restore it — the saved copy lived only in the
+process that cleared it. The correct approach, used afterwards, is to filter
+`option_slk_settings` to simulate a state rather than writing to it. Never
+mutate real credentials to test a branch.
+
 ## Front-end cost reduced to zero (v0.54.0)
 
 Prompted by the right question — *does any of this affect the front page?* It

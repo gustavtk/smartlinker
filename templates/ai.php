@@ -86,10 +86,21 @@ if (!defined('ABSPATH')) {
                 <?php else : ?>
                     <span class="slk-badge slk-badge-good"><?php esc_html_e('Up to date', 'smartlinker'); ?></span>
                 <?php endif; ?>
+                <?php if (Slk_Embedding::is_enabled()) : ?>
+                    <span class="description">
+                        <?php
+                        printf(
+                            /* translators: %d: maximum posts embedded per automatic run */
+                            esc_html__('Kept up to date automatically — editing a post re-embeds it on the next daily run, up to %d posts a day. You should not need to rebuild by hand.', 'smartlinker'),
+                            (int) Slk_Embedding::TOPUP_MAX
+                        );
+                        ?>
+                    </span>
+                <?php endif; ?>
                 <?php if ($emb['done']) : ?>
                     <a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=smartlinker_ai&slk_embed_clear=1'), 'slk_embed_clear')); ?>"
-                       onclick="return confirm('<?php echo esc_js(__('Delete every stored embedding? You can rebuild them, at the cost of another round of API calls.', 'smartlinker')); ?>');">
-                        <?php esc_html_e('Clear index', 'smartlinker'); ?>
+                       onclick="return confirm('<?php echo esc_js(__('Delete every stored embedding? The index keeps itself up to date, so this is only worth doing if you want to rebuild from scratch — and it costs a full round of API calls against your own account.', 'smartlinker')); ?>');">
+                        <?php esc_html_e('Rebuild from scratch', 'smartlinker'); ?>
                     </a>
                 <?php endif; ?>
             </p>
