@@ -298,7 +298,10 @@ Four jobs:
   claim rather than a declared one; nothing in the plugin or the tests uses
   anything past 7.4, so the floor should hold. `fail-fast: false`, so one old
   version breaking does not hide the others.
-- **javascript** — Node 18 and 22 (`node:test` needs 18+).
+- **javascript** — Node 18 and 22 (`node:test` needs 18+). The glob is
+  **unquoted** on purpose: quoted, node expands it itself, which only works
+  from Node 21 — the first CI run failed on Node 18 for exactly that. Unquoted,
+  the shell expands it and node receives concrete paths.
 - **standards** — PHPCS, `continue-on-error: true`. Advisory for the reason
   given in `phpcs.xml.dist`: every remaining finding is a pattern PHPCS cannot
   follow, and a permanently-red gate teaches people to skip it. What matters

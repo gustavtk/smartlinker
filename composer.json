@@ -16,7 +16,7 @@
     "scripts": {
         "test": "bin/test.sh",
         "test:php": "phpunit",
-        "test:js": "node --test \"tests/js/*.test.mjs\"",
+        "test:js": "node --test tests/js/*.test.mjs",
         "lint": "phpcs",
         "lint:fix": "phpcbf"
     },

@@ -86,7 +86,12 @@ jobs:
       - name: Run the JS suite
         # Loads the real js/admin-ui.js in a sandbox, so this fails if the
         # shipped file breaks — not a copy of it.
-        run: node --test "tests/js/*.test.mjs"
+        #
+        # The glob is UNQUOTED deliberately: quoted, node expands it itself,
+        # which only works from Node 21. Unquoted the shell expands it and
+        # node receives concrete paths, which works on every version. Node 18
+        # failed on the quoted form in this workflow's first run.
+        run: node --test tests/js/*.test.mjs
 
   standards:
     name: WordPress standards (advisory)
@@ -96,7 +101,11 @@ jobs:
     # placeholder strings, COUNT(*) on the plugin's own tables). Failing the
     # build on those would make a red result meaningless. What is worth
     # noticing is the count CHANGING — so it runs, and it reports.
-    continue-on-error: true
+    #
+    # The step itself swallows the exit code rather than using
+    # continue-on-error, so this job reports GREEN. continue-on-error still
+    # paints a red X in the run summary, which is exactly the permanent-red
+    # signal this is trying to avoid.
 
     steps:
       - uses: actions/checkout@v4
@@ -110,7 +119,7 @@ jobs:
       - run: composer install --no-interaction --no-progress
 
       - name: PHPCS — security and PHP compatibility
-        run: ./vendor/bin/phpcs --report=summary --report-file=/dev/stdout
+        run: ./vendor/bin/phpcs --report=summary || true
 
   assets:
     name: Minified assets are current

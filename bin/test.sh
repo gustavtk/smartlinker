@@ -16,7 +16,7 @@ echo "── PHP ─────────────────────
 
 echo
 echo "── JavaScript ───────────────────────────────────────"
-node --test "tests/js/*.test.mjs" || fail=1
+node --test tests/js/*.test.mjs || fail=1
 
 echo
 echo "── WordPress security / PHP compatibility (advisory) ─"
