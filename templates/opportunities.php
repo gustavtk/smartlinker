@@ -150,8 +150,18 @@ if ($min > 0 || $only_target > 0) {
                     <td>
                         <a href="<?php echo esc_url($r['url']); ?>" target="_blank" rel="noopener"><?php echo esc_html($r['target_title']); ?></a>
                         <div class="slk-title-meta"><?php echo esc_html($r['path']); ?></div>
+                        <?php if (!empty($r['impact']['why'])) : ?>
+                            <?php // Why this sits where it does. A ranked list nobody can
+                                  // interrogate is a ranked list nobody acts on. ?>
+                            <div class="slk-why"><?php echo esc_html($r['impact']['why']); ?></div>
+                        <?php endif; ?>
                     </td>
-                    <td><span class="slk-conf <?php echo esc_attr($tone); ?>"><?php echo esc_html($pct . '%'); ?></span></td>
+                    <td>
+                        <span class="slk-conf <?php echo esc_attr($tone); ?>"><?php echo esc_html($pct . '%'); ?></span>
+                        <?php if (!empty($r['impact']['striking'])) : ?>
+                            <div class="slk-striking"><?php esc_html_e('near page 1', 'smartlinker'); ?></div>
+                        <?php endif; ?>
+                    </td>
                     <td class="slk-td-actions">
                         <button type="button" class="slk-btn-apply slk-insert-inbound"><?php esc_html_e('Apply', 'smartlinker'); ?></button>
                         <span class="slk-sugg-msg" role="status"></span>

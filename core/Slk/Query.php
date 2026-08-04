@@ -105,6 +105,7 @@ class Slk_Query
             broken TINYINT(1) NOT NULL DEFAULT 0,
             status_code INT NOT NULL DEFAULT 0,
             broken_type VARCHAR(20) NOT NULL DEFAULT '',
+            redirects_to TEXT NULL,
             host VARCHAR(191) NOT NULL DEFAULT '',
             created DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
             PRIMARY KEY  (id),
