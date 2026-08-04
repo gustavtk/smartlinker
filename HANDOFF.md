@@ -322,10 +322,22 @@ generating.
 `sprintf` so a missing `wp.i18n` yields an untranslated screen rather than a
 dead one.
 
-**Still missing translator comments:** 46 PHP strings with placeholders have no
-`/* translators: */` comment (all pre-existing; `make-pot` warns about each).
-The JS ones are all commented. Note that a comment must sit on the line
-directly above the call — across a ternary the extractor will not associate it.
+**Translator comments: now complete (v0.46.1).** All 46 `make-pot` warnings are
+cleared — 139 comments in the POT, zero warnings. Two were more than
+annotation: `%d post` carried contradicting comments in two files (gettext
+merges the string but cannot merge the comments), and
+`'%s%% indexed of %s published'` had two unpositioned placeholders, which a
+translator whose word order differs could not swap without swapping the values
+too; it is now `%1$s`/`%2$s`.
+
+Two placement rules the extractor enforces silently:
+- The comment must sit on the line directly above the call, or inline before
+  it. Across a ternary it will not associate.
+- **In a template, the comment must be INSIDE the `<?php` tag.** Put it in HTML
+  context and it does not become a translator comment, it becomes visible text
+  on the page. The first pass at this inserted 43 comments one line above the
+  call, which for inline-PHP templates meant printing `/* translators: … */`
+  onto the dashboard.
 
 ## Translations, and a stale plugin header (v0.44.0)
 

@@ -18,6 +18,7 @@ if (!defined('ABSPATH')) {
                 <option value=""><?php esc_html_e('— Select a post or page —', 'smartlinker'); ?></option>
                 <?php foreach ($candidates as $c) :
                     $label = ($c->post_title !== '' ? $c->post_title : '(no title)') .
+                        /* translators: %d: number of inbound internal links */
                         ' — ' . sprintf(_n('%d inbound', '%d inbound', (int) $c->inbound, 'smartlinker'), (int) $c->inbound);
                     ?>
                     <option value="<?php echo esc_attr($c->ID); ?>"<?php echo ((int) $c->inbound === 0) ? ' data-orphan="1"' : ''; ?>>

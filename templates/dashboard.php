@@ -53,7 +53,7 @@ endif;
                     <div class="slk-reco-desc"><?php echo esc_html($r['desc']); ?></div>
                     <div class="slk-reco-foot">
                         <span class="slk-badge <?php echo $r['impact'] === 'high' ? 'slk-badge-bad' : 'slk-badge-warn'; ?>">
-                            <?php printf(esc_html__('Impact: %s', 'smartlinker'), $r['impact'] === 'high' ? esc_html__('High', 'smartlinker') : esc_html__('Medium', 'smartlinker')); ?>
+                            <?php /* translators: %s: impact level, e.g. High */ printf(esc_html__('Impact: %s', 'smartlinker'), $r['impact'] === 'high' ? esc_html__('High', 'smartlinker') : esc_html__('Medium', 'smartlinker')); ?>
                         </span>
                         <a class="button button-primary button-small" href="<?php echo esc_url($r['url']); ?>"><?php echo esc_html($r['action']); ?></a>
                     </div>
@@ -73,14 +73,14 @@ endif;
             <span class="slk-tile-num"><?php echo esc_html(number_format_i18n($stats['crawled'])); ?></span>
             <div class="slk-progress"><span style="width:<?php echo esc_attr(min(100, $stats['indexed_pct'])); ?>%"></span></div>
             <span class="slk-tile-label">
-                <?php printf(esc_html__('%s%% indexed of %s published', 'smartlinker'), esc_html($stats['indexed_pct']), esc_html(number_format_i18n($stats['total_posts']))); ?>
+                <?php /* translators: 1: percentage indexed, 2: posts published */ printf(esc_html__('%1$s%% indexed of %2$s published', 'smartlinker'), esc_html($stats['indexed_pct']), esc_html(number_format_i18n($stats['total_posts']))); ?>
             </span>
         </div>
         <div class="slk-tile">
             <span class="slk-tile-cap"><?php esc_html_e('Clicks tracked', 'smartlinker'); ?></span>
             <span class="slk-tile-num"><?php echo esc_html(number_format_i18n($stats['clicks_30'])); ?></span>
             <?php echo slk_delta($stats['clicks_30'], $stats['clicks_prev']); ?>
-            <span class="slk-tile-label"><?php printf(esc_html__('Previous 30 days: %s', 'smartlinker'), esc_html(number_format_i18n($stats['clicks_prev']))); ?></span>
+            <span class="slk-tile-label"><?php /* translators: %s: the figure for the previous 30 days */ printf(esc_html__('Previous 30 days: %s', 'smartlinker'), esc_html(number_format_i18n($stats['clicks_prev']))); ?></span>
         </div>
         <div class="slk-tile">
             <span class="slk-tile-cap"><?php esc_html_e('Links created (30d)', 'smartlinker'); ?></span>
@@ -91,7 +91,7 @@ endif;
         <div class="slk-tile">
             <span class="slk-tile-cap"><?php esc_html_e('Time saved this month', 'smartlinker'); ?><?php echo Slk_Admin::help(__('An estimate: the number of links SmartLinker inserted in the last 30 days, multiplied by roughly 2 minutes of manual work per link.', 'smartlinker')); ?></span>
             <span class="slk-tile-num slk-good"><?php echo esc_html(number_format_i18n($stats['time_saved'], 1)); ?> <small><?php esc_html_e('hrs', 'smartlinker'); ?></small></span>
-            <span class="slk-tile-label"><?php printf(esc_html__('Based on ~%d min of manual work per link.', 'smartlinker'), Slk_Dashboard::MINUTES_PER_LINK); ?></span>
+            <span class="slk-tile-label"><?php /* translators: %d: estimated minutes of manual work per link */ printf(esc_html__('Based on ~%d min of manual work per link.', 'smartlinker'), Slk_Dashboard::MINUTES_PER_LINK); ?></span>
         </div>
     </div>
 
@@ -130,7 +130,7 @@ endif;
     <div class="slk-card-block">
         <div class="slk-block-head">
             <h2><?php esc_html_e('Link Distribution', 'smartlinker'); ?></h2>
-            <span class="description"><?php printf(esc_html__('Total: %s links', 'smartlinker'), esc_html(number_format_i18n($stats['total_links']))); ?></span>
+            <span class="description"><?php /* translators: %s: total number of links */ printf(esc_html__('Total: %s links', 'smartlinker'), esc_html(number_format_i18n($stats['total_links']))); ?></span>
         </div>
         <?php if ($stats['total_links'] > 0) : ?>
             <div class="slk-dist-bar">
@@ -186,7 +186,7 @@ endif;
             <span class="slk-tile-cap"><?php esc_html_e('Link coverage', 'smartlinker'); ?><?php echo Slk_Admin::help(__('The share of your published content that has at least one internal link pointing at it. Pages with none are effectively invisible to search engines.', 'smartlinker')); ?></span>
             <span class="slk-score-num slk-<?php echo esc_attr($cover_level); ?>"><?php echo esc_html(number_format_i18n($stats['coverage'], 1)); ?>%</span>
             <span class="slk-badge slk-badge-<?php echo esc_attr($cover_level); ?>"><?php echo esc_html($cover_label); ?></span>
-            <p><?php printf(esc_html__('%1$s of %2$s posts have at least one inbound internal link.', 'smartlinker'), esc_html(number_format_i18n($stats['linked_posts'])), esc_html(number_format_i18n($stats['total_posts']))); ?></p>
+            <p><?php /* translators: 1: posts with inbound links, 2: posts total */ printf(esc_html__('%1$s of %2$s posts have at least one inbound internal link.', 'smartlinker'), esc_html(number_format_i18n($stats['linked_posts'])), esc_html(number_format_i18n($stats['total_posts']))); ?></p>
             <a class="button button-small" href="<?php echo esc_url(admin_url('admin.php?page=smartlinker_inbound')); ?>"><?php esc_html_e('View details', 'smartlinker'); ?></a>
         </div>
         <div class="slk-score-card">

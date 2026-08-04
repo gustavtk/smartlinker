@@ -337,8 +337,10 @@ class Slk_Schedule
         }
 
         if (!$bits) {
+            /* translators: %s: the site name, used as an email subject prefix */
             return sprintf(__('[%s] Internal links: nothing new', 'smartlinker'), $site);
         }
+        /* translators: 1: the site name, 2: the digest summary line */
         return sprintf(__('[%1$s] %2$s', 'smartlinker'), $site, implode(', ', $bits));
     }
 

@@ -48,7 +48,7 @@ $filters = [
 
     <?php if (isset($_GET['rescanned'])) : ?>
         <div class="notice notice-success is-dismissible">
-            <p><?php printf(esc_html__('Re-scanned %d posts.', 'smartlinker'), (int) $_GET['rescanned']); ?></p>
+            <p><?php /* translators: %d: number of posts re-scanned */ printf(esc_html__('Re-scanned %d posts.', 'smartlinker'), (int) $_GET['rescanned']); ?></p>
         </div>
     <?php endif; ?>
 
@@ -94,7 +94,7 @@ $filters = [
             </select>
             <select name="per_page" onchange="this.form.submit()">
                 <?php foreach ([20, 50, 100] as $n) : ?>
-                    <option value="<?php echo $n; ?>" <?php selected($per_page, $n); ?>><?php printf(esc_html__('%d per page', 'smartlinker'), $n); ?></option>
+                    <option value="<?php /* translators: %d: rows shown per page */ echo $n; ?>" <?php selected($per_page, $n); ?>><?php printf(esc_html__('%d per page', 'smartlinker'), $n); ?></option>
                 <?php endforeach; ?>
             </select>
             <button type="submit" class="button"><?php esc_html_e('Apply', 'smartlinker'); ?></button>
@@ -106,7 +106,7 @@ $filters = [
     </div>
 
     <div class="slk-table-meta">
-        <?php printf(esc_html(_n('%s item', '%s items', $total, 'smartlinker')), '<strong>' . esc_html(number_format_i18n($total)) . '</strong>'); ?>
+        <?php /* translators: %s: number of rows, already formatted */ printf(esc_html(_n('%s item', '%s items', $total, 'smartlinker')), '<strong>' . esc_html(number_format_i18n($total)) . '</strong>'); ?>
         <?php if ($args['search'] !== '' || $args['filter'] !== 'all') : ?>
             &nbsp;·&nbsp;<a href="<?php echo esc_url($base); ?>"><?php esc_html_e('Clear filters', 'smartlinker'); ?></a>
         <?php endif; ?>
@@ -174,7 +174,7 @@ $filters = [
             $next = add_query_arg(array_merge($keep, ['paged' => min($pages, $page + 1)]), $base);
             ?>
             <a class="slk-page-btn<?php echo $page <= 1 ? ' disabled' : ''; ?>" href="<?php echo esc_url($prev); ?>">‹ <?php esc_html_e('Previous', 'smartlinker'); ?></a>
-            <span class="slk-page-info"><?php printf(esc_html__('Page %1$s of %2$s', 'smartlinker'), number_format_i18n($page), number_format_i18n($pages)); ?></span>
+            <span class="slk-page-info"><?php /* translators: 1: current page number, 2: total pages */ printf(esc_html__('Page %1$s of %2$s', 'smartlinker'), number_format_i18n($page), number_format_i18n($pages)); ?></span>
             <a class="slk-page-btn<?php echo $page >= $pages ? ' disabled' : ''; ?>" href="<?php echo esc_url($next); ?>"><?php esc_html_e('Next', 'smartlinker'); ?> ›</a>
         </div>
     <?php endif; ?>

@@ -59,7 +59,7 @@ $base = admin_url('admin.php?page=smartlinker_settings');
     if ($msg === 'disconnected') : ?>
         <div class="notice notice-success is-dismissible"><p><?php esc_html_e('AI disconnected — your API key has been removed.', 'smartlinker'); ?></p></div>
     <?php elseif ($msg === 'cache') : ?>
-        <div class="notice notice-success is-dismissible"><p><?php printf(esc_html__('Cleared cached AI results for %d posts.', 'smartlinker'), (int) ($_GET['n'] ?? 0)); ?></p></div>
+        <div class="notice notice-success is-dismissible"><p><?php /* translators: %d: number of posts cleared */ printf(esc_html__('Cleared cached AI results for %d posts.', 'smartlinker'), (int) ($_GET['n'] ?? 0)); ?></p></div>
     <?php elseif ($msg === 'errors') : ?>
         <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Error log cleared.', 'smartlinker'); ?></p></div>
     <?php endif; ?>

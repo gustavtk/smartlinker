@@ -59,7 +59,7 @@ foreach ($rows as $r) {
     <?php endif; ?>
 
     <?php if ($detail_host !== '') : ?>
-        <h2><?php printf(esc_html__('Links to %s', 'smartlinker'), esc_html($detail_host)); ?></h2>
+        <h2><?php /* translators: %s: the external domain */ printf(esc_html__('Links to %s', 'smartlinker'), esc_html($detail_host)); ?></h2>
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>

@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     </p>
 
     <?php if (isset($_GET['imported'])) : ?>
-        <div class="notice notice-success is-dismissible"><p><?php printf(esc_html__('Imported %d URLs from the sitemap.', 'smartlinker'), (int) $_GET['imported']); ?></p></div>
+        <div class="notice notice-success is-dismissible"><p><?php /* translators: %d: number of URLs imported */ printf(esc_html__('Imported %d URLs from the sitemap.', 'smartlinker'), (int) $_GET['imported']); ?></p></div>
     <?php elseif (!empty($_GET['deleted'])) : ?>
         <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Site removed.', 'smartlinker'); ?></p></div>
     <?php elseif (!empty($_GET['err'])) : ?>

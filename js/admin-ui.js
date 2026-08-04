@@ -1748,7 +1748,7 @@
             var label = tiny ? '' :
                 '<span class="slk-tm-name">' + esc(c.name) + '</span>' +
                 (roomy ? '<span class="slk-tm-sub">' +
-                    /* translators: %d: number of posts in this cluster */
+                    /* translators: %d: number of posts */
                     esc(sprintf(_n('%d post', '%d posts', c.count, 'smartlinker'), c.count)) +
                     /* translators: %d: percentage of the cluster that is linked */
                     (view === 'health' ? esc(sprintf(__(' · %d%% linked', 'smartlinker'), pct)) : '') + '</span>' : '') +

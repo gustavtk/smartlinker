@@ -147,6 +147,7 @@ class Slk_Activity
         $out = [];
         foreach ($ids as $id) {
             $title = get_the_title($id);
+            /* translators: %d: id of a post that no longer exists */
             $out[(int) $id] = $title !== '' ? $title : sprintf(__('Post %d (deleted)', 'smartlinker'), $id);
         }
         return $out;

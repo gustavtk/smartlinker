@@ -441,6 +441,7 @@ class Slk_AI
         $data = json_decode($raw, true);
 
         if ($code !== 200) {
+            /* translators: %d: HTTP status code returned by OpenAI */
             $msg = $data['error']['message'] ?? sprintf(__('OpenAI API error (HTTP %d).', 'smartlinker'), $code);
             self::log_error($msg, 'HTTP ' . $code);
             return new WP_Error('slk_ai_http', $msg);

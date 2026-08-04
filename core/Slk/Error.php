@@ -468,9 +468,12 @@ class Slk_Error
             $link->post_id,
             $op,
             $op === 'remove'
+                /* translators: %s: the anchor text the link was on */
                 ? sprintf(__('Removed the link on “%s”', 'smartlinker'), $link->anchor)
                 : ($op === 'anchor'
+                    /* translators: 1: the old anchor text, 2: the new anchor text */
                     ? sprintf(__('Renamed anchor “%1$s” to “%2$s”', 'smartlinker'), $link->anchor, $value)
+                    /* translators: 1: the anchor text, 2: the URL it now points at */
                     : sprintf(__('Repointed “%1$s” to %2$s', 'smartlinker'), $link->anchor, $value)),
             $post->post_content,
             $result['content'],

@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
     <?php if (!empty($_GET['done'])) : ?>
         <div class="notice notice-success is-dismissible">
             <p><?php printf(
+                /* translators: 1: occurrences replaced, 2: posts changed */
                 esc_html__('Done — replaced %1$d occurrence(s) across %2$d post(s).', 'smartlinker'),
                 (int) ($_GET['occ'] ?? 0),
                 (int) ($_GET['posts'] ?? 0)

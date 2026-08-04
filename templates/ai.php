@@ -61,11 +61,13 @@ if (!defined('ABSPATH')) {
 
             <p class="slk-row-desc" style="margin-top:0;">
                 <?php printf(
+                    /* translators: 1: posts indexed, 2: posts total, 3: percentage complete */
                     esc_html__('%1$d of %2$d posts indexed (%3$d%%).', 'smartlinker'),
                     (int) $emb['done'], (int) $emb['total'], $pct
                 ); ?>
                 <?php if ($emb['stale']) : ?>
                     <strong><?php printf(
+                        /* translators: %d: number of posts not yet indexed */
                         esc_html(_n('%d still needs indexing.', '%d still need indexing.', (int) $emb['stale'], 'smartlinker')),
                         (int) $emb['stale']
                     ); ?></strong>

@@ -92,6 +92,7 @@ class Slk_Admin
         echo '<div class="slk-main">';
         echo '<div class="slk-topbar">';
         echo '<div class="slk-topbar-title"><span class="dashicons ' . esc_attr($aicon) . '"></span>' . esc_html($alabel) . '</div>';
+        /* translators: %s: the plugin's version number */
         echo '<div class="slk-ver">' . esc_html(sprintf(__('Version %s', 'smartlinker'), SLK_VERSION)) . '</div>';
         echo '</div>';
         echo '<div class="slk-panel">';

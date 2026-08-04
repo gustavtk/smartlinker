@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
         <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Rule deleted.', 'smartlinker'); ?></p></div>
     <?php elseif (isset($_GET['imported'])) : ?>
         <div class="notice notice-success is-dismissible"><p><?php printf(
+            /* translators: 1: rules imported, 2: rows skipped */
             esc_html__('Imported %1$d rule(s), skipped %2$d.', 'smartlinker'),
             (int) $_GET['imported'],
             (int) ($_GET['skipped'] ?? 0)
