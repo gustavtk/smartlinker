@@ -283,6 +283,43 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Asset minification (`bin/build-assets.sh`, v0.47.0)
+
+**Measure gzipped, not raw.** The obvious number is 203KB of CSS+JS, which
+makes minification look urgent. Every web server already gzips these, and
+gzipped they are 48KB. Minified *and* gzipped they are 27KB — so the real
+saving is **20.4KB, 42% of what actually crosses the wire**. Still worth
+doing; a tenth of what the raw figure implies.
+
+| | raw | gzipped |
+|---|---|---|
+| source | 202.8 KB | 47.9 KB |
+| minified | 113.1 KB | **27.4 KB** |
+
+`Slk_Base::asset()` picks the `.min` build, falls back to the source when the
+minified file is missing (an unstyled admin because someone skipped a build
+step is a far worse failure than 20KB), and serves sources under
+`SCRIPT_DEBUG` so stack traces point at real lines.
+
+**Development still has no build step.** The sources are what you edit and what
+runs with `SCRIPT_DEBUG` on. `bin/build-assets.sh` is a release step, run via
+`npx` with pinned versions — no `package.json`, no `node_modules`.
+
+**The trap this creates, and the guard for it.** Minified files are build
+output committed to the repo, so editing `admin.css` and forgetting to rebuild
+means the plugin serves the OLD file. Nothing errors; the change just does not
+appear, and caching, selectors and version bumps all look guilty. So
+`assets.json` records a SHA-256 of each source at build time and
+`tests/AssetBuildTest.php` compares them against the current sources —
+**confirmed to fail on a one-character edit**, then pass again after a rebuild.
+
+Minifying does **not** break the JS translations: WordPress strips `.min.js`
+before hashing, so `admin-ui.min.js` resolves to the JSON generated for
+`admin-ui.js`. Verified by serving minified assets under a test Afrikaans
+locale and confirming the sidebar still rendered “Voorgestelde skakels (1 van
+1)” and “Vertroue: 74%”. A test also asserts no script is named `*min.js`,
+which is the case where this silently goes wrong (see v0.46.0).
+
 ## JavaScript i18n — and two silent failures (v0.46.0)
 
 The ~78 bare English literals in the admin JavaScript are now wrapped, so the
@@ -992,7 +1029,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && ./vendor/bin/phpunit --testdox
 ```
 
-200 tests, no database, no WordPress, runs in ~50ms.
+205 tests, no database, no WordPress, runs in ~90ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
 harness needs MySQL and a WP checkout, which makes the suite slow and
@@ -1099,7 +1136,7 @@ never by clicking the button (it deadlocks on its own self-request).
 ## Not built (deliberate or remaining)
 
 - **N/A by design:** AI credits, multi-site licensing, Shopify (user brings their own key; no licence gate)
-- **Remaining ideas:** asset minification, translator comments for the 46 PHP strings that lack them, live Google OAuth for
+- **Remaining ideas:** live Google OAuth for
   Search Console, Visual Sitemap, white-label/agency reports, Related Posts widget, Elementor/Divi adapters,
   Domain + Advanced settings tabs (only General / Content Ignoring / AI exist so far)
 
