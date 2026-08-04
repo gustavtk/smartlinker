@@ -283,6 +283,43 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Click-log retention and throttling (`core/Slk/ClickTracker.php`, v0.48.0)
+
+`wp_slk_clicks` was the one table in the plugin written by people who are not
+logged in, and the one with no retention at all. Everything else either prunes
+(activity log, trend history) or is bounded by how much content you have. One
+row per click kept forever is how a small plugin quietly becomes a large
+database — and tracking is on by default.
+
+Three fixes, `SLK_DB_VERSION` 7 → 8:
+
+**Retention.** `clicks_keep_days`, default 365, exposed under Settings →
+Click tracking. 0 keeps everything, as a deliberate choice rather than the
+default. A daily `slk_prune_clicks` event does the work, and it is registered
+even when tracking is switched OFF — turning tracking off should let existing
+rows age out, not freeze them in the database forever.
+
+**An index on `clicked_at`.** Every clicks report filters on it
+(`Slk_Report::click_rows()`), so without one the scan cost grew with the table
+— the exact thing retention is meant to bound.
+
+**A throttle**: 30 clicks per client per minute. The nonce is close to
+meaningless on this endpoint — logged-out visitors share one value, valid for
+a day, visible in the page source — so it is not a security control, just a
+ceiling on how fast one client can grow the table. The client is bucketed by a
+**hashed** IP held only in a transient; storing visitor IPs would give a
+link-click counter data-protection obligations for no gain. Over the limit it
+still answers success: the caller is a `sendBeacon` nobody is waiting on, and
+an error would only confirm to someone probing that the ceiling exists.
+
+**A real bug the testing caught:** the first version pruned with
+`DELETE ... WHERE clicked_at < %s LIMIT %d`. `LIMIT` on `DELETE` is a MySQL
+extension — SQLite rejects it, and WordPress ships an official SQLite
+integration. That version would have worked on most installs and failed
+silently on the rest, leaving the table growing precisely where nobody looks.
+It now selects ids, then deletes by id: two portable queries beat one clever
+one. A test asserts the pattern never comes back.
+
 ## Asset minification (`bin/build-assets.sh`, v0.47.0)
 
 **Measure gzipped, not raw.** The obvious number is 203KB of CSS+JS, which
@@ -1029,7 +1066,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && ./vendor/bin/phpunit --testdox
 ```
 
-205 tests, no database, no WordPress, runs in ~90ms.
+210 tests, no database, no WordPress, runs in ~90ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
 harness needs MySQL and a WP checkout, which makes the suite slow and

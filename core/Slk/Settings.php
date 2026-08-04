@@ -36,6 +36,12 @@ class Slk_Settings
             // full copy of the post before the change, so this is a disk trade,
             // not a time limit — see Slk_Activity.
             'activity_keep'          => 300,
+            // Click log retention, in days. Unlike the activity log this is a
+            // time limit, because clicks arrive from visitors rather than from
+            // deliberate actions — the volume is set by your traffic, not by
+            // anything you do. 0 keeps everything, which is a choice rather
+            // than the default: see Slk_ClickTracker.
+            'clicks_keep_days'       => 365,
             // Learning from rejections: how many DISTINCT posts must turn the
             // same thing down before it is retired site-wide. 0 switches
             // site-wide learning off — see Slk_Rejection.
@@ -105,7 +111,7 @@ class Slk_Settings
             'general' => [
                 'fields' => ['suggestion_limit', 'min_keyword_length', 'links_open_new_tab', 'links_nofollow',
                              'track_clicks', 'autolink_enabled', 'use_stemming', 'link_taxonomies',
-                             'activity_keep', 'reject_pair_threshold', 'reject_anchor_threshold',
+                             'activity_keep', 'clicks_keep_days', 'reject_pair_threshold', 'reject_anchor_threshold',
                              'equity_boost', 'delete_data_on_uninstall'],
                 'checkboxes' => ['links_open_new_tab', 'links_nofollow', 'track_clicks', 'autolink_enabled',
                                  'use_stemming', 'link_taxonomies', 'delete_data_on_uninstall'],
@@ -231,6 +237,10 @@ class Slk_Settings
                 // 0 means never suppress site-wide. The upper bound only stops
                 // a typo turning the feature silently off.
                 return max(0, min(50, (int) $value));
+            case 'clicks_keep_days':
+                // 0 means keep forever. Capped at ten years so a typo cannot
+                // silently mean "never prune" when that was not the intent.
+                return max(0, min(3650, (int) $value));
             case 'activity_keep':
                 // 0 disables the log entirely; nothing is recorded and nothing
                 // can be undone from a report.

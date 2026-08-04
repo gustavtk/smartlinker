@@ -189,6 +189,22 @@ $base = admin_url('admin.php?page=smartlinker_settings');
                 ]);
             ?>
 
+            <div class="slk-section-title"><?php esc_html_e('Click tracking', 'smartlinker'); ?></div>
+            <?php
+            slk_row(
+                __('Keep clicks for', 'smartlinker'),
+                __('How long a recorded click stays in the database, in days.', 'smartlinker'),
+                '<input type="number" min="0" max="3650" step="30" name="slk[clicks_keep_days]" value="' . esc_attr($s['clicks_keep_days']) . '" /> '
+                    . '<span class="description">' . esc_html__('days', 'smartlinker') . '</span>',
+                false,
+                [
+                    __('This is the only table SmartLinker fills from visitor activity rather than your own, so its size follows your traffic. One row per click, kept forever, is how a small plugin quietly becomes a large database.', 'smartlinker'),
+                    __('The reports only look back 30 days, so a year is generous. Old rows are removed once a day, in batches, so a long-neglected table cannot stall the site while it catches up.', 'smartlinker'),
+                    __('Set it to 0 to keep every click indefinitely. Nothing will break, but nothing will clean up after it either.', 'smartlinker'),
+                ]
+            );
+            ?>
+
             <div class="slk-section-title"><?php esc_html_e('Activity log', 'smartlinker'); ?></div>
             <?php
             slk_row(__('Changes to keep', 'smartlinker'), __('How many applied changes stay undoable on the Activity page.', 'smartlinker'),
