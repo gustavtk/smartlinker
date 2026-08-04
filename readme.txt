@@ -1,0 +1,132 @@
+=== SmartLinker ===
+Contributors: gustavtk
+Tags: internal links, seo, linking, anchor text, broken links
+Requires at least: 5.8
+Tested up to: 7.0
+Requires PHP: 7.4
+Stable tag: 0.50.0
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Suggests internal links as you write, finds the ones you are missing, and reports on the linking you already have.
+
+== Description ==
+
+SmartLinker reads what you have already published and works out which of your posts should be linking to each other.
+
+It answers two questions. While you write: *what should this post link to?* And the harder one, the moment you hit publish: *which of my existing posts should link to this new one?* A new post starts with zero inbound links, which is exactly why it lands on an orphan report a week later. SmartLinker shows you the answer in the editor, while you are still there.
+
+= What it does =
+
+**Suggestions in the editor.** A sidebar in the block editor and a meta box in the classic editor. Both work in two directions — outbound links for the post you are writing, and inbound links from posts that already mention it. One click inserts the link.
+
+**Anchor text chosen, not guessed.** Four passes, in order of confidence: an exact focus keyword, a partial keyword, a phrase from the target's title, then the most distinctive word available. Every suggestion tells you which pass produced it, so you can judge it rather than trust it.
+
+**Reports that answer a question.** Link overview, anchor text, broken links, clicks, outbound domains, link equity, cannibalisation, link placement, and trends over time. The last one is the only one that tells you whether the linking is getting *better*.
+
+**Link equity.** PageRank across your own internal links, plus click depth from the front page. Pages nothing links to surface immediately, and the suggestion engine quietly prefers them when two targets are equally relevant.
+
+**Cannibalisation.** Finds posts on your own site competing for the same query — the ones splitting your links between them so neither wins.
+
+**Auto-linking.** Keyword rules applied across the site, with a preview of exactly what each rule would change before anything is written.
+
+**An undo log.** Every link the plugin inserts is recorded with the post as it was beforehand, and can be reversed from the Activity page.
+
+= Nothing happens without you =
+
+No link is ever inserted automatically. Suggestions are suggestions until you apply them, and everything applied can be undone.
+
+= Works with your SEO plugin =
+
+Focus keywords are read live from Rank Math, Yoast, All in One SEO or SEOPress if any of them is installed. Without one, you can set target keywords yourself, or SmartLinker falls back to post titles.
+
+== External services ==
+
+**Google Fonts.** The admin screens load the Work Sans typeface from `fonts.googleapis.com` and `fonts.gstatic.com`. This happens on SmartLinker's own admin pages only, never on the front end, and never for your visitors — but it does mean the browser of a logged-in administrator viewing those pages contacts Google, which will see its IP address. Google's terms: https://policies.google.com/terms — privacy policy: https://policies.google.com/privacy
+
+**OpenAI — optional, and off by default.** The AI features are disabled until you enter your own OpenAI API key. Nothing is sent anywhere until you do, and the plugin works fully without them. When enabled, post titles and content are sent to `api.openai.com` to generate embeddings and suggestions, billed to your own account. Terms: https://openai.com/policies/terms-of-use — privacy policy: https://openai.com/policies/privacy-policy
+
+No data is sent to the plugin author, and there is no telemetry of any kind.
+
+== Installation ==
+
+1. Upload the `smartlinker` folder to `/wp-content/plugins/`, or install the zip through Plugins → Add New.
+2. Activate it.
+3. Open **SmartLinker → Dashboard** and work through the short checklist. The first step indexes the links you already have; the reports are empty until it runs, because nothing has been looked at yet.
+
+== Frequently Asked Questions ==
+
+= Will it change my posts without asking? =
+
+No. Every suggestion waits for you to apply it. Auto-linking rules are the one thing that writes links across many posts at once, and they show you a preview of every change first. Everything applied is recorded on the Activity page and can be undone.
+
+= What happens to my links if I delete the plugin? =
+
+They stay. A link SmartLinker inserted is an ordinary link in your post content — it is not held together by the plugin. Deleting SmartLinker removes its own reports and indexes, never your content.
+
+= Does it delete its database tables when removed? =
+
+Only if you ask it to. That setting is off by default, and stays off, because people delete a plugin to reinstall it, to move hosts, or to test a conflict — and none of those should destroy a link index and an undo history.
+
+= Do I need an OpenAI key? =
+
+No. Everything except the AI features works without one: suggestions, all the reports, auto-linking, equity, and the editor panels. The key adds semantic matching — finding posts that mean the same thing in different words — and it is billed to your own OpenAI account, not to us.
+
+= Does it slow down my site? =
+
+The front end loads nothing except a small click-tracking script, and only if click tracking is on. Everything else runs in the admin. Heavy work — link indexing, equity, opportunity scanning — runs in batches with a progress bar, so it does not time out on large sites.
+
+= Will it work on a large site? =
+
+The reports that read every post do so in slices rather than loading the whole site into memory at once. On a 1,200-post site the placement report peaks at about 28 MB.
+
+= Can I translate it? =
+
+Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/smartlinker.pot` is included.
+
+== Changelog ==
+
+= 0.50.0 =
+* Added readme.txt and a changelog. Guards added so the version and the declared support floors cannot drift between the plugin header and the readme.
+
+= 0.49.2 =
+* Added guards ensuring uninstall removes every table, cron event and meta key the plugin creates.
+
+= 0.49.1 =
+* Fixed seven PHP 8.4 deprecation notices caused by passing a null edit-link to `esc_url()`.
+* Audited against WordPress coding standards: no XSS, SQL injection or CSRF issues found.
+
+= 0.49.0 =
+* Added JavaScript tests covering the code that rewrites post content.
+
+= 0.48.0 =
+* Click log now has a retention setting (default one year), an index, and a rate limit. Previously it grew without bound.
+
+= 0.47.0 =
+* Admin CSS and JavaScript are now minified — 42% smaller over the wire.
+
+= 0.46.0 =
+* The admin JavaScript is now translatable.
+
+= 0.44.0 =
+* Added a translation template. Fixed a plugin header that had drifted 27 versions out of date.
+
+= 0.43.0 =
+* Bounded memory on the four reports that read every post, which could exhaust memory on large sites.
+
+= 0.42.0 =
+* CSV export for every report. Fixed spreadsheet formula injection in the three existing exports.
+
+= 0.41.0 =
+* Added trend history: the reports can now show whether linking is improving, not only what it is now.
+
+= 0.40.0 =
+* Added a sortable Links column to the Posts list.
+
+== Upgrade Notice ==
+
+= 0.43.0 =
+Fixes a potential memory exhaustion on sites with more than a few thousand posts. Worth taking if your site is large.
+
+= 0.42.0 =
+Fixes a spreadsheet formula-injection issue in CSV exports. Recommended.

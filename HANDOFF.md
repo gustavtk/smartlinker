@@ -283,6 +283,40 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## readme.txt and distribution readiness (v0.50.0)
+
+`readme.txt` in WordPress.org's format: headers, description, installation,
+FAQ, changelog, upgrade notices. Validated against wp.org's rules — short
+description under 150 chars, five tags, `= x.y.z =` changelog headings, every
+required header field present.
+
+**The version now lives in three places** — the plugin header, `SLK_VERSION`,
+and the readme's `Stable tag`. wp.org serves whatever the Stable tag names, so
+a stale one there does not look like a mistake, it silently ships the wrong
+release. The existing drift test now covers it, plus the two support floors.
+Confirmed to fail on deliberate drift.
+
+**A disclosure test.** wp.org requires every third-party service a plugin
+contacts to be documented. The test parses `https://` hosts out of the source
+and asserts each appears in the readme, so a new integration cannot be added
+without disclosing it. Also confirmed to fail.
+
+### Blocking wp.org submission: Google Fonts
+
+`Slk_Base::admin_assets()` loads Work Sans from `fonts.googleapis.com`.
+WordPress.org **requires all assets to be served locally** — remote-loading a
+webfont is a guideline violation and would be rejected at review. It is also a
+privacy question: an administrator viewing a SmartLinker page has their IP
+sent to Google, which is why several EU rulings pushed the WordPress ecosystem
+to bundle fonts.
+
+It affects admin pages only, never the front end and never visitors, so it is
+not urgent for a private install — and it is documented under
+`== External services ==` either way. But **it must be fixed before any wp.org
+submission**: bundle the .woff2 and serve it from the plugin. Deliberately not
+done here, because it changes how every admin screen looks and that is a call
+for the owner, not a side effect of writing a readme.
+
 ## Uninstall-coverage guards (`tests/UninstallCoverageTest.php`, v0.49.2)
 
 The failure mode this protects against is invisible. Add a table, a cron
@@ -1224,7 +1258,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && bin/test.sh
 ```
 
-**218 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+**221 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
 no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin
