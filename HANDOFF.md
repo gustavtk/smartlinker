@@ -283,6 +283,32 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## The clear fix had a hole (v0.55.2)
+
+v0.55.1 cleared the object cache **only for the rows the delete had found** —
+which is useless in the one situation that matters.
+
+Reported with a screenshot: *"Semantic index cleared — 0 posts removed"*
+above *"24 of 25 posts indexed (96%)"*. An earlier clear had already removed
+the rows and left the cache behind, so the new clear found nothing, invalidated
+nothing, and the screen stayed wrong permanently. Clearing again could never
+help, because there was never anything left to find.
+
+`clear()` now flushes the whole `post_meta` group where the object cache
+supports it (`wp_cache_supports('flush_group')`), and otherwise clears every
+post the status screen reads — regardless of whether it had a row. Reproduced
+their exact state and confirmed the display drops to 0 of 6 with
+`removed=0`.
+
+The notice no longer says "0 posts removed", which reads as a failure. When
+there was nothing stored it says so.
+
+**The lesson:** the first fix reasoned from the happy path — rows exist, delete
+them, clear their cache. The bug only lives in the state where the data is
+*already* gone and the cache is not, and that state is precisely what a stale
+cache produces. A cache invalidation derived from the data it is invalidating
+is circular.
+
 ## Clearing the semantic index did nothing visible (v0.55.1)
 
 Reported from the screen: clicking **Clear index** deleted every row and the

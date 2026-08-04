@@ -169,8 +169,31 @@ class Slk_Embedding
         $wpdb->delete($wpdb->postmeta, ['meta_key' => self::META]);
         $wpdb->delete($wpdb->postmeta, ['meta_key' => self::META_HASH]);
 
-        foreach ($ids as $id) {
-            wp_cache_delete((int) $id, 'post_meta');
+        /*
+         * Invalidate more than we deleted, on purpose.
+         *
+         * The first version of this cleared the cache only for the rows it had
+         * just found — which is useless in the one case that matters. If an
+         * earlier clear removed the rows and left the cache behind, there is
+         * nothing left to find: the query returns nothing, no cache is
+         * invalidated, and the screen goes on reporting posts as indexed
+         * forever. That is exactly what happened, and it reported
+         * "0 posts removed" while still showing 24 of 25 indexed.
+         *
+         * So the whole group is flushed where the object cache supports it,
+         * and otherwise every post the status screen will ask about is cleared
+         * individually, whether or not it had a row.
+         */
+        if (function_exists('wp_cache_supports') && wp_cache_supports('flush_group')) {
+            wp_cache_flush_group('post_meta');
+        } else {
+            $affected = array_map('intval', (array) $ids);
+            foreach (Slk_Post::candidate_targets(0, 5000) as $p) {
+                $affected[] = (int) $p->ID;
+            }
+            foreach (array_unique($affected) as $id) {
+                wp_cache_delete($id, 'post_meta');
+            }
         }
 
         return count($ids);

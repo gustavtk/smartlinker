@@ -85,6 +85,34 @@ class EmbeddingClearTest extends TestCase
         );
     }
 
+    /**
+     * The cache invalidation must NOT be limited to the rows just deleted.
+     *
+     * The first fix cleared the cache only for ids the delete had found, which
+     * is useless in the one case that matters: if an earlier clear removed the
+     * rows and left the cache, there is nothing to find, nothing is
+     * invalidated, and the screen reports posts as indexed forever. In the
+     * field it said "0 posts removed" while still showing 24 of 25 indexed.
+     */
+    public function test_invalidation_does_not_depend_on_what_was_deleted()
+    {
+        $body = self::method('clear');
+
+        $this->assertTrue(
+            strpos($body, 'flush_group') !== false
+                && strpos($body, 'candidate_targets') !== false,
+            'clear() must flush the whole post_meta group where supported, and otherwise '
+            . 'clear every post the status screen reads — not only the rows it happened to find'
+        );
+
+        // The naive version: a single loop over the found ids and nothing else.
+        $this->assertStringNotContainsString(
+            "foreach (\$ids as \$id) {\n            wp_cache_delete",
+            $body,
+            'invalidating only the found ids leaves an already-emptied index permanently stale'
+        );
+    }
+
     /** The button says "Clear index" — it is a clear, not a rebuild. */
     public function test_the_button_is_labelled_clear()
     {
