@@ -1462,22 +1462,56 @@
                 .catch(function () { window.location.href = url; });
         }
 
-        function navigate(url, push) {
-            setLoading(true);
+        /*
+         * Sections already fetched, so a click can be answered from memory.
+         *
+         * The settings tabs are instant because every panel is already in the
+         * page. That cannot be copied here — each of these sections runs real
+         * queries, and rendering seventeen of them up front would make the
+         * first load far worse than the clicks it saved. So the wait is
+         * removed rather than the work: fetch while the pointer is on its way
+         * to the link, and remember what came back.
+         *
+         * TTL is short on purpose. A section is a report; showing a stale one
+         * is worse than waiting for a fresh one. Thirty seconds covers moving
+         * between pages while reading, and nothing longer.
+         */
+        var sectionCache = Object.create(null);
+        var CACHE_TTL = 30000;
+        var inFlight = Object.create(null);
 
-            var slug = slugOf(url);
-            if (!slug || !isPlainNavigation(url)) {
-                navigateFull(url, push);
-                return;
+        /** Anything that changes data makes every cached section suspect. */
+        function clearSectionCache() {
+            sectionCache = Object.create(null);
+        }
+
+        function cacheKey(url) {
+            return url.split('#')[0];
+        }
+
+        /**
+         * Fetch a section, reusing an in-flight request or a fresh cache entry.
+         *
+         * @return {Promise<string>} the rendered HTML
+         */
+        function fetchSection(url) {
+            var key = cacheKey(url);
+            var hit = sectionCache[key];
+            if (hit && (Date.now() - hit.at) < CACHE_TTL) {
+                return Promise.resolve(hit.html);
+            }
+            // A hover already started this; a click must not start it again.
+            if (inFlight[key]) {
+                return inFlight[key];
             }
 
             var body = new URLSearchParams();
             body.set('action', 'slk_section');
             body.set('nonce', SLK.nonce);
-            body.set('slug', slug);
+            body.set('slug', slugOf(url));
             body.set('query', (url.split('?')[1] || ''));
 
-            fetch(SLK.ajaxUrl, {
+            var req = fetch(SLK.ajaxUrl, {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -1488,8 +1522,60 @@
                     if (!res || !res.success || !res.data || !res.data.html) {
                         throw new Error('section render failed');
                     }
-                    swap(res.data.html, url, { push: push, scroll: true });
+                    sectionCache[key] = { html: res.data.html, at: Date.now() };
+                    delete inFlight[key];
+                    return res.data.html;
                 })
+                .catch(function (e) {
+                    delete inFlight[key];
+                    throw e;
+                });
+
+            inFlight[key] = req;
+            return req;
+        }
+
+        /**
+         * Start fetching before the click.
+         *
+         * Between a pointer reaching a link and the button going down there is
+         * typically 150-400ms of human latency. On a remote server that is
+         * most of the round trip, so the answer is usually waiting by the time
+         * the click arrives and the page appears with no perceptible delay —
+         * which is the whole point.
+         *
+         * Failures are swallowed: this is speculative work, and a prefetch
+         * that cannot complete must never surface as an error. The click will
+         * simply take the normal path.
+         */
+        function prefetch(url) {
+            if (!url) { return; }
+            var slug = slugOf(url);
+            if (!slug || !isPlainNavigation(url)) { return; }
+            var key = cacheKey(url);
+            if (sectionCache[key] || inFlight[key]) { return; }
+            fetchSection(url).catch(function () {});
+        }
+
+        function navigate(url, push) {
+            var slug = slugOf(url);
+            if (!slug || !isPlainNavigation(url)) {
+                setLoading(true);
+                navigateFull(url, push);
+                return;
+            }
+
+            // Answer from cache without ever showing a loading state — this is
+            // what makes a revisit feel like the settings tabs.
+            var hit = sectionCache[cacheKey(url)];
+            if (hit && (Date.now() - hit.at) < CACHE_TTL) {
+                swap(hit.html, url, { push: push, scroll: true });
+                return;
+            }
+
+            setLoading(true);
+            fetchSection(url)
+                .then(function (html) { swap(html, url, { push: push, scroll: true }); })
                 // Any doubt at all falls back to the full page, which always
                 // works. A fast path is only worth having if it cannot strand you.
                 .catch(function () { navigateFull(url, push); });
@@ -1570,6 +1656,24 @@
             }
         });
 
+        /*
+         * Warm a section as soon as the pointer touches its link.
+         *
+         * pointerenter rather than mouseover so it fires once per link instead
+         * of on every move within it, and focusin so keyboard navigation gets
+         * the same head start rather than being the slow path.
+         *
+         * touchstart matters more than it looks: on a phone there is no hover
+         * at all, but roughly 100ms passes between finger-down and the click
+         * event, which is enough to be worth having.
+         */
+        ['pointerenter', 'focusin', 'touchstart'].forEach(function (evt) {
+            document.addEventListener(evt, function (e) {
+                var a = e.target && e.target.closest ? e.target.closest('a') : null;
+                if (isSectionLink(a)) { prefetch(a.href); }
+            }, true);   // capture: pointerenter does not bubble
+        });
+
         // Intercept section + in-panel action links.
         document.addEventListener('click', function (e) {
             if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) { return; }
@@ -1579,8 +1683,30 @@
             navigate(a.href, true);
         }, false);
 
+        /*
+         * Anything that writes invalidates every cached section.
+         *
+         * Applying a link changes the reports, the orphan list and the
+         * opportunity count all at once, and there is no cheap way to know
+         * which cached sections are now wrong. Throwing the lot away costs one
+         * fetch; showing someone a stale number costs their trust in the
+         * numbers. jQuery's global hook catches every $.post the admin makes,
+         * so this cannot be forgotten at an individual call site.
+         */
+        if (window.jQuery) {
+            jQuery(document).on('ajaxSuccess', function (_e, _xhr, settings) {
+                var data = (settings && settings.data) || '';
+                if (typeof data === 'string' && data.indexOf('action=slk_') !== -1
+                    && data.indexOf('action=slk_section') === -1) {
+                    clearSectionCache();
+                }
+            });
+        }
+
         // Intercept form submissions inside the panel (settings, add-rule,
         // imports, url changer, etc.) and post them via fetch.
+        // Any of them can change what a cached section would show.
+        document.addEventListener('submit', function () { clearSectionCache(); }, true);
         document.addEventListener('submit', function (e) {
             var form = e.target;
             if (e.defaultPrevented || !form || !form.closest || !form.closest('.slk-panel')) { return; }
