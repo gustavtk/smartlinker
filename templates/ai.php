@@ -59,16 +59,22 @@ if (!defined('ABSPATH')) {
                       // this while the page still showed "Up to date". ?>
                 <div class="notice notice-success is-dismissible"><p><?php
                     $n = (int) $_GET['embed_cleared'];
-                    printf(
-                        /* translators: %s: number of posts whose embedding was removed */
-                        esc_html(_n(
-                            'Semantic index cleared — %s post removed.',
-                            'Semantic index cleared — %s posts removed.',
-                            $n,
-                            'smartlinker'
-                        )),
-                        esc_html(number_format_i18n($n))
-                    );
+                    if ($n > 0) {
+                        printf(
+                            /* translators: %s: number of posts whose embedding was removed */
+                            esc_html(_n(
+                                'Semantic index cleared — %s post removed.',
+                                'Semantic index cleared — %s posts removed.',
+                                $n,
+                                'smartlinker'
+                            )),
+                            esc_html(number_format_i18n($n))
+                        );
+                    } else {
+                        // "0 removed" reads like a failure. It usually means the
+                        // index was already empty — say that plainly.
+                        esc_html_e('Semantic index cleared. There was nothing stored to remove.', 'smartlinker');
+                    }
                 ?></p></div>
             <?php elseif (!empty($_GET['embed_err'])) : ?>
                 <div class="notice notice-error is-dismissible"><p><?php echo esc_html(wp_unslash($_GET['embed_err'])); ?></p></div>
