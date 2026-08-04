@@ -30,6 +30,20 @@ class Slk_Embedding
     /** Posts per API request. */
     const BATCH = 50;
 
+    /** Daily top-up event, so the index maintains itself. */
+    const EVENT = 'slk_embed_topup';
+
+    /**
+     * Most posts one automatic top-up will embed.
+     *
+     * A ceiling because every embedding is a billed OpenAI call against the
+     * site owner's own account. An unbounded background job that quietly spends
+     * someone's money is not a feature. At 200 a day a large site catches up
+     * within a week of enabling it, and an ordinary week of editing is a
+     * handful of posts — well inside one run.
+     */
+    const TOPUP_MAX = 200;
+
     /**
      * Cosine below which two posts are treated as unrelated, and the value at
      * which they are treated as clearly the same topic. Embedding cosines sit
@@ -45,6 +59,65 @@ class Slk_Embedding
         // A post whose text changed needs re-embedding; clearing the hash is
         // enough, the next run picks it up.
         add_action('save_post', [__CLASS__, 'invalidate']);
+
+        add_action(self::EVENT, [__CLASS__, 'top_up']);
+        add_action('admin_init', [__CLASS__, 'ensure_scheduled'], 20);
+    }
+
+    public static function ensure_scheduled()
+    {
+        if (!wp_next_scheduled(self::EVENT)) {
+            wp_schedule_event(time() + (2 * HOUR_IN_SECONDS), 'daily', self::EVENT);
+        }
+    }
+
+    /**
+     * Bring the index up to date, a bounded amount at a time.
+     *
+     * The pieces for this were all here already — save_post marks a post
+     * stale, and generate_batch() skips anything unchanged — but nothing ever
+     * called it. The index knew exactly what was out of date and then waited
+     * for someone to remember to visit a page and press a button. Edit ten
+     * posts and the semantic matching silently used ten stale vectors until
+     * you noticed.
+     *
+     * So this runs daily and tops up what changed. "Clear index" becomes what
+     * it should always have been: a rare reset, not routine maintenance.
+     *
+     * It does nothing at all unless embeddings are switched on AND a key is
+     * configured — a background job that starts spending money the moment a
+     * key is pasted in would be a nasty surprise.
+     *
+     * @return array{done:int,remaining:int}
+     */
+    public static function top_up()
+    {
+        if (!self::is_enabled()) {
+            return ['done' => 0, 'remaining' => 0];
+        }
+
+        $done = 0;
+        $remaining = 0;
+
+        // Several batches per run, but never past the ceiling.
+        while ($done < self::TOPUP_MAX) {
+            $result = self::generate_batch(min(self::BATCH, self::TOPUP_MAX - $done));
+            if (is_wp_error($result)) {
+                // A key that has been revoked, or the API being down. Stop and
+                // try again tomorrow rather than hammering it.
+                break;
+            }
+            $done += (int) $result['done'];
+            $remaining = (int) $result['remaining'];
+            if ((int) $result['done'] === 0) {
+                break;   // nothing left that needs embedding
+            }
+        }
+
+        if ($done > 0) {
+            update_option('slk_embed_last_topup', current_time('mysql'), false);
+        }
+        return ['done' => $done, 'remaining' => $remaining];
     }
 
     public static function is_enabled()

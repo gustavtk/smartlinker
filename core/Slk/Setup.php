@@ -114,9 +114,25 @@ class Slk_Setup
                         __('%s posts in the semantic index.', 'smartlinker'),
                         number_format_i18n($vectors)
                     )
-                    : __('Not built. Needs an OpenAI API key.', 'smartlinker'),
-                'action'  => admin_url('admin.php?page=smartlinker_settings&tab=ai'),
-                'action_label' => __('Set up AI', 'smartlinker'),
+                    : (Slk_AI::is_configured()
+                        ? __('Not built yet. Your key is set — this just needs a first run.', 'smartlinker')
+                        : __('Not built. Needs an OpenAI API key.', 'smartlinker')),
+                /*
+                 * Two different problems, two different pages.
+                 *
+                 * With no key the blocker is the key, and Settings → AI is
+                 * where you enter it. Once the key is in, the blocker is that
+                 * nothing has been embedded yet — and the index is built from
+                 * the AI Suggestions page, not from Settings. Sending someone
+                 * back to a settings screen they have already filled in, with
+                 * no build button on it, is a dead end.
+                 */
+                'action'  => Slk_AI::is_configured()
+                    ? admin_url('admin.php?page=smartlinker_ai')
+                    : admin_url('admin.php?page=smartlinker_settings&tab=ai'),
+                'action_label' => Slk_AI::is_configured()
+                    ? __('Build the index', 'smartlinker')
+                    : __('Set up AI', 'smartlinker'),
             ],
         ];
     }

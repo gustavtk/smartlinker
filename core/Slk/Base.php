@@ -43,6 +43,7 @@ class Slk_Base
         wp_clear_scheduled_hook(Slk_Schedule::HOOK);
         wp_clear_scheduled_hook(Slk_History::EVENT);
         wp_clear_scheduled_hook(Slk_ClickTracker::PRUNE_EVENT);
+        wp_clear_scheduled_hook(Slk_Embedding::EVENT);
     }
 
     /**
