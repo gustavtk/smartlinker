@@ -283,6 +283,38 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## The same cache bug, found in a second place (v0.55.3)
+
+The reporter mentioned the previous version *"worked after clearing the
+LiteSpeed cache"*. That confirmed the diagnosis — LiteSpeed ships a persistent
+object cache — and prompted an audit for the same pattern elsewhere.
+
+**`Slk_AI::clear_cache()` had it too.** Line 129 reads the cached AI results
+with `get_post_meta()`; line 160 deleted them with a direct `$wpdb->delete()`.
+On any site with a persistent object cache, "clear cached AI results" appeared
+to do nothing and the plugin went on serving stale AI suggestions
+indefinitely.
+
+Two instances of one mistake, so it is now one rule rather than two fixes:
+`Slk_Post::flush_meta_cache()`, used by both. It flushes the whole `post_meta`
+group where the object cache supports it and otherwise clears each candidate
+post. It deliberately takes **no arguments** — deriving the list from the rows
+just deleted is circular, and that circularity was the v0.55.1 bug.
+
+`test_every_direct_postmeta_delete_flushes_the_cache()` enforces the rule
+across the codebase rather than the two known cases.
+
+**Two lessons:**
+
+- *Without* a persistent object cache this class of bug is invisible: the
+  cache dies with the request, so it self-corrects and never gets reported.
+  Development environments almost never have one; production usually does.
+  Testing found neither instance — a user running LiteSpeed found both.
+- The guard's first version scanned 900 characters after each delete and
+  produced a **false positive** as soon as a comment explaining the flush
+  pushed the call past the window. It now scans to the end of the enclosing
+  method. A guard that fails on well-documented code is one people delete.
+
 ## The clear fix had a hole (v0.55.2)
 
 v0.55.1 cleared the object cache **only for the rows the delete had found** —

@@ -184,17 +184,7 @@ class Slk_Embedding
          * and otherwise every post the status screen will ask about is cleared
          * individually, whether or not it had a row.
          */
-        if (function_exists('wp_cache_supports') && wp_cache_supports('flush_group')) {
-            wp_cache_flush_group('post_meta');
-        } else {
-            $affected = array_map('intval', (array) $ids);
-            foreach (Slk_Post::candidate_targets(0, 5000) as $p) {
-                $affected[] = (int) $p->ID;
-            }
-            foreach (array_unique($affected) as $id) {
-                wp_cache_delete($id, 'post_meta');
-            }
-        }
+        Slk_Post::flush_meta_cache();
 
         return count($ids);
     }

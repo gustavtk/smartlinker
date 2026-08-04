@@ -42,15 +42,54 @@ class EmbeddingClearTest extends TestCase
         $this->assertNotSame('', $body, 'clear() is missing');
 
         $this->assertStringContainsString(
-            "wp_cache_delete",
+            'Slk_Post::flush_meta_cache',
             $body,
-            'a direct $wpdb->delete on postmeta must be followed by wp_cache_delete, '
+            'a direct $wpdb->delete on postmeta must be followed by a cache flush, '
             . 'or get_post_meta() keeps returning the deleted values'
         );
-        $this->assertStringContainsString(
-            "'post_meta'",
-            $body,
-            'the post_meta cache group is the one that must be cleared'
+    }
+
+    /**
+     * THE RULE, not just the two instances.
+     *
+     * Every direct delete against the postmeta table must be followed by a
+     * cache flush. This shipped twice — the semantic index and the cached AI
+     * results — and both were invisible without a persistent object cache.
+     * The reporter was running LiteSpeed, which has one.
+     */
+    public function test_every_direct_postmeta_delete_flushes_the_cache()
+    {
+        $offenders = [];
+        foreach (glob(SLK_PLUGIN_DIR . 'core/Slk/*.php') as $file) {
+            $src = file_get_contents($file);
+            $offset = 0;
+            while (($pos = strpos($src, '$wpdb->delete($wpdb->postmeta', $offset)) !== false) {
+                $offset = $pos + 1;
+
+                /*
+                 * Scan to the END OF THE ENCLOSING METHOD, not a fixed number
+                 * of characters. The first version looked 900 chars ahead and
+                 * reported a false positive the moment a comment explaining
+                 * the flush pushed the call past the window — a guard that
+                 * fails on well-documented code trains people to delete it.
+                 */
+                $end = strpos($src, "\n    }", $pos);
+                $body = $end === false ? substr($src, $pos) : substr($src, $pos, $end - $pos);
+
+                if (strpos($body, 'flush_meta_cache') === false
+                    && strpos($body, 'wp_cache_flush_group') === false) {
+                    $line = substr_count(substr($src, 0, $pos), "\n") + 1;
+                    $offenders[] = basename($file) . ':' . $line;
+                }
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $offenders,
+            "These delete post meta directly without flushing the object cache. On a site "
+            . "with Redis, Memcached or LiteSpeed the deleted values keep being served:\n  "
+            . implode("\n  ", $offenders)
         );
     }
 
@@ -98,11 +137,10 @@ class EmbeddingClearTest extends TestCase
     {
         $body = self::method('clear');
 
-        $this->assertTrue(
-            strpos($body, 'flush_group') !== false
-                && strpos($body, 'candidate_targets') !== false,
-            'clear() must flush the whole post_meta group where supported, and otherwise '
-            . 'clear every post the status screen reads — not only the rows it happened to find'
+        $this->assertStringContainsString(
+            'Slk_Post::flush_meta_cache',
+            $body,
+            'clear() must invalidate the whole post_meta cache, not only the rows it found'
         );
 
         // The naive version: a single loop over the found ids and nothing else.

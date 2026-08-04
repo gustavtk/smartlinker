@@ -158,6 +158,11 @@ class Slk_AI
         ));
         // phpcs:ignore WordPress.DB.PreparedSQL
         $wpdb->delete($wpdb->postmeta, ['meta_key' => self::CACHE_META], ['%s']);
+
+        // A direct delete leaves the object cache holding the rows it just
+        // removed, and get_post_meta() above would go on serving them.
+        Slk_Post::flush_meta_cache();
+
         return $n;
     }
 

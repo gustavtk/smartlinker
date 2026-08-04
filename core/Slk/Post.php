@@ -103,6 +103,36 @@ class Slk_Post
         return $walked;
     }
 
+    /**
+     * Invalidate the post-meta object cache after a direct SQL delete.
+     *
+     * WordPress caches post meta. A `$wpdb->delete()` against the postmeta
+     * table removes the rows and leaves that cache untouched, so anything
+     * reading back with get_post_meta() keeps returning values that no longer
+     * exist. Without a persistent object cache the mistake hides — the cache
+     * dies with the request. With Redis, Memcached or LiteSpeed it persists,
+     * and a "clear" button that clearly worked does nothing visible.
+     *
+     * That shipped twice: clearing the semantic index, and clearing cached AI
+     * results. Hence one helper rather than two fixes.
+     *
+     * Nothing is passed in on purpose. Deriving the list from the rows you
+     * just deleted is circular — if a previous buggy clear already removed
+     * them there is nothing to find, nothing gets invalidated, and the stale
+     * cache survives forever. That is exactly how the second bug was
+     * reported.
+     */
+    public static function flush_meta_cache()
+    {
+        if (function_exists('wp_cache_supports') && wp_cache_supports('flush_group')) {
+            wp_cache_flush_group('post_meta');
+            return;
+        }
+        foreach (self::candidate_targets(0, 5000) as $p) {
+            wp_cache_delete((int) $p->ID, 'post_meta');
+        }
+    }
+
     /** Columns walk_content() will select beyond ID and post_content. */
     const WALK_COLUMNS = ['post_title', 'post_type', 'post_status', 'post_name', 'post_date'];
 
