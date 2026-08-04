@@ -44,6 +44,12 @@ class Slk_LinkMap
         $max_per_rule = isset($_POST['max_posts']) ? max(1, (int) $_POST['max_posts']) : 25;
 
         $links_added = 0;
+        /*
+         * One batch for the whole run. A link map applies many rules across
+         * many posts in a single click; undoing that one post at a time is
+         * recovery, not undo.
+         */
+        $batch = Slk_Activity::new_batch();
         $posts_touched = [];
 
         foreach ($rules as $rule) {
@@ -70,11 +76,29 @@ class Slk_LinkMap
                 if ($anchor === null) {
                     continue;
                 }
+                // Snapshot before the write, so a failure part-way through
+                // still leaves every completed post restorable.
+                $before = $post->post_content;
                 $result = Slk_Link::insert_into_post($post->ID, $anchor, $url, [
                     'new_tab'  => Slk_Settings::get('links_open_new_tab'),
                     'nofollow' => Slk_Settings::get('links_nofollow'),
                 ]);
                 if (!is_wp_error($result)) {
+                    $after = get_post_field('post_content', $post->ID);
+                    Slk_Activity::record(
+                        $post->ID,
+                        'insert',
+                        sprintf(
+                            /* translators: 1: the anchor text used, 2: the destination URL */
+                            __('Bulk link map: linked “%1$s” to %2$s', 'smartlinker'),
+                            $anchor,
+                            $url
+                        ),
+                        $before,
+                        $after,
+                        $url,
+                        $batch
+                    );
                     $links_added++;
                     $posts_touched[$post->ID] = true;
                 }

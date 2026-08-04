@@ -4,7 +4,7 @@ Tags: internal links, seo, linking, anchor text, broken links
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.51.1
+Stable tag: 0.52.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,7 +60,9 @@ No data is sent to the plugin author, and there is no telemetry of any kind.
 
 = Will it change my posts without asking? =
 
-No. Every suggestion waits for you to apply it. Auto-linking rules are the one thing that writes links across many posts at once, and they show you a preview of every change first. Everything applied is recorded on the Activity page and can be undone.
+No. Every suggestion waits for you to apply it. Auto-linking is applied when a page is displayed and never written to your database, so switching it off restores the original text immediately.
+
+The two operations that do rewrite many posts at once — the Link Map and the site-wide URL Changer — show you a preview first, and both are recorded on the Activity page, where the whole operation can be undone in one click. A post you have edited since is refused rather than overwritten, so your later work is never discarded.
 
 = What happens to my links if I delete the plugin? =
 
@@ -87,6 +89,9 @@ The reports that read every post do so in slices rather than loading the whole s
 Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/smartlinker.pot` is included.
 
 == Changelog ==
+
+= 0.52.0 =
+* Bulk changes can now be undone. The Link Map and the site-wide URL Changer record every post they rewrite, and the Activity page can reverse a whole operation in one click.
 
 = 0.51.1 =
 * Fixed CSV exports being corrupted on PHP 8.4. A deprecation notice was being written into the downloaded file ahead of the header row.
@@ -132,6 +137,9 @@ Yes. All 1,108 strings, in PHP and JavaScript, are translatable, and `languages/
 * Added a sortable Links column to the Posts list.
 
 == Upgrade Notice ==
+
+= 0.52.0 =
+Adds undo for bulk operations. Previously the Link Map and URL Changer could not be reversed.
 
 = 0.51.0 =
 Removes the last third-party asset. The admin font is now served locally rather than from Google.

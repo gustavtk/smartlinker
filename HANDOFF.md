@@ -283,6 +283,47 @@ One compact row per suggestion, ~70px:
 - Bulk select + "Add selected (N)", header progress bar, shimmer skeletons, staggered row entrance
 - `prefers-reduced-motion` disables all animation
 
+## Undo for bulk operations (v0.52.0)
+
+Found by auditing undo coverage before calling the plugin production-ready:
+`Slk_LinkMap` and `Slk_URLChanger::replace_sitewide()` both rewrote many posts
+and recorded **nothing**. They are the two most destructive things the plugin
+does, and they were the only writes with no way back — the preview said how
+much would change but could not put it back.
+
+`SLK_DB_VERSION` 8 → 9 for a `batch` column on the activity table.
+
+**Per-post rows, grouped by a batch token.** One row per post is what makes
+restore work — `revert()` restores a whole snapshot, which only makes sense per
+post. But undoing 400 of them by hand is recovery, not undo, so rows written by
+one operation share a token and the Activity page offers a single "Undo all N".
+
+**Three things that had to be right:**
+
+- **The snapshot is taken BEFORE the write.** Recording after would store the
+  already-changed content as the "before" state, giving an undo button that
+  restores the change it was meant to reverse — worse than none, because it is
+  trusted. A test asserts the ordering.
+- **prune() cannot split a batch.** It runs after every row; at the default of
+  300 kept entries a 500-post rewrite would delete the first 200 rows of its own
+  operation while still running. The newest batch is now exempt until another
+  batch arrives. The log may briefly exceed its limit — much better than an undo
+  that half works.
+- **Partial failure is reported, not hidden.** A post edited since cannot be
+  restored without discarding that edit, so it is refused and counted:
+  "Undid 2 post(s). 1 could not be undone because they have been edited since."
+
+**Verified end to end against the real database**: rewrote 3 posts, undid the
+batch, confirmed all three **byte-identical** to their originals and the link
+index re-synced. Then edited one post by hand after the rewrite and undid
+again — 2 restored, 1 refused, and **the hand edit survived**. Also driven
+through the UI: "Undo all 3" → "3 posts restored and re-indexed".
+
+A bug caught while wiring it: adding `batch` to the insert put the `$wpdb`
+format array out of step with the data array, so `batch` would have been
+written as `%d` and `created` misaligned. The format list is now annotated
+column by column.
+
 ## CSV exports corrupted on PHP 8.4 (v0.51.1)
 
 Found during a full-code audit, and it had shipped.
@@ -1333,7 +1374,7 @@ it a worklist like Link Opportunities rather than a report.
 composer install && bin/test.sh
 ```
 
-**224 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
+**232 PHP tests + 22 JavaScript tests.** No database, no WordPress, no browser,
 no npm install. PHP runs in ~90ms, JS in ~180ms.
 
 `tests/bootstrap.php` deliberately does **not** load WordPress. The usual plugin

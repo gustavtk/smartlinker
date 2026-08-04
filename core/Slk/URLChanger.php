@@ -177,6 +177,17 @@ class Slk_URLChanger
         $posts = 0;
         $occurrences = 0;
 
+        /*
+         * Every rewritten post is logged with the content it had beforehand,
+         * under one batch token.
+         *
+         * This is the most destructive thing the plugin does — a find and
+         * replace across every post at once — and until now it was the only
+         * write with no way back. The preview said how much would change; it
+         * could not put anything back afterwards.
+         */
+        $batch = Slk_Activity::new_batch();
+
         // The ids are resolved up front, before any post is rewritten. That
         // matters here in a way it does not for the read-only walks: each
         // update changes the very content the LIKE matches on, so a query run
@@ -184,10 +195,26 @@ class Slk_URLChanger
         // skip posts. A fixed id list is walked exactly once.
         Slk_Post::walk_content(
             self::ids_containing($old),
-            function ($row) use ($pattern, $new, &$posts, &$occurrences) {
+            function ($row) use ($pattern, $new, $old, $batch, &$posts, &$occurrences) {
                 $count = 0;
                 $updated = preg_replace($pattern, str_replace('$', '\\$', $new), $row->post_content, -1, $count);
                 if ($count > 0 && $updated !== null && $updated !== $row->post_content) {
+                    // Recorded BEFORE the write, so a failure part-way through
+                    // still leaves every completed post restorable.
+                    Slk_Activity::record(
+                        $row->ID,
+                        'rewrite',
+                        sprintf(
+                            /* translators: 1: the old URL, 2: the new URL */
+                            __('Repointed %1$s to %2$s', 'smartlinker'),
+                            $old,
+                            $new
+                        ),
+                        $row->post_content,
+                        $updated,
+                        $new,
+                        $batch
+                    );
                     wp_update_post(['ID' => $row->ID, 'post_content' => $updated]);
                     Slk_Link::index_post($row->ID);
                     $posts++;
@@ -196,7 +223,7 @@ class Slk_URLChanger
             }
         );
 
-        return ['posts' => $posts, 'occurrences' => $occurrences];
+        return ['posts' => $posts, 'occurrences' => $occurrences, 'batch' => $batch];
     }
 
     /* ---------------------------------------------------------------------

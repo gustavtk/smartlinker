@@ -17,8 +17,83 @@ $filtered = $filters['post'] || $filters['action'] || $filters['state'];
         <?php esc_html_e('Every change SmartLinker wrote to a post directly, newest first — and a way to undo it. Links you insert from the editor are not listed: you review those before saving, and WordPress revisions already cover them.', 'smartlinker'); ?>
     </p>
 
+    <?php if (!empty($batches)) : ?>
+        <?php
+        /*
+         * Bulk operations first, and separately.
+         *
+         * A link map or a site-wide URL change writes one log row per post.
+         * Those rows are all individually undoable below, but undoing four
+         * hundred of them by hand is recovery rather than undo — so the whole
+         * operation gets one button.
+         */
+        ?>
+        <div class="slk-card-block">
+            <div class="slk-block-head">
+                <h2><?php esc_html_e('Bulk changes', 'smartlinker'); ?></h2>
+                <span class="description"><?php esc_html_e('Each of these changed many posts at once, and can be undone in one go.', 'smartlinker'); ?></span>
+            </div>
+            <table class="slk-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:left;"><?php esc_html_e('What changed', 'smartlinker'); ?></th>
+                        <th style="text-align:left;width:150px;"><?php esc_html_e('When', 'smartlinker'); ?></th>
+                        <th style="text-align:left;width:130px;"><?php esc_html_e('Posts', 'smartlinker'); ?></th>
+                        <th style="text-align:left;width:120px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($batches as $b) : ?>
+                    <tr class="slk-tr">
+                        <td><?php echo esc_html($b->summary); ?></td>
+                        <td><?php echo esc_html(mysql2date('j M Y, H:i', $b->created)); ?></td>
+                        <td>
+                            <?php
+                            printf(
+                                /* translators: 1: posts still undoable, 2: posts changed in total */
+                                esc_html__('%1$s of %2$s undoable', 'smartlinker'),
+                                esc_html(number_format_i18n($b->undoable)),
+                                esc_html(number_format_i18n($b->posts))
+                            );
+                            ?>
+                        </td>
+                        <td>
+                            <?php if ((int) $b->undoable > 0) : ?>
+                                <a class="button" href="<?php echo esc_url(wp_nonce_url(
+                                    add_query_arg([
+                                        'page' => 'smartlinker_activity',
+                                        'slk_undo_batch' => $b->batch,
+                                    ], admin_url('admin.php')),
+                                    'slk_undo_batch'
+                                )); ?>"><?php
+                                    printf(
+                                        /* translators: %s: number of posts that would be restored */
+                                        esc_html__('Undo all %s', 'smartlinker'),
+                                        esc_html(number_format_i18n($b->undoable))
+                                    );
+                                ?></a>
+                            <?php else : ?>
+                                <span class="description"><?php esc_html_e('Already undone', 'smartlinker'); ?></span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+
     <?php if (!empty($_GET['undone'])) : ?>
-        <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Change undone and the post re-indexed.', 'smartlinker'); ?></p></div>
+        <div class="notice notice-success is-dismissible"><p><?php
+            $n = (int) $_GET['undone'];
+            echo $n > 1
+                ? esc_html(sprintf(
+                    /* translators: %d: number of posts restored */
+                    _n('%d post restored and re-indexed.', '%d posts restored and re-indexed.', $n, 'smartlinker'),
+                    $n
+                ))
+                : esc_html__('Change undone and the post re-indexed.', 'smartlinker');
+        ?></p></div>
     <?php elseif (!empty($_GET['undo_err'])) : ?>
         <div class="notice notice-error is-dismissible"><p><?php echo esc_html(wp_unslash($_GET['undo_err'])); ?></p></div>
     <?php endif; ?>
